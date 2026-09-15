@@ -1,0 +1,1650 @@
+<title>Carnet d'IA R5.A.L1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Caveat:wght@500..700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#F9FAFD; --paper-2:#EEF2FA; --paper-3:#E2E8F5;
+  --ink:#1A2132; --ink-soft:#4C566C; --ink-faint:#7D879C;
+  --rule:#D3DBEC; --rule-strong:#AFBCDB;
+  --blue:#2446C8; --blue-soft:#DDE5FB;
+  --red:#C8354E; --red-soft:#FBE4E8;
+  --green:#1D7F54; --green-soft:#DCF1E6;
+  --fluo:#FFEB6B;
+  --code-bg:#F0F3F9; --code-ink:#1A2132; --code-cmt:#6B7690;
+  --node-v:#4DB386; --node-j:#F0C43C; --node-r:#E36A6A; --node-ink:#10141C;
+  --lift:0 1px 0 rgba(26,33,50,.05), 0 10px 28px -16px rgba(26,33,50,.28);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#10131B; --paper-2:#171C27; --paper-3:#202736;
+    --ink:#E5E8F1; --ink-soft:#A9B1C4; --ink-faint:#7A8398;
+    --rule:#262E40; --rule-strong:#39445E;
+    --blue:#93A9FF; --blue-soft:#1E2848;
+    --red:#FF7F92; --red-soft:#3A1D26;
+    --green:#62D39F; --green-soft:#15352A;
+    --fluo:rgba(255,224,64,.30);
+    --code-bg:#161B26; --code-ink:#DDE2EE; --code-cmt:#8590A8;
+    --lift:0 1px 0 rgba(0,0,0,.3), 0 10px 28px -16px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#10131B; --paper-2:#171C27; --paper-3:#202736;
+  --ink:#E5E8F1; --ink-soft:#A9B1C4; --ink-faint:#7A8398;
+  --rule:#262E40; --rule-strong:#39445E;
+  --blue:#93A9FF; --blue-soft:#1E2848;
+  --red:#FF7F92; --red-soft:#3A1D26;
+  --green:#62D39F; --green-soft:#15352A;
+  --fluo:rgba(255,224,64,.30);
+  --code-bg:#161B26; --code-ink:#DDE2EE; --code-cmt:#8590A8;
+  --lift:0 1px 0 rgba(0,0,0,.3), 0 10px 28px -16px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:20px}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none!important} }
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font:400 17px/1.62 "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--blue); text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--blue); outline-offset:2px; border-radius:3px}
+
+/* ---------- shell ---------- */
+.shell{display:grid; grid-template-columns:268px minmax(0,1fr); gap:44px; max-width:1300px; margin:0 auto; padding-inline:24px}
+.toc{position:sticky; top:0; align-self:start; max-height:100vh; overflow:auto; padding-block:26px 40px; font-size:.9rem; scrollbar-width:thin}
+.toc summary{display:none}
+.brand{font:800 1.15rem/1.1 "Bricolage Grotesque", system-ui, sans-serif; letter-spacing:-.01em; margin:0 0 4px}
+.brand small{display:block; font:500 .78rem/1.4 "Atkinson Hyperlegible", sans-serif; color:var(--ink-faint); letter-spacing:0; margin-top:4px}
+.tools{display:flex; flex-direction:column; gap:10px; margin:18px 0 20px; padding:14px; background:var(--paper-2); border-radius:10px}
+.progress-label{display:flex; justify-content:space-between; font-size:.8rem; color:var(--ink-soft); font-variant-numeric:tabular-nums}
+.bar{height:6px; border-radius:6px; background:var(--paper-3); overflow:hidden}
+.bar i{display:block; height:100%; width:0; background:var(--green); border-radius:6px; transition:width .3s ease}
+.btn{font:700 .85rem/1 "Atkinson Hyperlegible", sans-serif; color:var(--ink); background:var(--paper); border:1.5px solid var(--rule-strong); border-radius:8px; padding:9px 12px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:8px}
+.btn:hover{border-color:var(--blue)}
+.btn[aria-pressed="true"]{background:var(--blue); border-color:var(--blue); color:var(--paper)}
+.btn .dot{width:9px; height:9px; border-radius:50%; background:var(--ink-faint)}
+.btn[aria-pressed="true"] .dot{background:var(--fluo)}
+.tools p{margin:0; font-size:.76rem; line-height:1.4; color:var(--ink-faint)}
+.toc h4{font:700 .7rem/1 "Atkinson Hyperlegible", sans-serif; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-faint); margin:18px 0 6px}
+.toc ol{list-style:none; margin:0; padding:0}
+.toc li a{display:flex; justify-content:space-between; gap:8px; padding:4px 8px; margin-inline:-8px; border-radius:6px; color:var(--ink-soft); text-decoration:none; line-height:1.35}
+.toc li a:hover{background:var(--paper-2); color:var(--ink)}
+.toc li a[aria-current="true"]{background:var(--blue-soft); color:var(--ink); font-weight:700}
+.toc li a .ok{color:var(--green); font-weight:700; visibility:hidden}
+.toc li a.done .ok{visibility:visible}
+.toc .t3-group a{color:var(--ink)}
+
+main{min-width:0; padding-block:28px 140px}
+.page{position:relative; padding-left:40px}
+.page::before{content:""; position:absolute; left:12px; top:0; bottom:0; width:2px; background:var(--red); opacity:.45}
+.col{max-width:76ch}
+
+/* ---------- type ---------- */
+h1,h2,h3{font-family:"Bricolage Grotesque", system-ui, sans-serif; text-wrap:balance; letter-spacing:-.015em; color:var(--ink)}
+h1{font-weight:800; font-size:clamp(2.3rem, 1.4rem + 3.4vw, 3.6rem); line-height:1; margin:0}
+h2{font-weight:750; font-size:clamp(1.55rem, 1.2rem + 1.2vw, 2.1rem); line-height:1.1; margin:6px 0 0}
+h3{font-weight:680; font-size:1.24rem; line-height:1.25; margin:34px 0 10px}
+h4{font:700 1rem/1.3 "Atkinson Hyperlegible", sans-serif; margin:22px 0 6px}
+p{margin:0 0 14px}
+ul,ol{margin:0 0 14px; padding-left:22px}
+li{margin:3px 0}
+li::marker{color:var(--ink-faint)}
+strong{font-weight:700}
+mark{color:inherit; background:linear-gradient(transparent 14%, var(--fluo) 14%, var(--fluo) 90%, transparent 90%); padding:0 .12em; border-radius:2px}
+var{font-style:italic; font-family:"Atkinson Hyperlegible", serif}
+code{font:400 .86em/1.4 "JetBrains Mono", ui-monospace, Consolas, monospace; background:var(--code-bg); padding:.08em .32em; border-radius:4px}
+.small{font-size:.88rem; color:var(--ink-soft)}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative; margin:0 0 42px -40px; padding:44px 28px 34px 64px; border-radius:0 14px 14px 0;
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(90deg, transparent 11px, color-mix(in srgb, var(--red) 45%, transparent) 11px, color-mix(in srgb, var(--red) 45%, transparent) 13px, transparent 13px),
+    linear-gradient(var(--rule-strong) 1px, transparent 1px),
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size:100% 100%, 100% 32px, 100% 8px, 32px 100%;
+  border:1px solid var(--rule);
+}
+.eyebrow{font:700 .74rem/1 "Atkinson Hyperlegible", sans-serif; text-transform:uppercase; letter-spacing:.12em; color:var(--blue); margin-bottom:14px}
+.hero .lede{font-size:1.14rem; max-width:62ch; margin:18px 0 22px; color:var(--ink-soft)}
+.hero .lede strong{color:var(--ink)}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{display:inline-flex; align-items:center; gap:6px; font:700 .8rem/1 "Atkinson Hyperlegible", sans-serif; padding:7px 11px; border-radius:999px; background:var(--paper); border:1.5px solid var(--rule-strong); color:var(--ink)}
+.chip.hot{border-color:var(--blue); color:var(--blue)}
+.scribble{font:600 1.55rem/1.1 "Caveat", cursive; color:var(--red); position:absolute; right:26px; top:26px; transform:rotate(-4deg); max-width:14ch; text-align:right}
+
+/* ---------- parts & sections ---------- */
+.part{margin:70px 0 10px; padding:26px 0 18px; border-top:2px solid var(--ink)}
+.part .num{font:600 1.5rem/1 "Caveat", cursive; color:var(--red)}
+.part h2{font-size:clamp(1.9rem, 1.3rem + 2vw, 2.7rem); margin-top:6px}
+.part p{color:var(--ink-soft); max-width:64ch; margin-top:10px}
+
+.sec{padding-top:44px}
+.sec + .sec{border-top:1px solid var(--rule); margin-top:36px}
+.sec-h{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:10px 20px; margin-bottom:16px}
+.sec-h > div{min-width:0; flex:1 1 380px}
+.tag{display:inline-block; font:700 .68rem/1 "Atkinson Hyperlegible", sans-serif; text-transform:uppercase; letter-spacing:.1em; padding:5px 8px; border-radius:5px; background:var(--paper-3); color:var(--ink-soft)}
+.tag.t3{background:var(--blue); color:var(--paper)}
+.tag.src{background:transparent; border:1px solid var(--rule-strong); color:var(--ink-faint); margin-left:4px}
+.done{display:inline-flex; align-items:center; gap:8px; font:700 .82rem/1 "Atkinson Hyperlegible", sans-serif; color:var(--ink-soft); cursor:pointer; user-select:none; padding:8px 10px; border-radius:8px; border:1.5px dashed var(--rule-strong)}
+.done input{width:17px; height:17px; accent-color:var(--green); margin:0; cursor:pointer}
+.done:has(input:checked){border-style:solid; border-color:var(--green); color:var(--green); background:var(--green-soft)}
+
+/* ---------- components ---------- */
+.defs{display:grid; grid-template-columns:minmax(120px, 22%) minmax(0,1fr); gap:0; margin:8px 0 18px; border-top:1px solid var(--rule)}
+.defs dt, .defs dd{padding:10px 0; border-bottom:1px solid var(--rule); margin:0}
+.defs dt{font-weight:700; padding-right:16px}
+.defs dd{transition:filter .2s ease}
+body.quiz .defs dd:not(.shown), body.quiz .pc:not(.shown){filter:blur(7px); cursor:pointer; user-select:none}
+body.quiz .defs dd:not(.shown):hover, body.quiz .pc:not(.shown):hover{filter:blur(5px)}
+.pc{transition:filter .2s ease; display:inline}
+
+.fx{margin:12px 0 18px; padding:12px 16px; background:var(--paper-2); border-left:3px solid var(--blue); border-radius:0 8px 8px 0; font-size:1.04rem; overflow-x:auto}
+.fx .lbl{display:block; font:700 .7rem/1 "Atkinson Hyperlegible", sans-serif; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-faint); margin-bottom:8px}
+.fx .line{display:block; white-space:nowrap; margin:3px 0}
+.frac{display:inline-flex; flex-direction:column; vertical-align:middle; text-align:center; margin:0 .2em}
+.frac > span:first-child{border-bottom:1px solid currentColor; padding:0 .2em}
+.frac > span{line-height:1.3}
+
+.note{font:500 1.42rem/1.22 "Caveat", cursive; color:var(--red); margin:14px 0 18px; padding:2px 0 2px 16px; border-left:3px solid var(--red)}
+.note b{font-weight:700}
+.note.bl{color:var(--blue); border-left-color:var(--blue)}
+
+pre{font:400 .84rem/1.55 "JetBrains Mono", ui-monospace, Consolas, monospace; background:var(--code-bg); color:var(--code-ink); padding:14px 16px; border-radius:10px; overflow-x:auto; margin:10px 0 18px; border:1px solid var(--rule); tab-size:4}
+pre code{background:none; padding:0; font-size:inherit}
+pre .c{color:var(--code-cmt); font-style:italic}
+pre .k{color:var(--blue); font-weight:600}
+
+.tbl{overflow-x:auto; margin:10px 0 20px; border:1px solid var(--rule); border-radius:10px}
+table{border-collapse:collapse; width:100%; font-size:.93rem; font-variant-numeric:tabular-nums}
+th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--rule); vertical-align:top}
+th{font:700 .74rem/1.2 "Atkinson Hyperlegible", sans-serif; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-soft); background:var(--paper-2)}
+tr:last-child td{border-bottom:none}
+td.mono, .mono{font-family:"JetBrains Mono", monospace; font-size:.86em}
+td.y{color:var(--green); font-weight:700}
+td.n{color:var(--red); font-weight:700}
+
+.grid2{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px; margin:12px 0 20px}
+.box{padding:14px 16px; border:1px solid var(--rule); border-radius:10px; background:var(--paper)}
+.box h4{margin-top:0}
+.box p:last-child, .box ul:last-child{margin-bottom:0}
+.box.lift{box-shadow:var(--lift); border-color:var(--rule-strong)}
+
+.days{list-style:none; padding:0; margin:14px 0 8px; display:grid; gap:0; border-top:1px solid var(--rule)}
+.days li{display:grid; grid-template-columns:62px minmax(0,1fr); gap:14px; padding:12px 0; margin:0; border-bottom:1px solid var(--rule)}
+.days .d{font:800 1.25rem/1 "Bricolage Grotesque", sans-serif; color:var(--blue); padding-top:2px}
+.days .d.last{color:var(--red)}
+.days b{display:block}
+.days span.small{display:block}
+
+figure{margin:14px 0 22px}
+figcaption{font-size:.84rem; color:var(--ink-faint); margin-top:6px}
+svg text{font-family:"Atkinson Hyperlegible", sans-serif}
+
+/* AC stepper */
+.stepper{border:1px solid var(--rule-strong); border-radius:12px; padding:16px; margin:14px 0 22px; background:var(--paper); box-shadow:var(--lift)}
+.stepper .doms{display:grid; gap:8px; margin:12px 0}
+.stepper .row{display:grid; grid-template-columns:44px auto minmax(0,1fr); gap:10px; align-items:center}
+.stepper .vn{font:700 .95rem "JetBrains Mono", monospace}
+.stepper .vals{display:flex; gap:6px}
+.stepper .v{width:34px; height:34px; display:grid; place-items:center; border-radius:8px; border:1.5px solid var(--rule-strong); font:700 .95rem "JetBrains Mono", monospace; background:var(--paper-2)}
+.stepper .v.gone{opacity:.28; text-decoration:line-through; background:transparent}
+.stepper .v.now{opacity:1; border-color:var(--red); color:var(--red); background:var(--red-soft); text-decoration:line-through}
+.stepper .v.na{visibility:hidden}
+.stepper .empty{font:700 .8rem "Atkinson Hyperlegible", sans-serif; color:var(--red)}
+.stepper .cap{min-height:3.2em; font-size:.95rem; padding:10px 12px; background:var(--paper-2); border-radius:8px}
+.stepper .ctrl{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+.stepper .ctrl .count{margin-left:auto; font-size:.82rem; color:var(--ink-faint); font-variant-numeric:tabular-nums}
+.stepper .btn{display:inline-flex}
+.stepper .btn:disabled{opacity:.4; cursor:default}
+
+/* flashcards */
+.cards{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; margin:10px 0 22px}
+details.card{border:1px solid var(--rule); border-radius:10px; background:var(--paper); padding:0}
+details.card summary{cursor:pointer; list-style:none; padding:12px 14px; font-weight:700; display:flex; gap:10px; align-items:flex-start}
+details.card summary::-webkit-details-marker{display:none}
+details.card summary::before{content:"?"; flex:none; width:22px; height:22px; border-radius:50%; display:grid; place-items:center; font:800 .8rem/1 "Bricolage Grotesque", sans-serif; background:var(--blue-soft); color:var(--blue); margin-top:1px}
+details.card[open]{border-color:var(--blue)}
+details.card[open] summary::before{content:"✓"; background:var(--blue); color:var(--paper)}
+details.card .a{padding:0 14px 14px 46px; color:var(--ink-soft)}
+.cardbar{display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 10px}
+.cardbar .btn{display:inline-flex}
+
+.pitfalls{list-style:none; padding:0; margin:10px 0 20px; display:grid; gap:10px}
+.pitfalls li{margin:0; padding:12px 14px 12px 16px; border-radius:0 10px 10px 0; background:var(--red-soft); border-left:3px solid var(--red)}
+.pitfalls li b{color:var(--red)}
+
+.footer{margin-top:70px; padding-top:20px; border-top:1px solid var(--rule); font-size:.85rem; color:var(--ink-faint)}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1000px){
+  .shell{grid-template-columns:minmax(0,1fr); gap:0; padding-inline:16px}
+  .toc{position:static; max-height:none; overflow:visible; padding-block:16px 0}
+  .toc summary{display:flex; justify-content:space-between; align-items:center; cursor:pointer; list-style:none; font:700 .9rem "Atkinson Hyperlegible", sans-serif; padding:12px 14px; border:1.5px solid var(--rule-strong); border-radius:10px; background:var(--paper-2)}
+  .toc summary::-webkit-details-marker{display:none}
+  .toc details[open] summary{margin-bottom:10px}
+  .page{padding-left:22px}
+  .page::before{left:4px}
+  .hero{margin-left:-22px; padding:34px 18px 26px 38px}
+  .hero{background-image:
+    linear-gradient(90deg, transparent 3px, color-mix(in srgb, var(--red) 45%, transparent) 3px, color-mix(in srgb, var(--red) 45%, transparent) 5px, transparent 5px),
+    linear-gradient(var(--rule-strong) 1px, transparent 1px),
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px)}
+  .scribble{position:static; transform:rotate(-2deg); text-align:left; max-width:none; margin-bottom:12px}
+}
+@media (max-width: 680px){
+  body{font-size:16px}
+  .defs{grid-template-columns:minmax(0,1fr)}
+  .defs dt{border-bottom:none; padding-bottom:0}
+  .grid2, .cards{grid-template-columns:minmax(0,1fr)}
+  .days li{grid-template-columns:48px minmax(0,1fr)}
+}
+</style>
+
+<div class="shell">
+<aside class="toc" aria-label="Sommaire">
+<details id="toc-d" open>
+<summary>Sommaire &amp; progression <span class="small" id="prog-mini">0 / 0</span></summary>
+<p class="brand">Carnet d'IA<small>R5.A.L1 · Compléments d'IA · BUT3<br>avec les rappels de BUT2 (R3/R4.A.L1)</small></p>
+<div class="tools">
+  <div class="progress-label"><span>Sections maîtrisées</span><span id="prog-txt">0 / 0</span></div>
+  <div class="bar"><i id="prog-bar"></i></div>
+  <button class="btn" id="quiz-btn" type="button" aria-pressed="false"><span class="dot"></span>Mode interro</button>
+  <p>En mode interro, les définitions sont floutées : récite-les, puis clique pour vérifier. La coche « Maîtrisé » reste enregistrée dans ton navigateur.</p>
+</div>
+<h4>Avant de commencer</h4>
+<ol>
+  <li><a href="#programme">Ce qui tombe · plan J-7<span class="ok">✓</span></a></li>
+</ol>
+<h4>Partie I · rappels BUT2</h4>
+<ol>
+  <li><a href="#ia-generalites">Qu'est-ce que l'IA ?<span class="ok">✓</span></a></li>
+  <li><a href="#agents">Agents rationnels<span class="ok">✓</span></a></li>
+  <li><a href="#logique">Clauses, FNC, résolution<span class="ok">✓</span></a></li>
+  <li><a href="#unification">Unification &amp; SLD<span class="ok">✓</span></a></li>
+  <li><a href="#prolog">Prolog : les bases<span class="ok">✓</span></a></li>
+  <li><a href="#prolog-avance">Cut, négation, listes, calcul<span class="ok">✓</span></a></li>
+  <li><a href="#asp">ASP · modèles stables<span class="ok">✓</span></a></li>
+  <li><a href="#ml-but2">Régressions &amp; perceptron<span class="ok">✓</span></a></li>
+</ol>
+<h4>Partie II · BUT3, au programme</h4>
+<ol class="t3-group">
+  <li><a href="#ml-intro">Machine learning : le cadre<span class="ok">✓</span></a></li>
+  <li><a href="#ml-eval">Données, pertes, métriques<span class="ok">✓</span></a></li>
+  <li><a href="#ml-modeles">Modèles classiques<span class="ok">✓</span></a></li>
+  <li><a href="#perceptron-svm">Perceptron &amp; SVM<span class="ok">✓</span></a></li>
+  <li><a href="#mlp">Perceptron multicouche<span class="ok">✓</span></a></li>
+  <li><a href="#apprentissage">Gradient &amp; rétropropagation<span class="ok">✓</span></a></li>
+  <li><a href="#td-mlp">TD · MLP sur Iris<span class="ok">✓</span></a></li>
+  <li><a href="#csp-formalisme">CSP : le formalisme<span class="ok">✓</span></a></li>
+  <li><a href="#csp-bt">GT, Backtrack, BJ, NR<span class="ok">✓</span></a></li>
+  <li><a href="#csp-filtrage">FC, arc-consistance, MAC<span class="ok">✓</span></a></li>
+  <li><a href="#csp-structure">Méthodes structurelles<span class="ok">✓</span></a></li>
+  <li><a href="#csp-incompletes">Méthodes incomplètes<span class="ok">✓</span></a></li>
+  <li><a href="#td-sudoku">TD · Sudoku en CSP<span class="ok">✓</span></a></li>
+</ol>
+<h4>Partie III · s'entraîner</h4>
+<ol>
+  <li><a href="#formulaire">Formulaire &amp; complexités<span class="ok">✓</span></a></li>
+  <li><a href="#pieges">Les pièges d'exam<span class="ok">✓</span></a></li>
+  <li><a href="#flashcards">Flashcards<span class="ok">✓</span></a></li>
+</ol>
+</details>
+</aside>
+
+<main>
+<div class="page">
+
+<header class="hero">
+  <div class="scribble">tout savoir par cœur → 20/20</div>
+  <div class="eyebrow">Fiche de révision · AMU BUT Info · examen dans une semaine</div>
+  <h1>Carnet d'IA</h1>
+  <p class="lede">Tout le programme de <strong>R5.A.L1 (BUT3)</strong> : machine learning, perceptrons multicouches, problèmes de satisfaction de contraintes. Il est précédé des <strong>rappels de BUT2</strong> dont tu as besoin pour comprendre (logique, Prolog, régressions, perceptron). Rédigé à partir de tes cours, TD et notebooks du dépôt.</p>
+  <div class="chips">
+    <span class="chip hot">CSP · Terrioux, cours 2 &amp; 3</span>
+    <span class="chip hot">Intro ML · Juven</span>
+    <span class="chip hot">TD MLP · TD Sudoku</span>
+    <span class="chip">Rappels : Risch, Prolog, ASP</span>
+  </div>
+</header>
+
+<!-- ============ PROGRAMME ============ -->
+<section class="sec col" id="programme" style="padding-top:0">
+  <div class="sec-h"><div><span class="tag">Mode d'emploi</span><h2>Ce qui tombe, et comment réviser en 7 jours</h2></div>
+  <label class="done"><input type="checkbox" id="done-programme"> Maîtrisé</label></div>
+
+  <p>Le dossier <code>BUT3 S6</code> contient trois cours et deux TD : ce sont eux, le cœur de l'exam.</p>
+  <div class="grid2">
+    <div class="box lift">
+      <h4>Au programme (BUT3)</h4>
+      <ul>
+        <li><b>Introduction au ML</b> (R5.A.L1.1) : concepts, métriques, modèles, MLP, descente de gradient.</li>
+        <li><b>CSP 1</b> (cours_2) : formalisme, GT, Backtrack, BJ / GBJ / CBJ, Nogood Recording.</li>
+        <li><b>CSP 2</b> (cours_3) : FC, arc-consistance, MAC, méthodes structurelles, recherche locale.</li>
+        <li><b>TD</b> : MLPClassifier sur Iris, Sudoku par BT / FC / MRV.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>Prérequis (BUT2)</h4>
+      <ul>
+        <li>Généralités : IA forte/faible, agents, Turing.</li>
+        <li>Logique : clauses, résolution, unification.</li>
+        <li>Prolog, cut, négation par échec, ASP.</li>
+        <li>Régression linéaire et logistique, perceptron.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="small">L'exam de BUT2 (12 mars 2025) demandait d'<b>écrire du Python sur papier</b> : la régression à la main, puis <code>affine</code> / <code>activation</code> / <code>perceptron</code>. Attends-toi au même style : modéliser un CSP en (X, D, C, R), dérouler BT/FC/AC à la main, écrire une fonction Backtrack, expliquer un réglage de MLP.</p>
+
+  <h3>Plan de révision, jour par jour</h3>
+  <ol class="days">
+    <li><span class="d">J-7</span><div><b>Rappels BUT2 : IA, agents, logique</b><span class="small">Sections I.1 à I.4. Refais à la main les 3 résolutions et les 5 unifications.</span></div></li>
+    <li><span class="d">J-6</span><div><b>Prolog, cut, ASP, régressions</b><span class="small">Sections I.5 à I.8. Apprends le tableau <code>=</code> / <code>==</code> / <code>=:=</code> / <code>is</code> et la formule de a et b.</span></div></li>
+    <li><span class="d">J-5</span><div><b>ML : cadre, métriques, modèles classiques</b><span class="small">Sections II.1 à II.3. Tout le vocabulaire : précision, rappel, surapprentissage, validation…</span></div></li>
+    <li><span class="d">J-4</span><div><b>Perceptron, MLP, gradient + TD MLP</b><span class="small">Sections II.4 à II.7. Sache calculer une sortie de réseau à la main et expliquer le résultat « identity ».</span></div></li>
+    <li><span class="d">J-3</span><div><b>CSP : formalisme, BT, backjumping, nogoods</b><span class="small">Sections II.8 et II.9. Modélise coloration, morpion, Sudoku sans regarder.</span></div></li>
+    <li><span class="d">J-2</span><div><b>CSP : filtrage, structure, recherche locale + TD Sudoku</b><span class="small">Sections II.10 à II.13. Déroule FC et AC sur l'exemple à 5 variables.</span></div></li>
+    <li><span class="d last">J-1</span><div><b>Mode interro partout, flashcards, pièges, formulaire</b><span class="small">Partie III. Tout ce qui reste flou, tu le recopies à la main une fois.</span></div></li>
+  </ol>
+</section>
+
+<!-- ============ PARTIE I ============ -->
+<div class="part col">
+  <span class="num">Partie I</span>
+  <h2>Les bases de BUT2, en rappel</h2>
+  <p>Cours de V. Risch (généralités, programmation logique) et d'A. Juven, TD Prolog, résolution, régressions. Pas le cœur de l'exam, mais les mots de BUT3 (« consistant », « instanciation », « perceptron », « gradient »…) viennent tous d'ici.</p>
+</div>
+
+<!-- I.1 -->
+<section class="sec col" id="ia-generalites">
+  <div class="sec-h"><div><span class="tag">I.1 · Rappel BUT2</span><span class="tag src">Cours 1 Généralités</span><h2>Qu'est-ce que l'IA ?</h2></div>
+  <label class="done"><input type="checkbox" id="done-ia-generalites"> Maîtrisé</label></div>
+
+  <dl class="defs">
+    <dt>Intelligence</dt><dd>(Petit Robert) faculté de connaître et comprendre ; ensemble des fonctions mentales (imagination, raisonnement, conceptualisation) ; aptitude à <mark>s'adapter à des situations nouvelles</mark>.</dd>
+    <dt>IA</dt><dd>Partie de l'informatique qui vise la <mark>simulation de facultés cognitives</mark> pour suppléer l'humain dans des fonctions qu'on convient, dans un contexte donné, de dire intelligentes. L'IA parie que ces facultés sont <b>réductibles à un calcul</b>.</dd>
+    <dt>Thèse de Church-Turing</dt><dd>Toute fonction « calculable » l'est par une machine de Turing. Les trois modèles des années 30 sont équivalents : fonctions récursives (Gödel), λ-calcul (Church), machines de Turing. Autrement dit, tous les ordinateurs se valent.</dd>
+    <dt>Consistance</dt><dd>Une théorie logique est consistante si elle ne contient pas de contradiction.</dd>
+    <dt>Complétude</dt><dd>Toute formule vraie de la théorie y est démontrable comme théorème.</dd>
+    <dt>Décidabilité</dt><dd>Une question est décidable s'il existe un programme qui, sur une machine de Turing, répond « oui » ou « non ».</dd>
+    <dt>Gödel, 1931</dt><dd><b>Incomplétude</b> : un système formel contenant l'arithmétique, s'il est consistant, est incomplet. Sa consistance ne peut pas être prouvée de l'intérieur. (Réponse négative au 2ᵉ problème de Hilbert, 1900.)</dd>
+    <dt>Church-Turing, 1936</dt><dd><b>Indécidabilité</b> : la logique du premier ordre est indécidable ; aucun algorithme ne décide si un programme quelconque s'arrête (problème de l'arrêt).</dd>
+  </dl>
+  <p>Conséquence posée par le cours : si l'IA réduit la pensée au calcul, elle bute « d'emblée » sur ces limites. C'est la question de la <b>distinction entre raisonnement et calcul</b>.</p>
+
+  <h3>IA forte et IA faible (Searle, 1980)</h3>
+  <div class="grid2">
+    <div class="box"><h4>IA forte</h4><p>Les machines <span class="pc">seront intelligentes et auront une conscience</span>, quel que soit leur support physique.</p></div>
+    <div class="box"><h4>IA faible</h4><p>Les machines <span class="pc">agiront comme si elles étaient intelligentes</span>, sans penser, sans émotion ni conscience.</p></div>
+  </div>
+
+  <h3>Les quatre approches de l'IA</h3>
+  <div class="tbl"><table>
+    <tr><th></th><th>Comme les humains (intelligence)</th><th>Rationnellement (rationalité)</th></tr>
+    <tr><td><b>Penser</b> (intellect)</td><td>Amener l'ordinateur à penser, en faire une machine dotée d'un esprit — <i>Haugeland 85</i>. Approche <b>cognitive</b> : introspection, expériences psy, imagerie cérébrale, sciences cognitives.</td><td>Moyens de la perception, du raisonnement, de l'action — <i>Winston 92</i>. <b>Lois de la pensée</b> (Aristote, Leibniz, Boole, Frege). Obstacles : indécidabilité, formalisation de l'informel, complexité.</td></tr>
+    <tr><td><b>Agir</b> (comportement)</td><td>Faire faire aux ordinateurs ce que les humains font mieux pour l'instant — <i>Rich &amp; Knight 91</i>. <b>Test de Turing</b>.</td><td>Étude du comportement intelligent dans les artefacts — <i>Nilsson 98</i>. Approche par l'<b>agent rationnel</b> : c'est celle que retient le cours.</td></tr>
+  </table></div>
+
+  <h3>Le test de Turing (1950)</h3>
+  <p>Un humain interroge un agent via une interface, sans le voir. S'il ne peut pas distinguer l'agent artificiel d'un humain, l'agent est déclaré « intelligent ». Pour réussir, un programme doit savoir faire du <mark>traitement du langage naturel, de la représentation des connaissances, du raisonnement automatisé et de l'apprentissage</mark> (et, en plus, vision et robotique). Le test a le « mérite » d'évacuer la question de la pensée.</p>
+  <p>Pourquoi l'approche rationnelle l'emporte : elle est <b>plus générale</b> que les lois de la pensée (l'inférence valide n'est qu'un moyen parmi d'autres d'être rationnel), et la rationalité est <b>définie mathématiquement</b>, de façon générique. Dijkstra : « se demander si un ordinateur sait penser est aussi intéressant que se demander si un sous-marin sait nager ».</p>
+
+  <h3>Calculatoire contre cognitif</h3>
+  <p>Ce qui est facile pour l'humain (reconnaître un visage, dialoguer) est difficile pour la machine, et inversement (compter, trier, calculer une trajectoire). La machine bat les champions sur des tâches « difficiles pour l'humain » : <b>Deep Blue</b> bat Kasparov (1997), <b>Watson</b> gagne à Jeopardy (2011), <b>AlphaGo</b> bat Lee Sedol (2016). L'humain reste invaincu sur les CAPTCHAs et le test de Turing (état du cours).</p>
+  <ul>
+    <li><b>SHRDLU</b> (Winograd, 1968) : compréhension du langage dans un monde de blocs, avec planification.</li>
+    <li><b>ELIZA</b> : pseudo-psychothérapeute, un « canular » de dialogue.</li>
+    <li>Difficultés de l'IA : <b>modélisation</b> (problèmes mal décrits), <b>résolution</b> (espace de recherche vaste), <b>généralisation</b> (méthodes dédiées), <b>technologiques</b>.</li>
+  </ul>
+  <p class="small">Repères historiques utiles : Aristote (logique formelle), Boole 1854, Turing 1936, McCulloch &amp; Pitts 1943 (neurone formel), Dartmouth 1956 (naissance de l'IA, Minsky, McCarthy), Perceptron de Rosenblatt 1957, Prolog de Colmerauer 1972-75, algorithmes génétiques de Holland, rétropropagation (LeCun), SVM.</p>
+</section>
+
+<!-- I.2 -->
+<section class="sec col" id="agents">
+  <div class="sec-h"><div><span class="tag">I.2 · Rappel BUT2</span><span class="tag src">Cours 1 Généralités</span><h2>Agents rationnels</h2></div>
+  <label class="done"><input type="checkbox" id="done-agents"> Maîtrisé</label></div>
+  <dl class="defs">
+    <dt>Agent</dt><dd>Artefact qui, dans un environnement donné, sait <mark>fonctionner de manière autonome, percevoir l'environnement, s'adapter au changement, poursuivre des objectifs</mark>.</dd>
+    <dt>Percepts</dt><dd>Entrées perceptives (capteurs) qui permettent à l'agent de se représenter son environnement.</dd>
+    <dt>Effecteurs</dt><dd>Éléments qui permettent à l'agent d'agir sur l'environnement (éléments articulés…).</dd>
+    <dt>Séquence de percepts</dt><dd>Historique complet de ce que l'agent a perçu. L'action choisie peut dépendre de tout ou partie de cette séquence, <b>mais de rien qui n'ait été perçu</b>. Le comportement = une fonction séquence de percepts → action, implémentée par un programme.</dd>
+    <dt>Mesure de performance</dt><dd>Évalue la séquence d'états de l'environnement produite par les actions de l'agent, pour savoir si elle correspond à ce qu'on attend.</dd>
+    <dt>Agent rationnel</dt><dd>À tout instant, choisit l'action qui <mark>maximise sa mesure de performance</mark>, compte tenu de sa séquence de percepts et de ses connaissances. Il vise la meilleure solution ou, en environnement incertain, la meilleure solution <b>prévisible</b>.</dd>
+    <dt>Omniscient</dt><dd>Connaît complètement l'environnement et le résultat de ses actions : illusoire, et <b>différent de rationnel</b>.</dd>
+    <dt>Autonomie</dt><dd>Un agent qui dépend plus de ses connaissances initiales que de ses percepts manque d'autonomie. L'<b>apprentissage</b> compense la partialité des connaissances et le rend autonome.</dd>
+  </dl>
+  <h3>Pourquoi un agent « par table » échoue</h3>
+  <p>Avec <var>P</var> l'ensemble des percepts possibles et <var>T</var> la durée de vie (nombre de percepts reçus), la table contient</p>
+  <div class="fx"><span class="line">Σ<sub><var>t</var>=1</sub><sup><var>T</var></sup> |<var>P</var>|<sup><var>t</var></sup> entrées</span></div>
+  <p>Une caméra 640×480 en 24 bits à 30 images/s donne de l'ordre de 10<sup>250 000 000 000</sup> entrées. Le travail de l'IA consiste à simuler un comportement rationnel avec des programmes <b>réduits</b>, pas avec des tables gigantesques.</p>
+  <p>Exemple du cours : l'<b>aspirateur</b> à deux cases A et B (percepts : position + propre/sale ; actions : droite, gauche, aspirer). Avec 1 point par case propre et par étape, une géographie connue et des percepts fiables, l'agent qui aspire si c'est sale et change de case sinon est <b>rationnel</b>.</p>
+  <h3>Les 4 types de programmes agents</h3>
+  <div class="tbl"><table>
+    <tr><th>Type</th><th>Ce qu'il ajoute</th></tr>
+    <tr><td><b>Réflexe simple</b></td><td>Règles condition → action sur le percept courant (« à quoi ressemble le monde ? » → « quelle action ? »).</td></tr>
+    <tr><td><b>Réflexe fondé sur un modèle</b></td><td>Un <b>état interne</b> : comment évolue le monde, quel impact ont mes actions.</td></tr>
+    <tr><td><b>Fondé sur des buts</b></td><td>Anticipe « à quoi ressemblera le monde après l'action » et le compare à un <b>but</b>.</td></tr>
+    <tr><td><b>Fondé sur l'utilité</b></td><td>Mesure la <b>satisfaction</b> (utilité) de chaque état futur pour choisir entre plusieurs façons d'atteindre un but.</td></tr>
+  </table></div>
+</section>
+
+<!-- I.3 -->
+<section class="sec col" id="logique">
+  <div class="sec-h"><div><span class="tag">I.3 · Rappel BUT2</span><span class="tag src">TD2 S4 · TD3 S5</span><h2>Clauses, FNC et résolution</h2></div>
+  <label class="done"><input type="checkbox" id="done-logique"> Maîtrisé</label></div>
+  <dl class="defs">
+    <dt>Littéral</dt><dd>Une variable propositionnelle ou sa négation : <code>P</code>, <code>¬P</code>.</dd>
+    <dt>Clause</dt><dd>Disjonction de littéraux : <code>¬P ∨ Q ∨ R</code>.</dd>
+    <dt>FNC</dt><dd>Forme normale conjonctive : une <b>conjonction de disjonctions</b> de littéraux. Un ensemble de clauses, c'est une FNC.</dd>
+    <dt>Clause de Horn</dt><dd>Clause avec <mark>au plus un littéral positif</mark>. Exactement un : <b>clause définie</b> (une règle ou un fait Prolog).</dd>
+    <dt>Insatisfiable</dt><dd>En appliquant la résolution et en ajoutant les déductions, on obtient la <b>clause vide □</b>.</dd>
+    <dt>Satisfiable</dt><dd>On arrive à <b>saturation</b> (plus aucune nouvelle clause) sans produire □.</dd>
+    <dt>Conséquence</dt><dd><var>S</var> a pour conséquence <var>A</var> ssi <mark><var>S</var> ∪ {¬<var>A</var>} est insatisfiable</mark> (preuve par <b>réfutation</b>).</dd>
+  </dl>
+  <h3>Mettre en FNC, en 3 étapes</h3>
+  <ol>
+    <li><b>Éliminer ⇒ et ⇔</b> : <code>p ⇒ q ≡ ¬p ∨ q</code> ; <code>p ⇔ q ≡ (p ⇒ q) ∧ (q ⇒ p)</code>.</li>
+    <li><b>Descendre les ¬ sur les lettres</b> (De Morgan) : <code>¬(p ∧ q) ≡ ¬p ∨ ¬q</code>, <code>¬(p ∨ q) ≡ ¬p ∧ ¬q</code>, <code>¬¬p ≡ p</code>.</li>
+    <li><b>Distribuer</b> <code>a ∨ (b ∧ c) ≡ (a ∨ b) ∧ (a ∨ c)</code>, puis simplifier : absorption <code>a ∧ (a ∨ b) ≡ a</code>, neutralité <code>a ∨ ¬a ≡ ⊤</code>, <code>a ∧ ¬a ≡ ⊥</code>, idempotence <code>a ∨ a ≡ a</code>.</li>
+  </ol>
+  <h3>La règle de résolution</h3>
+  <div class="fx"><span class="line">De <code>A ∨ P</code> et <code>B ∨ ¬P</code>, on déduit <code>A ∨ B</code>. Et de <code>P</code> et <code>¬P</code>, on déduit □.</span></div>
+  <h4>Exemples corrigés (tes TD)</h4>
+  <div class="grid2">
+    <div class="box">
+      <p><b>{P, ¬P∨Q, ¬Q∨R, ¬Q∨¬R} est insatisfiable</b></p>
+      <ol class="small">
+        <li>P et ¬P∨Q → <b>Q</b></li>
+        <li>Q et ¬Q∨R → <b>R</b></li>
+        <li>Q et ¬Q∨¬R → <b>¬R</b></li>
+        <li>R et ¬R → <b>□</b></li>
+      </ol>
+    </div>
+    <div class="box">
+      <p><b>{P∨Q, P∨¬Q, R∨Q, R∨¬Q} est satisfiable</b></p>
+      <p class="small">P∨Q et P∨¬Q → P. R∨Q et R∨¬Q → R. Plus rien de nouveau : <b>saturation</b> sans □. Modèle : P = R = vrai.</p>
+    </div>
+  </div>
+  <div class="box">
+    <p><b>{P∨Q∨R, ¬P∨Q∨R, ¬Q∨R} a pour conséquence R</b>. On ajoute ¬R :</p>
+    <p class="small">P∨Q∨R + ¬R → P∨Q · ¬P∨Q∨R + ¬R → ¬P∨Q · ¬Q∨R + ¬R → ¬Q · P∨Q + ¬P∨Q → Q · Q + ¬Q → <b>□</b>. Donc R est conséquence.</p>
+  </div>
+  <p style="margin-top:14px">Au premier ordre, on transforme chaque implication en clause puis on résout avec unification : <code>(animal(X) ∧ mange(X,viande)) ⇒ carnivore(X)</code> devient <code>¬animal(X) ∨ ¬mange(X,viande) ∨ carnivore(X)</code>. On part de <code>¬carnivore(dagobert)</code>, on unifie X = dagobert, on efface les littéraux avec les faits, jusqu'à □.</p>
+</section>
+
+<!-- I.4 -->
+<section class="sec col" id="unification">
+  <div class="sec-h"><div><span class="tag">I.4 · Rappel BUT2</span><span class="tag src">Cours 2 Prog. logique</span><h2>Unification et SLD-résolution</h2></div>
+  <label class="done"><input type="checkbox" id="done-unification"> Maîtrisé</label></div>
+  <dl class="defs">
+    <dt>Unification</dt><dd>(Robinson, 1965) Trouver une substitution des variables qui rend deux termes <b>égaux</b>. On calcule le <mark>plus grand unificateur</mark> (le plus général).</dd>
+    <dt>SLD-résolution</dt><dd>(Kowalski, 1973) <b>S</b>elected <b>L</b>inear <b>D</b>efinite clause resolution. Une seule règle d'inférence (la résolution sur clauses de Horn), un plus grand unificateur à chaque étape, et le <b>théorème d'Herbrand</b> : on prouve par l'absurde en dérivant □.</dd>
+    <dt>Programme logique</dt><dd>Ensemble fini de règles <code>L0 ← L1 … Lm, not Lm+1 … not Ln</code>. En programmation logique classique : pas de <code>not</code>, <code>L0 ← L1…Lm</code> définit L0, et <code>L0 ←</code> est un fait.</dd>
+  </dl>
+  <h3>L'algorithme, en clair</h3>
+  <p>Tant que les deux termes diffèrent, prendre la première paire de sous-termes <var>t1 ≠ t2</var> :</p>
+  <ul>
+    <li>si <b>aucun n'est une variable</b> (deux constantes ou foncteurs différents) → <b>échec</b> ;</li>
+    <li>si l'un est une variable <b>contenue dans l'autre</b> (<code>X</code> et <code>f(X)</code>) → <b>échec</b> (test d'occurrence) ;</li>
+    <li>sinon on ajoute <code>x = t</code> à la substitution et on l'applique partout.</li>
+  </ul>
+  <p>Exemple du cours : <code>F(x, 2, G(z)) = F(G(1), y, G(4))</code> donne <code>x = G(1), y = 2, z = 4</code>.</p>
+  <h4>Les 5 unifications du TD (majuscules = variables)</h4>
+  <div class="tbl"><table>
+    <tr><th>Termes</th><th>Résultat</th></tr>
+    <tr><td class="mono">f(X, g(Y, h(Z))) = f(Z, g(P, h(a)))</td><td class="y">{X/a, Z/a, Y/P}</td></tr>
+    <tr><td class="mono">f(g(a,X), h(c, j(Y,X))) = f(g(a,X), h(c, k(Z)))</td><td class="n">Échec : foncteurs j ≠ k</td></tr>
+    <tr><td class="mono">f(g(h(t,Y)), X) = f(X, g(h(h(t,t), h(a,b))))</td><td class="n">Échec : X = g(h(t,Y)) force t = h(t,t), constante contre foncteur</td></tr>
+    <tr><td class="mono">f(X) = f(f(X))</td><td class="n">Échec : X = f(X), test d'occurrence</td></tr>
+    <tr><td class="mono">X = Z et Y = f(X)</td><td class="y">{X/Z, Y/f(Z)}</td></tr>
+  </table></div>
+  <h3>SLD sur le menu</h3>
+  <p>Clauses : faits <code>hors_d_oeuvre(…)</code>, <code>viande(…)</code>, <code>poisson(…)</code>, <code>dessert(…)</code> ; règles <code>¬viande(p) ∨ plat(p)</code>, <code>¬poisson(p) ∨ plat(p)</code>, <code>¬hors_d_oeuvre(e) ∨ ¬plat(p) ∨ ¬dessert(d) ∨ repas(e,p,d)</code>. Pour prouver <code>repas(artichauts, bar, sorbet)</code>, on part de sa négation, on unifie avec la tête de la règle repas, puis on efface les buts un par un (stratégie <b>linéaire</b>) jusqu'à □.</p>
+</section>
+
+<!-- I.5 -->
+<section class="sec col" id="prolog">
+  <div class="sec-h"><div><span class="tag">I.5 · Rappel BUT2</span><span class="tag src">TD1, TD3, TD4 · td3.pl · td4.pl</span><h2>Prolog : les bases</h2></div>
+  <label class="done"><input type="checkbox" id="done-prolog"> Maîtrisé</label></div>
+  <p>Prolog (Colmerauer &amp; Roussel, 1975) = SLD-résolution + unification + parcours en profondeur. Syntaxe « Edinburgh » : une règle <code>p(X) :- q(Y), r(Z).</code> se lit « p(X) si q(Y) <b>et</b> r(Z) » ; un fait s'écrit <code>p(a).</code> ; la virgule est un ET, deux règles de même tête forment un OU.</p>
+  <ul>
+    <li><b>Variables</b> : majuscule (<code>X</code>, <code>Qui</code>), variable anonyme <code>_</code>. <b>Constantes</b> et prédicats : minuscule.</li>
+    <li>Lancer : <code>swipl</code> dans le dossier, charger <code>[td3].</code>, requête <code>?- vole(pierre, Quoi).</code>, <code>;</code> pour la solution suivante.</li>
+  </ul>
+<pre><code><span class="c">% faits (famille des TD)</span>
+homme(paul).  femme(marie).
+parent(jean, paul).  parent(paul, sophie).  parent(marie, sophie).
+
+<span class="c">% règles</span>
+pere(X, Y)  :- homme(X), parent(X, Y).
+mere(X, Y)  :- femme(X), parent(X, Y).
+grand_parent_de(X, Y) :- parent(X, Z), parent(Z, Y).
+frere_ou_soeur(X, Y)  :- parent(P, X), parent(P, Y), X \= Y.
+oncle(X, Y) :- homme(X), parent(P, Y), frere_ou_soeur(X, P).
+cousin(X, Y) :- homme(X), parent(P1, X), parent(P2, Y), frere_ou_soeur(P1, P2).
+avoir_un_enfant(X) :- parent(X, _).
+
+<span class="c">% récursion : cas de base PUIS cas récursif</span>
+ancetre(X, Y) :- parent(X, Y).
+ancetre(X, Y) :- parent(X, Z), ancetre(Z, Y).
+
+<span class="c">% « qui vole quoi ? »</span>
+aime(marie, vin).
+aime(pierre, X) :- aime(X, vin).
+voleur(pierre).
+vole(X, Y) :- voleur(X), aime(X, Y).
+<span class="c">% ?- vole(pierre, Quoi).  ->  Quoi = marie   (Pierre aime Marie, qui aime le vin)</span></code></pre>
+  <p class="note"><b>Piège :</b> ton rendu TD3 dit « Quoi = vin ». Avec ces règles, Pierre aime <i>ceux qui aiment le vin</i>, donc il aime Marie, et Prolog répond <b>Quoi = marie</b>. Pierre n'aime pas le vin lui-même.</p>
+  <p>Frère = <b>mêmes père et mère</b> (<code>pere(P,X), pere(P,Y), mere(M,X), mere(M,Y), X \= Y</code>). Demi-frère = un parent commun mais pas les deux.</p>
+  <p class="note bl"><b>À retenir :</b> dans <code>ancetre</code>, le récursif a d'abord un <b>cas de base</b>. Si tu écris <code>ancetre(X,Y) :- ancetre(Z,Y), parent(X,Z).</code> (récursion à gauche), Prolog boucle à l'infini.</p>
+</section>
+
+<!-- I.6 -->
+<section class="sec col" id="prolog-avance">
+  <div class="sec-h"><div><span class="tag">I.6 · Rappel BUT2</span><span class="tag src">Cours 2 · TD3/TD4</span><h2>Cut, négation par échec, listes, arithmétique</h2></div>
+  <label class="done"><input type="checkbox" id="done-prolog-avance"> Maîtrisé</label></div>
+  <h3>Le cut <code>!</code></h3>
+  <dl class="defs">
+    <dt>Cut</dt><dd>Prédicat qui <mark>supprime les buts en attente</mark> (les points de choix) : une fois franchi, Prolog ne revient plus sur les choix faits depuis l'appel de la règle. Il rend l'exploration <b>déterministe</b> et fait sortir Prolog de la démonstration automatique (on élimine des modèles).</dd>
+    <dt>Mécanisme</dt><dd>Avec <code>p :- q1,…,qi, !, qi+1…</code> : quand on franchit <code>!</code>, les alternatives de <code>q1…qi</code> <b>et</b> les autres règles de <code>p</code> sont oubliées.</dd>
+  </dl>
+<pre><code>sign(X, negatif) :- X &lt; 0, !.
+sign(X, zero)    :- X =:= 0, !.
+sign(X, positif) :- X &gt; 0.
+<span class="c">% sans les cuts, ?- sign(-1,Y). répond negatif puis continue à tester zero et positif :
+% inutile, un nombre n'a qu'un signe.</span></code></pre>
+  <h3>Négation par échec</h3>
+<pre><code>nonrond(X) :- rond(X), !, fail.   <span class="c">% si rond(X) réussit : on coupe et on échoue</span>
+nonrond(_).                       <span class="c">% sinon : vrai</span>
+
+neg(P) :- P, !, fail.             <span class="c">% c'est exactement \+ P</span>
+neg(_).</code></pre>
+  <dl class="defs">
+    <dt>Propriété</dt><dd><code>not(toto)</code> s'efface ssi <code>toto</code> ne s'efface pas. Et <code>not(not(toto))</code> s'efface ssi <code>toto</code> s'efface.</dd>
+    <dt>Monde clos</dt><dd>Tout ce que Prolog ne peut pas prouver est <b>faux</b> pour lui : <code>?- \+ rond(terre).</code> répond <code>true</code>.</dd>
+    <dt>Ce n'est pas ¬</dt><dd>La négation par échec <b>n'est pas la négation logique</b> : elle exprime l'<b>absence</b> d'un littéral dans les conséquences du programme. Le cours la qualifie de « bricolage astucieux ».</dd>
+  </dl>
+  <p>Le cut rend l'exécution <b>sensible à l'ordre</b>, celui des règles et même celui des buts dans la requête :</p>
+<pre><code>aime(pierre, bar_aux_algues).  aime(pierre, poulet_au_tilleul).  poisson(bar_aux_algues).
+?- aime(pierre, X), not(poisson(X)).   <span class="c">% X = poulet_au_tilleul</span>
+?- not(poisson(X)), aime(pierre, X).   <span class="c">% échec ! poisson(X) réussit avec X libre</span></code></pre>
+
+  <h3>Listes</h3>
+  <p><code>[T|Q]</code> : T = tête (1ᵉʳ élément), Q = queue (liste restante). <code>[a,b,c] = [a|[b|[c|[]]]]</code>.</p>
+<pre><code>element_de(X, [X|_]).
+element_de(X, [_|Q]) :- element_de(X, Q).
+
+longueur([], 0).
+longueur([_|Q], N) :- longueur(Q, N1), N is N1 + 1.
+
+somme([], 0).
+somme([T|Q], S) :- somme(Q, S1), S is S1 + T.
+
+elements_impairs([], []).
+elements_impairs([X], [X]).
+elements_impairs([X, _|Q], [X|R]) :- elements_impairs(Q, R).   <span class="c">% [0,1,2,3,4,5] -> [0,2,4]</span>
+
+inverse([], []).
+inverse([T|Q], L) :- inverse(Q, QInv), append(QInv, [T], L).
+
+hors_de(_, []).
+hors_de(X, [T|Q]) :- dif(X, T), hors_de(X, Q).
+differents([]).
+differents([T|Q]) :- hors_de(T, Q), differents(Q).
+
+<span class="c">% Tours de Hanoï : N-1 disques sur l'intermédiaire, le grand sur End, puis N-1 sur End</span>
+mouvement(0, _, _, _, []).
+mouvement(N, Start, Interm, End, S) :-
+    N &gt; 0, N1 is N - 1,
+    mouvement(N1, Start, End, Interm, S1),
+    append(S1, [Start-&gt;End], S2),
+    mouvement(N1, Interm, Start, End, S3),
+    append(S2, S3, S).</code></pre>
+
+  <h3>Les opérateurs à ne jamais confondre</h3>
+  <div class="tbl"><table>
+    <tr><th>Opérateur</th><th>Sens</th><th>Évalue ?</th></tr>
+    <tr><td class="mono">=  \=</td><td>unification / non-unifiabilité de termes</td><td>non</td></tr>
+    <tr><td class="mono">==  \==</td><td>identité / différence de termes (sans lier de variable)</td><td>non</td></tr>
+    <tr><td class="mono">=:=  =\=  &lt;  =&lt;  &gt;  &gt;=</td><td>comparaison arithmétique (les deux côtés doivent être calculables)</td><td>oui, les deux côtés</td></tr>
+    <tr><td class="mono">X is Expr</td><td>calcule Expr et unifie avec X</td><td>oui, à droite</td></tr>
+  </table></div>
+  <h4>Les 20 requêtes du TD4 (S4), avec les réponses</h4>
+  <div class="tbl"><table>
+    <tr><th>Requête</th><th>Réponse</th><th>Requête</th><th>Réponse</th></tr>
+    <tr><td class="mono">5 = 3+2</td><td class="n">false</td><td class="mono">X is 9 mod 4</td><td class="y">X = 1</td></tr>
+    <tr><td class="mono">5 == 3+2</td><td class="n">false</td><td class="mono">X = 9 mod 4</td><td>X = 9 mod 4 (terme)</td></tr>
+    <tr><td class="mono">5 =:= 3+2</td><td class="y">true</td><td class="mono">X == 9 mod 4</td><td class="n">false</td></tr>
+    <tr><td class="mono">f(X) = f(x)</td><td class="y">X = x</td><td class="mono">f(x) =:= X+3</td><td class="n">erreur (non instancié)</td></tr>
+    <tr><td class="mono">f(X) == f(x)</td><td class="n">false</td><td class="mono">f(X) = X+3</td><td class="n">false (f/1 ≠ +/2)</td></tr>
+    <tr><td class="mono">f(X) =:= f(x)</td><td class="n">erreur arithmétique</td><td class="mono">f(X) = f(X+3)</td><td>terme cyclique X = X+3 (pas d'occurs check)</td></tr>
+    <tr><td class="mono">f(X) \= f(x)</td><td class="n">false (unifiables)</td><td class="mono">X = 1+1+1, Y = X</td><td>Y = 1+1+1</td></tr>
+    <tr><td class="mono">f(X) \== f(x)</td><td class="y">true</td><td class="mono">X = 1+1+1, Y is X</td><td class="y">Y = 3</td></tr>
+    <tr><td class="mono">f(X) =\= f(x)</td><td class="n">erreur</td><td class="mono">X is X+1</td><td class="n">erreur (X libre)</td></tr>
+    <tr><td class="mono">X is 2, X1 is X+1</td><td class="y">X = 2, X1 = 3</td><td class="mono">X is 2, X is X+1</td><td class="n">false (2 ≠ 3)</td></tr>
+  </table></div>
+</section>
+
+<!-- I.7 -->
+<section class="sec col" id="asp">
+  <div class="sec-h"><div><span class="tag">I.7 · Rappel BUT2</span><span class="tag src">Cours 2 Prog. logique</span><h2>ASP : Answer Set Programming</h2></div>
+  <label class="done"><input type="checkbox" id="done-asp"> Maîtrisé</label></div>
+  <p>ASP intègre le <code>not</code> au langage : la règle <code>L0 ← L1…Lm, not Lm+1…not Ln</code> se lit « si L1…Lm sont établis et que Lm+1…Ln ne sont pas présents, dériver L0 ». On ne calcule plus des preuves mais des <b>ensembles de modèles</b>.</p>
+  <dl class="defs">
+    <dt>head, body⁺, body⁻</dt><dd><code>head(r) = {L0}</code>, <code>body⁺(r) = {L1…Lm}</code>, <code>body⁻(r) = {Lm+1…Ln}</code>.</dd>
+    <dt>Programme pur</dt><dd>Aucune règle n'a de <code>not</code> (body⁻ = ∅).</dd>
+    <dt>Cn(P)</dt><dd>Pour P pur : le plus petit ensemble de littéraux clos pour P (si body ⊆ X alors head ∈ X).</dd>
+    <dt>Réduit Pˣ</dt><dd>À partir de P et d'un ensemble X : <mark>supprimer chaque règle dont un <code>not L</code> a L ∈ X</mark>, puis <mark>effacer les <code>not</code> des règles restantes</mark>.</dd>
+    <dt>Answer set</dt><dd>X est un <b>modèle stable</b> de P ssi <mark>Cn(Pˣ) = X</mark>.</dd>
+  </dl>
+  <h4>L'exemple du cours : p. · q ← p, not r. · r ← p, not q.</h4>
+  <div class="tbl"><table>
+    <tr><th>X testé</th><th>Pˣ</th><th>Cn(Pˣ)</th><th>Stable ?</th></tr>
+    <tr><td class="mono">{p,q,r}</td><td>p. (les deux règles tombent)</td><td class="mono">{p}</td><td class="n">non</td></tr>
+    <tr><td class="mono">{p,q}</td><td>p. · q ← p.</td><td class="mono">{p,q}</td><td class="y">oui</td></tr>
+    <tr><td class="mono">{p,r}</td><td>p. · r ← p.</td><td class="mono">{p,r}</td><td class="y">oui</td></tr>
+    <tr><td class="mono">∅</td><td>p. · q ← p. · r ← p.</td><td class="mono">{p,q,r}</td><td class="n">non</td></tr>
+  </table></div>
+  <div class="grid2">
+    <div class="box"><h4>ASP contre Prolog (1)</h4><p><code>p ← not q.  q ← not p.</code><br>Prolog <b>ne termine pas</b> ; ASP donne <b>{p}</b> et <b>{q}</b>.</p></div>
+    <div class="box"><h4>ASP contre Prolog (2)</h4><p><code>p ← q. p ← r. q ← not r. r ← not q.</code><br>Prolog ne dérive pas p ; ASP donne <b>{p,q}</b> et <b>{p,r}</b>.</p></div>
+  </div>
+  <ul>
+    <li><b>Minimalité</b> : tout modèle stable est un modèle minimal (au sens de ⊆).</li>
+    <li><b>Non-cumulativité</b> : si p est dans tous les modèles stables, P et P ∪ {p ←} n'ont pas forcément les mêmes modèles stables.</li>
+    <li><code>p ← not p</code> n'a <b>aucun</b> modèle stable (programme inconsistant).</li>
+    <li><b>Contrainte d'intégrité</b> <code>← q1…qm, not r1…not rn</code> : élimine les modèles qui contiennent q1…qm et pas r1…rn. Sert à <b>filtrer</b> les modèles.</li>
+    <li>Existence d'un modèle stable : <b>NP-complet</b> en propositionnel. Systèmes : CLASP, SMODELS, DLV.</li>
+  </ul>
+</section>
+
+<!-- I.8 -->
+<section class="sec col" id="ml-but2">
+  <div class="sec-h"><div><span class="tag">I.8 · Rappel BUT2</span><span class="tag src">TD2/TD3 S4 · TD1 keras · exam 2025</span><h2>Régressions et perceptron, version BUT2</h2></div>
+  <label class="done"><input type="checkbox" id="done-ml-but2"> Maîtrisé</label></div>
+  <h3>Régression linéaire simple : y = a·x + b</h3>
+  <p>Moindres carrés (on minimise la MSE). Formules de l'exam, à connaître par cœur :</p>
+  <div class="fx">
+    <span class="line"><var>a</var> = <span class="frac"><span><var>N</var>·Σ<var>x<sub>k</sub>y<sub>k</sub></var> − Σ<var>x<sub>k</sub></var>·Σ<var>y<sub>k</sub></var></span><span><var>N</var>·Σ<var>x<sub>k</sub></var>² − (Σ<var>x<sub>k</sub></var>)²</span></span>
+    &nbsp;&nbsp;&nbsp;
+    <var>b</var> = <span class="frac"><span>Σ<var>x<sub>k</sub></var>²·Σ<var>y<sub>k</sub></var> − Σ<var>x<sub>k</sub></var>·Σ<var>x<sub>k</sub>y<sub>k</sub></var></span><span><var>N</var>·Σ<var>x<sub>k</sub></var>² − (Σ<var>x<sub>k</sub></var>)²</span></span></span>
+  </div>
+<pre><code><span class="k">def</span> regression_main(xy):
+    N   = len(xy)
+    sx  = sum(p[0] <span class="k">for</span> p <span class="k">in</span> xy)
+    sy  = sum(p[1] <span class="k">for</span> p <span class="k">in</span> xy)
+    sxy = sum(p[0]*p[1] <span class="k">for</span> p <span class="k">in</span> xy)
+    sx2 = sum(p[0]**2 <span class="k">for</span> p <span class="k">in</span> xy)
+    den = N*sx2 - sx**2
+    a = (N*sxy - sx*sy) / den
+    b = (sx2*sy - sx*sxy) / den
+    <span class="k">return</span> a, b
+
+<span class="k">import</span> numpy <span class="k">as</span> np
+<span class="k">def</span> regression_numpy(xy):
+    xy = np.array(xy)
+    a, b = np.polyfit(xy[:,0], xy[:,1], 1)   <span class="c"># degré 1 -> [pente, ordonnée]</span>
+    <span class="k">return</span> a, b
+<span class="c"># ou : from scipy import stats ; r = stats.linregress(x, y) ; r.slope, r.intercept</span></code></pre>
+  <h3>Régression multivariée (TD2, maisons de Portland)</h3>
+  <p><var>y</var> = <var>a</var>₀ + <var>a</var>₁<var>x</var>₁ + … + <var>a<sub>n</sub>x<sub>n</sub></var>. On lit l'Excel avec <code>pd.read_excel</code>, on met les variables à la même échelle (<code>StandardScaler().fit_transform</code>, le <b>feature scaling</b>), puis <code>sm.OLS(y, X).fit().summary()</code>. Sans <code>sm.add_constant(X)</code>, le modèle n'a <b>pas de terme a₀</b>.</p>
+  <h3>Régression logistique (TD3)</h3>
+  <div class="fx"><span class="line">σ(<var>x</var>) = <span class="frac"><span>1</span><span>1 + e<sup>−<var>x</var></sup></span></span> &nbsp;&nbsp; <var>h</var>(<var>X</var>) = σ(Σ θ<sub>i</sub><var>x<sub>i</sub></var>) &nbsp;&nbsp; ŷ = 1 si <var>h</var>(<var>X</var>) ≥ 0,5, sinon 0</span></div>
+  <p>C'est de la <b>classification binaire</b> (supervisée), qui prédit une probabilité entre 0 et 1. <code>LogisticRegression(C=1e20)</code> (C énorme = quasiment pas de régularisation), <code>.fit(X, y)</code>, <code>.predict(X_new)</code>. Pour faire du multi-classe, on <b>ré-étiquette en plusieurs problèmes binaires</b> (un contre les autres) et on croise les réponses.</p>
+  <h3>Perceptron (exam 2025)</h3>
+<pre><code><span class="k">def</span> affine(b, w, x):      <span class="k">return</span> np.dot(w, x) + b
+<span class="k">def</span> activation(s):       <span class="k">return</span> 1 <span class="k">if</span> s &gt;= 0 <span class="k">else</span> 0    <span class="c"># Heaviside</span>
+<span class="k">def</span> perceptron(b, w, x):  <span class="k">return</span> activation(affine(b, w, x))
+
+<span class="c"># porte OU : w = [1, 1], b = -0.5  (tu avais pris -0.1, ça marche aussi)</span>
+<span class="c"># porte ET : w = [1, 1], b = -1.5</span>
+<span class="c"># XOR : impossible avec un seul perceptron (pas linéairement séparable)</span></code></pre>
+  <p>Frontière de décision : la droite <code>w₁x₁ + w₂x₂ + b = 0</code>, soit <code>x₂ = −(w₁x₁ + b)/w₂</code>.</p>
+  <h3>Réseau keras « à la main » (TD1 S5)</h3>
+  <p><code>Sequential()</code>, <code>Input(shape=(1,))</code>, <code>Dense(n, activation='relu')</code>. Les poids se fixent par couche avec <code>set_weights([coeff, biais])</code>, où <code>coeff</code> a la forme <b>(nb_entrées, nb_neurones)</b>. Vérification de F(3) :</p>
+  <div class="fx"><span class="line">s₁ = ReLU(1·3 − 1) = 2 &nbsp;·&nbsp; s₂ = ReLU(−0,5·3 + 1) = ReLU(−0,5) = 0 &nbsp;·&nbsp; F(3) = ReLU(1·2 + 1·0 + 0) = <b>2</b></span></div>
+</section>
+
+<!-- ============ PARTIE II ============ -->
+<div class="part col">
+  <span class="num">Partie II</span>
+  <h2>BUT3 : le programme de l'exam</h2>
+  <p>Cours « Introduction à l'apprentissage automatique » (A. Juven, R5.A.L1.1), cours CSP de C. Terrioux (cours_2 et cours_3), TD « Réseaux de neurones multicouches » et TD « Constraint Solving Problems ». Tout ce qui suit est à savoir.</p>
+</div>
+
+<!-- II.1 -->
+<section class="sec col" id="ml-intro">
+  <div class="sec-h"><div><span class="tag t3">II.1 · BUT3</span><span class="tag src">Intro ML, p. 3–21</span><h2>Machine learning : le cadre</h2></div>
+  <label class="done"><input type="checkbox" id="done-ml-intro"> Maîtrisé</label></div>
+  <dl class="defs">
+    <dt>Apprentissage automatique</dt><dd>Donner aux ordinateurs la capacité d'<mark>apprendre à partir de données</mark>, c'est-à-dire d'améliorer leurs performances sur des tâches <b>sans être explicitement programmés</b> pour chacune.</dd>
+    <dt>Programmation classique</dt><dd>Logique prédéfinie qui résout la tâche « de manière <b>prouvable</b> » : <b>Entrées + Programme → Sorties</b>.</dd>
+    <dt>Machine learning</dt><dd>Modèle généré automatiquement à partir des données, qui résout la tâche « en <b>pratique</b> » : <b>Données (entrées, sorties) → Programme</b>.</dd>
+    <dt>Modèle</dt><dd>Fonction <var>f</var><sub>θ</sub> à <var>p</var> entrées et <var>n</var> sorties, paramétrée par <var>d</var> paramètres θ. <b>Apprendre</b> = utiliser des données pour trouver θ tel que <var>f</var><sub>θ</sub> réalise la tâche.</dd>
+  </dl>
+  <h4>Les 4 ingrédients</h4>
+  <ol>
+    <li>Un <b>jeu de données d'apprentissage</b>.</li>
+    <li>Un <b>modèle</b> <var>f</var><sub>θ</sub> avec des paramètres internes à apprendre.</li>
+    <li>Une ou des <b>métriques / erreurs</b> qui quantifient la réussite de la tâche.</li>
+    <li>Un <b>algorithme d'apprentissage</b> qui calcule ou modifie θ pour optimiser la métrique sur les données d'apprentissage.</li>
+  </ol>
+  <p>Exemple fil rouge : la <b>régression linéaire 1D</b> <var>f</var>(<var>x</var>) = <var>ax</var> + <var>b</var>, apprise en minimisant la MSE. Premier algorithme « naïf » : partir de (a, b) au hasard, bouger a et b d'un petit pas aléatoire, <b>garder le pas s'il réduit la MSE</b>, recommencer. Très peu efficace, mais c'est déjà de l'apprentissage.</p>
+  <p>Pour des tâches plus complexes : <b>complexifier le modèle</b> (plus de non-linéarités, beaucoup plus de paramètres : 175 milliards pour GPT-3), trouver les <b>bonnes métriques</b>, des <b>algorithmes plus intelligents</b> (descente de gradient, calcul matriciel), <b>plus de calcul</b> (GPU, parallélisme).</p>
+  <p class="small">Enjeux cités : biais discriminatoires dans les données, vie privée et droit d'auteur, concentration du pouvoir, emplois, deepfakes et cyberattaques, armes autonomes, <i>AI safety / value alignment</i>. Outils : NumPy, Pandas, Matplotlib, Seaborn, <b>Scikit-learn</b>, TensorFlow/Keras.</p>
+
+  <h3>Les trois familles d'apprentissage</h3>
+  <div class="tbl"><table>
+    <tr><th>Supervisé</th><th>Non supervisé</th><th>Par renforcement</th></tr>
+    <tr>
+      <td>Données <b>annotées</b> : couples (entrée, sortie attendue). La forme la plus répandue ; il faut souvent annoter à la main.<br><b>Classification</b> (donner une catégorie) et <b>régression</b> (approximer une fonction). Ex. : chiffres manuscrits sur les chèques (MNIST, LeNet, LeCun 1998).</td>
+      <td>Données <b>non annotées</b> : on extrait automatiquement la structure (des « motifs »).<br>Réduction de dimension, clustering, détection d'anomalies, génération de données.</td>
+      <td>Un <b>agent</b> agit dans un <b>environnement</b> et apprend par <b>essai-erreur</b> à maximiser sa <b>récompense</b>.<br>Go (DeepMind 2016), robotique, contrôle de la fusion nucléaire.</td>
+    </tr>
+    <tr>
+      <td class="small">Régression linéaire/logistique, SVM, arbres, forêts, k-NN, MLP, CNN, LSTM, Transformer</td>
+      <td class="small">ACP (PCA), K-means, GMM, autoencodeurs, GANs</td>
+      <td class="small">Q-learning, TD learning, Deep Q-Networks</td>
+    </tr>
+  </table></div>
+
+  <h3>Processus usuel d'apprentissage</h3>
+  <ol>
+    <li>Créer ou charger le jeu de données.</li>
+    <li>Choisir un modèle et l'algorithme d'apprentissage.</li>
+    <li><b>Prétraiter</b> : extraction de features, encodage, normalisation, valeurs manquantes ou aberrantes.</li>
+    <li>Séparer en données d'<b>entraînement</b> et de <b>test</b>.</li>
+    <li>Entraîner sur l'entraînement (ex. algorithme itératif qui minimise une fonction de perte).</li>
+    <li><b>Évaluer</b> sur le test avec des métriques.</li>
+    <li>Déployer.</li>
+  </ol>
+</section>
+
+<!-- II.2 -->
+<section class="sec col" id="ml-eval">
+  <div class="sec-h"><div><span class="tag t3">II.2 · BUT3</span><span class="tag src">Intro ML, p. 22–27</span><h2>Données, pertes, métriques, généralisation</h2></div>
+  <label class="done"><input type="checkbox" id="done-ml-eval"> Maîtrisé</label></div>
+  <h3>Normalisation</h3>
+  <p>Certains modèles veulent des données dans des plages cohérentes, surtout en plusieurs dimensions avec des unités différentes (surface en milliers de pieds², chambres de 1 à 10).</p>
+  <div class="fx">
+    <span class="lbl">Standardisation · moyenne 0, écart-type 1</span>
+    <span class="line"><var>x</var>′ = <span class="frac"><span><var>x</var> − μ</span><span>σ</span></span> &nbsp;&nbsp; (μ moyenne, σ écart-type) &nbsp;→ <code>StandardScaler</code></span>
+  </div>
+  <div class="fx">
+    <span class="lbl">Min-max · valeurs entre 0 et 1</span>
+    <span class="line"><var>x</var>′ = <span class="frac"><span><var>x</var> − min</span><span>max − min</span></span> &nbsp;→ <code>MinMaxScaler</code> (MNIST : pixels / 255)</span>
+  </div>
+  <p class="note"><b>Piège :</b> on fait <code>fit_transform</code> sur le <b>train</b>, puis seulement <code>transform</code> sur le test. Sinon le test « fuit » dans le prétraitement.</p>
+
+  <h3>Fonctions de perte (loss) : ce que le modèle minimise</h3>
+  <div class="fx">
+    <span class="line"><b>MSE</b> = <span class="frac"><span>1</span><span><var>n</var></span></span> Σ (<var>y<sub>k</sub></var> − ŷ<sub><var>k</var></sub>)² &nbsp;&nbsp;régression</span>
+    <span class="line"><b>MAE</b> = <span class="frac"><span>1</span><span><var>n</var></span></span> Σ |<var>y<sub>k</sub></var> − ŷ<sub><var>k</var></sub>| &nbsp;&nbsp;régression, moins sensible aux valeurs aberrantes</span>
+    <span class="line"><b>Cross-entropy</b> = − Σ<sub><var>j</var></sub> <var>y<sub>j</sub></var> log ŷ<sub><var>j</var></sub> &nbsp;&nbsp;classification (<var>y</var> en one-hot)</span>
+    <span class="line"><b>Binary CE</b> = −[ <var>y</var> log ŷ + (1 − <var>y</var>) log(1 − ŷ) ]</span>
+    <span class="line"><b>R²</b> = 1 − <span class="frac"><span>Σ(<var>y<sub>k</sub></var> − ŷ<sub><var>k</var></sub>)²</span><span>Σ(<var>y<sub>k</sub></var> − μ<sub><var>Y</var></sub>)²</span></span> &nbsp;&nbsp;vaut 1 pour une régression parfaite</span>
+  </div>
+
+  <h3>Métriques de classification binaire</h3>
+  <div class="tbl"><table>
+    <tr><th>Matrice de confusion</th><th>Prédit P</th><th>Prédit N</th></tr>
+    <tr><td><b>Réel P</b></td><td>VP (vrai positif)</td><td>FN (faux négatif)</td></tr>
+    <tr><td><b>Réel N</b></td><td>FP (faux positif)</td><td>VN (vrai négatif)</td></tr>
+  </table></div>
+  <dl class="defs">
+    <dt>Précision</dt><dd>VP / (VP + FP) : parmi les prédits P, combien le sont vraiment. À surveiller quand un <b>FP coûte cher</b> (filtre anti-spam : ne pas jeter un vrai mail).</dd>
+    <dt>Rappel (recall)</dt><dd>VP / (VP + FN) : parmi les vrais P, combien sont trouvés. À surveiller quand un <b>FN coûte cher</b> (diagnostic médical : ne pas rater un malade).</dd>
+    <dt>Exactitude (accuracy)</dt><dd>(VP + VN) / total. <b>Peu utile si les classes sont déséquilibrées</b> (99 % de négatifs → 99 % en répondant toujours « N »).</dd>
+    <dt>F1-score</dt><dd>2 · P · R / (P + R), moyenne harmonique de précision et rappel ; utile si les classes sont déséquilibrées.</dd>
+  </dl>
+
+  <h3>Paramètres, hyperparamètres, généralisation</h3>
+  <dl class="defs">
+    <dt>Hyperparamètre</dt><dd>Réglage <b>non appris</b>, fixé avant l'entraînement : architecture, nombre d'étapes, pas d'apprentissage, k du k-NN… Réglé à la main ou par <b>recherche par grille, aléatoire, optimisation bayésienne, algorithmes génétiques</b>. Les <b>paramètres</b> (poids, biais), eux, sont appris.</dd>
+    <dt>Surapprentissage</dt><dd>(<i>overfitting</i>) Le modèle <mark>mémorise les données d'entraînement, bruit compris</mark>, au lieu d'extraire des motifs généralisables. Causes : modèle trop complexe, trop d'itérations. Symptôme : <b>excellent en entraînement, mauvais sur de nouvelles données</b>.</dd>
+    <dt>Sous-apprentissage</dt><dd>(<i>underfitting</i>) Modèle trop simple (trop linéaire) ou pas assez entraîné. Symptôme : <b>erreur élevée en entraînement ET en test</b>.</dd>
+  </dl>
+  <div class="tbl"><table>
+    <tr><th>Ensemble</th><th>Part</th><th>Rôle</th></tr>
+    <tr><td><b>Entraînement</b></td><td>60 à 80 %</td><td>Ajuster les paramètres du modèle.</td></tr>
+    <tr><td><b>Validation</b></td><td>10 à 20 %</td><td>Choisir les hyperparamètres, suivre la généralisation pendant l'entraînement, éventuellement l'<b>arrêter</b> (quand l'erreur de validation remonte).</td></tr>
+    <tr><td><b>Test</b></td><td>10 à 20 %</td><td>Évaluer les <b>performances finales</b> sur des données jamais vues.</td></tr>
+  </table></div>
+  <p>La courbe classique : quand la complexité ou le nombre d'itérations augmente, l'erreur d'entraînement baisse toujours, tandis que l'erreur de validation baisse puis <b>remonte</b>. À gauche du creux, sous-apprentissage ; à droite, surapprentissage.</p>
+</section>
+
+<!-- II.3 -->
+<section class="sec col" id="ml-modeles">
+  <div class="sec-h"><div><span class="tag t3">II.3 · BUT3</span><span class="tag src">Intro ML, p. 29–35</span><h2>Les modèles classiques</h2></div>
+  <label class="done"><input type="checkbox" id="done-ml-modeles"> Maîtrisé</label></div>
+  <dl class="defs">
+    <dt>k-NN</dt><dd>Classification supervisée : renvoie la <mark>classe majoritaire parmi les k plus proches voisins</mark>. <b>k trop petit → surapprentissage</b>, <b>k trop grand → sous-apprentissage</b>. Lourd si beaucoup de données, mauvais en grande dimension (<b>malédiction de la dimension</b>), peut demander une réduction de dimension. En régression : on interpole les valeurs des k voisins.</dd>
+    <dt>Arbre de décision</dt><dd>À chaque nœud, une variable comparée à un <b>seuil</b> ; chaque feuille renvoie les proportions de chaque classe. <b>+</b> explicable (« white box »), peu coûteux. <b>−</b> modèle simple, gros arbre pour des données complexes, overfitting. Apprentissage <b>top-down</b> : on découpe une feuille en nœud en choisissant feuille, variable et seuil qui optimisent un critère (<b>impureté de Gini, gain d'information, variance</b>).</dd>
+    <dt>Forêt aléatoire</dt><dd>Ensemble d'arbres entraînés sur des données un peu différentes : tirage <b>avec remise</b> des exemples (<b>bootstrap aggregating</b>, bagging) et sous-ensemble aléatoire de features (<b>feature bagging</b>). Prédiction par <b>vote</b>. Efficace et robuste à l'overfitting, mais on <b>perd l'explicabilité</b>.</dd>
+    <dt>Naïve Bayes</dt><dd>Multi-classe par la formule de Bayes, en supposant les caractéristiques <b>indépendantes</b> (les mots d'un mail, pour la détection de spam). Entraînement = <b>compter des proportions</b>.</dd>
+    <dt>ACP (PCA)</dt><dd><b>Non supervisé</b>, réduit la dimension. On cherche de nouveaux axes <b>perpendiculaires</b> où la <b>variance</b> est maximale sur le 1ᵉʳ, puis sur le 2ᵉ… On garde les premiers : moins de dimensions, un maximum d'information. Transformation <b>linéaire</b> (une matrice). Sklearn : <code>PCA(n_components=2)</code>, <code>explained_variance_ratio_</code>.</dd>
+  </dl>
+  <div class="fx"><span class="lbl">Bayes</span><span class="line">P(<var>c<sub>k</sub></var> | <var>x</var>) = <span class="frac"><span>P(<var>x</var> | <var>c<sub>k</sub></var>) · P(<var>c<sub>k</sub></var>)</span><span>P(<var>x</var>)</span></span> &nbsp;&nbsp; P(x|c<sub>k</sub>) : part des données de type x dans la classe c<sub>k</sub> · P(c<sub>k</sub>) : part de la classe · P(x) : part de x</span></div>
+
+  <h3>Régression linéaire, cas général (p entrées, n sorties)</h3>
+  <p>On cherche une matrice <var>W</var> (n lignes, p colonnes) et un vecteur <var>b</var> tels que <var>y</var> ≈ <var>Wx</var> + <var>b</var>. Par les <b>moindres carrés ordinaires</b> (minimisation de la MSE), le calcul est direct : on ajoute une colonne de 1 à <var>X</var> pour absorber le biais, et</p>
+  <div class="fx"><span class="line">θ = <var>X</var><sup>+</sup> <var>Y</var> &nbsp;&nbsp;avec&nbsp; <var>X</var><sup>+</sup> = (<var>X</var><sup>T</sup><var>X</var>)<sup>−1</sup><var>X</var><sup>T</sup> la <b>pseudo-inverse</b> de <var>X</var> &nbsp;→ <code>np.linalg.pinv</code></span></div>
+  <h3>Régression polynomiale (dimension 1)</h3>
+  <p>Approcher le nuage par un polynôme de degré <var>d</var> : on calcule les features <var>x</var>, <var>x</var>², …, <var>x<sup>d</sup></var>, puis on fait une <b>régression linéaire</b> sur ces features. Le modèle reste linéaire <b>en ses paramètres</b>.</p>
+</section>
+
+<!-- II.4 -->
+<section class="sec col" id="perceptron-svm">
+  <div class="sec-h"><div><span class="tag t3">II.4 · BUT3</span><span class="tag src">Intro ML, p. 37–41</span><h2>Perceptron et SVM : la classification linéaire</h2></div>
+  <label class="done"><input type="checkbox" id="done-perceptron-svm"> Maîtrisé</label></div>
+  <div class="grid2">
+    <div class="box"><h4>Perceptron (Rosenblatt, 1957)</h4>
+      <p>Reçoit <var>x</var>₁…<var>x<sub>p</sub></var>, fait la somme pondérée par <var>w</var>₁…<var>w<sub>p</sub></var> plus un biais <var>w</var>₀, et passe le tout dans la <b>fonction de Heaviside</b> : 1 si la somme est positive, 0 sinon.</p>
+      <p class="small">Analogie : dendrites (entrées) → corps cellulaire (intégration) → axone (sortie si assez de stimulation).</p></div>
+    <div class="box"><h4>Ce qu'il sait faire</h4>
+      <p>Il <b>coupe l'espace en deux par un hyperplan affine</b>. Il résout donc exactement les problèmes <mark>linéairement séparables</mark>.</p>
+      <p class="small">Contre-exemple type : le <b>XOR</b>, impossible pour un perceptron seul.</p></div>
+  </div>
+  <div class="fx"><span class="line">ŷ = <var>H</var>(<var>w</var>₀ + Σ<sub><var>i</var></sub> <var>w<sub>i</sub>x<sub>i</sub></var>) &nbsp;&nbsp; <var>H</var>(<var>s</var>) = 1 si <var>s</var> ≥ 0, 0 sinon</span></div>
+  <h3>SVM : Support Vector Machine</h3>
+  <ul>
+    <li>Proche du perceptron (hyperplan séparateur), mais renvoie <b>{−1, 1}</b> au lieu de {0, 1}.</li>
+    <li>L'apprentissage <b>maximise la marge</b> entre les deux classes.</li>
+    <li>Une transformation non linéaire φ envoie les entrées dans un espace de <b>plus grande dimension</b> où le problème devient séparable.</li>
+    <li><b>Astuce du noyau (kernel trick)</b> : pas besoin de calculer φ, il suffit d'une fonction noyau <var>K</var>(<var>x</var>, <var>x</var>′) = φ(<var>x</var>) · φ(<var>x</var>′). Sklearn : <code>SVC(kernel='rbf')</code>.</li>
+  </ul>
+  <h3>Pourquoi un réseau</h3>
+  <p>Le XOR se résout avec des perceptrons <b>connectés entre eux</b>. Les premières couches jouent le rôle du φ des SVM, mais cette fois la non-linéarité est <b>apprise</b> : elle projette l'entrée dans un espace où le problème devient linéairement séparable.</p>
+</section>
+
+<!-- II.5 -->
+<section class="sec col" id="mlp">
+  <div class="sec-h"><div><span class="tag t3">II.5 · BUT3</span><span class="tag src">Intro ML, p. 43–47</span><h2>Le perceptron multicouche (MLP)</h2></div>
+  <label class="done"><input type="checkbox" id="done-mlp"> Maîtrisé</label></div>
+  <p>On enchaîne des perceptrons en profondeur, organisés en <b>couches denses</b> : chaque neurone de la couche <var>k</var>+1 reçoit <b>toutes</b> les sorties de la couche <var>k</var>. Couche d'entrée → une ou plusieurs <b>couches cachées</b> → couche de sortie.</p>
+  <figure>
+  <svg viewBox="0 0 560 210" width="100%" style="max-width:560px" role="img" aria-label="MLP à 3 entrées, deux couches cachées de 4 et 3 neurones, 2 sorties">
+    <g stroke="var(--rule-strong)" stroke-width="1">
+      <line x1="70" y1="55" x2="220" y2="35"/><line x1="70" y1="55" x2="220" y2="85"/><line x1="70" y1="55" x2="220" y2="135"/><line x1="70" y1="55" x2="220" y2="185"/>
+      <line x1="70" y1="110" x2="220" y2="35"/><line x1="70" y1="110" x2="220" y2="85"/><line x1="70" y1="110" x2="220" y2="135"/><line x1="70" y1="110" x2="220" y2="185"/>
+      <line x1="70" y1="165" x2="220" y2="35"/><line x1="70" y1="165" x2="220" y2="85"/><line x1="70" y1="165" x2="220" y2="135"/><line x1="70" y1="165" x2="220" y2="185"/>
+      <line x1="220" y1="35" x2="360" y2="60"/><line x1="220" y1="35" x2="360" y2="110"/><line x1="220" y1="35" x2="360" y2="160"/>
+      <line x1="220" y1="85" x2="360" y2="60"/><line x1="220" y1="85" x2="360" y2="110"/><line x1="220" y1="85" x2="360" y2="160"/>
+      <line x1="220" y1="135" x2="360" y2="60"/><line x1="220" y1="135" x2="360" y2="110"/><line x1="220" y1="135" x2="360" y2="160"/>
+      <line x1="220" y1="185" x2="360" y2="60"/><line x1="220" y1="185" x2="360" y2="110"/><line x1="220" y1="185" x2="360" y2="160"/>
+      <line x1="360" y1="60" x2="490" y2="85"/><line x1="360" y1="60" x2="490" y2="135"/>
+      <line x1="360" y1="110" x2="490" y2="85"/><line x1="360" y1="110" x2="490" y2="135"/>
+      <line x1="360" y1="160" x2="490" y2="85"/><line x1="360" y1="160" x2="490" y2="135"/>
+    </g>
+    <g fill="var(--paper)" stroke="var(--ink-soft)" stroke-width="1.5">
+      <circle cx="70" cy="55" r="13"/><circle cx="70" cy="110" r="13"/><circle cx="70" cy="165" r="13"/>
+    </g>
+    <g fill="var(--blue-soft)" stroke="var(--blue)" stroke-width="1.5">
+      <circle cx="220" cy="35" r="13"/><circle cx="220" cy="85" r="13"/><circle cx="220" cy="135" r="13"/><circle cx="220" cy="185" r="13"/>
+      <circle cx="360" cy="60" r="13"/><circle cx="360" cy="110" r="13"/><circle cx="360" cy="160" r="13"/>
+    </g>
+    <g fill="var(--red-soft)" stroke="var(--red)" stroke-width="1.5">
+      <circle cx="490" cy="85" r="13"/><circle cx="490" cy="135" r="13"/>
+    </g>
+    <g fill="var(--ink-soft)" font-size="12" text-anchor="middle">
+      <text x="70" y="205">entrées (p = 3)</text><text x="220" y="207">cachée 1</text><text x="360" y="195">cachée 2</text><text x="490" y="172">sorties</text>
+    </g>
+    <g fill="var(--ink)" font-size="11" text-anchor="middle">
+      <text x="70" y="59">x₁</text><text x="70" y="114">x₂</text><text x="70" y="169">x₃</text>
+      <text x="490" y="89">ŷ₁</text><text x="490" y="139">ŷ₂</text>
+    </g>
+  </svg>
+  <figcaption>Chaque trait porte un poids ; chaque neurone bleu ou rouge a un biais et une activation.</figcaption>
+  </figure>
+
+  <h3>Fonctions d'activation</h3>
+  <div class="tbl"><table>
+    <tr><th>Nom</th><th>Formule</th><th>Où / pourquoi</th></tr>
+    <tr><td><b>Heaviside</b></td><td>1 si s ≥ 0, sinon 0</td><td>Perceptron historique (non dérivable : inutilisable pour le gradient)</td></tr>
+    <tr><td><b>Sigmoïde</b> (logistic)</td><td>σ(<var>x</var>) = 1 / (1 + e<sup>−<var>x</var></sup>) ∈ ]0, 1[</td><td>Sortie binaire, interprétable comme une probabilité</td></tr>
+    <tr><td><b>tanh</b></td><td>∈ ]−1, 1[, centrée en 0</td><td>Couches cachées</td></tr>
+    <tr><td><b>ReLU</b></td><td>max(0, <var>x</var>)</td><td>Couches cachées ; <b>défaut</b> de <code>MLPClassifier</code></td></tr>
+    <tr><td><b>LeakyReLU</b></td><td>max(α<var>x</var>, <var>x</var>), α petit (0,01)</td><td>Évite les neurones « morts » de ReLU</td></tr>
+    <tr><td><b>identity</b> (linear)</td><td><var>x</var></td><td>Sortie de régression ; en couche cachée, le modèle reste <b>linéaire</b></td></tr>
+    <tr><td><b>Softmax</b></td><td>e<sup><var>z<sub>j</sub></var></sup> / Σ<sub><var>k</var></sub> e<sup><var>z<sub>k</sub></var></sup></td><td>Sortie multi-classe : des valeurs entre 0 et 1 qui somment à 1</td></tr>
+  </table></div>
+
+  <h3>Écriture matricielle</h3>
+  <p>Une couche dense de <var>n</var> neurones à <var>p</var> entrées, d'activation σ :</p>
+  <div class="fx">
+    <span class="line"><var>y</var> = σ(<var>W</var><var>x</var> + <var>b</var>) &nbsp;&nbsp; <var>W</var> ∈ ℝ<sup><var>n</var>×<var>p</var></sup> (poids), <var>b</var> ∈ ℝ<sup><var>n</var></sup> (biais) : une partie <b>affine</b>, puis la <b>non-linéarité</b></span>
+    <span class="line"><var>f</var>(<var>x</var>) = σ<sub><var>c</var></sub>( <var>W<sub>c</sub></var> · … σ₂( <var>W</var>₂ · σ₁(<var>W</var>₁<var>x</var> + <var>b</var>₁) + <var>b</var>₂ ) … + <var>b<sub>c</sub></var> ) &nbsp;&nbsp; (c couches)</span>
+  </div>
+  <p class="note"><b>À savoir expliquer :</b> sans activations non linéaires, une composition de fonctions affines reste <b>affine</b>. Un MLP tout en <i>identity</i> ne fait pas mieux qu'une seule couche linéaire : c'est exactement le résultat du TD.</p>
+  <p>Nombre de paramètres d'une couche dense : <b><var>n</var> × <var>p</var> + <var>n</var></b> (poids + biais). Pour le MLP ci-dessus : (3·4+4) + (4·3+3) + (3·2+2) = 16 + 15 + 8 = <b>39</b>.</p>
+  <p>Avec la bonne architecture (hyperparamètres : nombre de couches, de neurones par couche, activations), un MLP peut approcher des fonctions arbitrairement complexes. Encore faut-il <b>trouver les poids</b> : c'est le rôle de l'apprentissage.</p>
+</section>
+
+<!-- II.6 -->
+<section class="sec col" id="apprentissage">
+  <div class="sec-h"><div><span class="tag t3">II.6 · BUT3</span><span class="tag src">Intro ML, p. 49–58</span><h2>Descente de gradient et rétropropagation</h2></div>
+  <label class="done"><input type="checkbox" id="done-apprentissage"> Maîtrisé</label></div>
+  <p>On dispose d'un MLP <var>f</var><sub>θ</sub> (θ = tous les poids et biais), d'un jeu d'entraînement {(<var>x<sub>k</sub></var>, <var>y<sub>k</sub></var>)} et d'une perte <var>L</var>(θ), par exemple la MSE. On cherche θ qui minimise <var>L</var>.</p>
+  <h3>La descente de gradient</h3>
+  <p>Idée en 1D : la dérivée indique dans quel sens la fonction croît ; on fait un petit pas dans le <b>sens opposé</b>. Avec un pas η et un point de départ <var>x</var>₀ :</p>
+  <div class="fx">
+    <span class="line"><var>x</var><sub><var>t</var>+1</sub> = <var>x<sub>t</sub></var> − η · <var>f</var>′(<var>x<sub>t</sub></var>)</span>
+    <span class="line">θ<sub><var>t</var>+1</sub> = θ<sub><var>t</var></sub> − η · ∇<var>L</var>(θ<sub><var>t</var></sub>) &nbsp;&nbsp; ∇<var>L</var> = vecteur des dérivées partielles ∂<var>L</var>/∂θ<sub><var>i</var></sub></span>
+  </div>
+  <ul>
+    <li>θ₀ est <b>tiré au hasard</b> (initialisation aléatoire des poids et biais).</li>
+    <li>Le <b>gradient</b> pointe dans la direction de plus forte croissance : on « descend la pente ».</li>
+    <li>η = <b>pas / taux d'apprentissage</b> (<i>learning rate</i>) : trop petit, on converge très lentement ; trop grand, on oscille ou on diverge.</li>
+  </ul>
+  <h4>Sur la régression 1D (notebook du TD)</h4>
+  <div class="fx">
+    <span class="line">∂<var>L</var>/∂<var>a</var> = <span class="frac"><span>2</span><span><var>n</var></span></span> Σ <var>x<sub>k</sub></var>(<var>ax<sub>k</sub></var> + <var>b</var> − <var>y<sub>k</sub></var>) &nbsp;&nbsp;&nbsp; ∂<var>L</var>/∂<var>b</var> = <span class="frac"><span>2</span><span><var>n</var></span></span> Σ (<var>ax<sub>k</sub></var> + <var>b</var> − <var>y<sub>k</sub></var>)</span>
+    <span class="line"><var>a</var> ← <var>a</var> − η ∂<var>L</var>/∂<var>a</var> &nbsp;&nbsp; <var>b</var> ← <var>b</var> − η ∂<var>L</var>/∂<var>b</var> &nbsp;&nbsp;(en posant les deux dérivées = 0, on retrouve les formules exactes de a et b)</span>
+  </div>
+<pre><code><span class="k">for</span> _ <span class="k">in</span> range(nb_steps):
+    err = a*xs + b - ys
+    a -= lr * 2*np.mean(xs*err)
+    b -= lr * 2*np.mean(err)</code></pre>
+  <h3>Rétropropagation (backpropagation)</h3>
+  <p>Comment calculer ∂<var>L</var>/∂<var>w</var> pour un poids enfoui dans le réseau ? Un MLP est une <b>composition de fonctions simples</b> qu'on sait dériver ; par la <b>règle de dérivation en chaîne</b>, le gradient par rapport aux paramètres d'une couche se calcule <mark>à partir des gradients des couches qui la suivent</mark>. On part de l'erreur en sortie et on remonte vers l'entrée.</p>
+  <h3>SGD, batch, epoch</h3>
+  <dl class="defs">
+    <dt>Problème</dt><dd>Calculer la perte sur <b>tout</b> l'ensemble à chaque pas coûte extrêmement cher.</dd>
+    <dt>SGD</dt><dd>Descente de gradient <b>stochastique</b> : on découpe l'ensemble en <b>batchs</b> (par exemple de 32) et chaque pas utilise la perte d'un seul batch.</dd>
+    <dt>Epoch</dt><dd>Un passage complet : <b>tous les batchs ont été utilisés une fois</b>. En général on mélange alors les données, on refait les batchs et on recommence. Nombre d'itérations par epoch = taille des données / taille du batch.</dd>
+    <dt>Optimiseurs</dt><dd>Pour éviter les minima locaux et surtout les <b>points-selles</b>, des variantes gardent la <b>mémoire des gradients précédents</b> : <b>Momentum</b> (ajoute de l'inertie), <b>RMSProp</b>, <b>Adam</b> (le plus utilisé, défaut de sklearn).</dd>
+  </dl>
+  <div class="fx"><span class="lbl">Momentum · Adam</span>
+    <span class="line"><var>v</var> ← β<var>v</var> + ∇<var>L</var>(θ) ; &nbsp; θ ← θ − η<var>v</var></span>
+    <span class="line"><var>m</var> ← β₁<var>m</var> + (1−β₁)∇<var>L</var> ; &nbsp; <var>s</var> ← β₂<var>s</var> + (1−β₂)(∇<var>L</var>)² ; &nbsp; θ ← θ − η · <var>m̂</var> / (√<var>ŝ</var> + ε)</span>
+  </div>
+  <h3>Bien choisir la sortie et la perte</h3>
+  <div class="tbl"><table>
+    <tr><th>Tâche</th><th>Couche de sortie</th><th>Perte</th></tr>
+    <tr><td><b>Régression</b></td><td>Autant de neurones que la dimension de <var>y</var> ; en général <b>pas d'activation</b></td><td><b>MSE</b> (la plus courante, bonne pour des données gaussiennes, converge vers la <b>moyenne</b>) · <b>MAE</b> (robuste aux aberrations, converge vers la <b>médiane</b>) · <b>Huber</b> (combine les deux)</td></tr>
+    <tr><td><b>Binaire</b></td><td><b>1 neurone</b>, activation <b>sigmoïde</b></td><td><b>Binary cross-entropy</b></td></tr>
+    <tr><td><b>n classes</b></td><td><b>n neurones</b>, activation <b>softmax</b></td><td><b>Cross-entropy</b>, labels en <b>one-hot</b> (classe j = que des 0 et un 1 en position j)</td></tr>
+  </table></div>
+</section>
+
+<!-- II.7 -->
+<section class="sec col" id="td-mlp">
+  <div class="sec-h"><div><span class="tag t3">II.7 · BUT3</span><span class="tag src">TD « Réseaux de neurones multicouches » · TD MLP MNIST</span><h2>TD : MLP sur Iris avec scikit-learn</h2></div>
+  <label class="done"><input type="checkbox" id="done-td-mlp"> Maîtrisé</label></div>
+  <p>Iris : <b>150 fleurs</b>, 4 variables <b>explicatives</b> (longueur et largeur des sépales et des pétales, en cm), 1 variable <b>expliquée</b> (l'espèce : Setosa, Versicolor, Virginica, 50 de chaque). Le TD sépare une classe contre les deux autres, en ne gardant que les pétales (colonnes 2 et 3).</p>
+<pre><code><span class="k">import</span> numpy <span class="k">as</span> np
+<span class="k">from</span> sklearn.datasets <span class="k">import</span> load_iris
+<span class="k">from</span> sklearn.model_selection <span class="k">import</span> train_test_split
+<span class="k">from</span> sklearn.neural_network <span class="k">import</span> MLPClassifier
+
+data = load_iris().data
+target = np.concatenate((np.zeros(50,int), np.ones(50,int), np.zeros(50,int)))  <span class="c"># Versicolor = 1</span>
+np.random.seed(10)                                   <span class="c"># expérience répétable</span>
+X_tr, X_te, y_tr, y_te = train_test_split(data, target, test_size=0.4)
+
+clf = MLPClassifier(solver=<span class="k">'sgd'</span>, learning_rate_init=0.01, max_iter=10000, random_state=0)
+clf.fit(X_tr[:, 2:4], y_tr)
+clf.score(X_te[:, 2:4], y_te)       <span class="c"># score = taux de bon classement (accuracy)</span>
+Z = clf.predict_proba(grille)       <span class="c"># une colonne par classe, chaque ligne somme à 1</span>
+clf.loss_curve_                     <span class="c"># erreur au fil des itérations</span></code></pre>
+  <h3>Ce qu'il faut savoir sur MLPClassifier</h3>
+  <dl class="defs">
+    <dt>hidden_layer_sizes</dt><dd>Tuple : un nombre de neurones par couche cachée. <code>(100,)</code> par défaut ; <code>(10,10,10)</code> = 3 couches de 10.</dd>
+    <dt>activation</dt><dd><code>'identity'</code>, <code>'logistic'</code>, <code>'tanh'</code>, <code>'relu'</code> (<b>défaut : relu</b>), pour les couches cachées.</dd>
+    <dt>solver</dt><dd><code>'lbfgs'</code>, <code>'sgd'</code>, <code>'adam'</code> (<b>défaut : adam</b>, une variante adaptative de la descente de gradient).</dd>
+    <dt>max_iter</dt><dd>Nombre d'<b>epochs</b> (défaut 200, trop peu pour SGD d'où le ConvergenceWarning).</dd>
+    <dt>Entrées / sorties</dt><dd>Entrées = nombre de variables explicatives (une variable nominale codée en <b>one-hot</b> compte pour autant d'entrées que de modalités). Sorties = nombre de classes. Perte = <b>entropie croisée</b> (log loss).</dd>
+    <dt>random_state</dt><dd>Fixe l'initialisation aléatoire des poids : expérience <b>répétable</b>.</dd>
+  </dl>
+  <h3>Les réponses aux questions du TD</h3>
+  <div class="tbl"><table>
+    <tr><th>Question</th><th>Réponse attendue</th></tr>
+    <tr><td>Ex. 2 · somme des lignes de Z</td><td>Vaut 1 : <code>np.allclose(Z.sum(axis=1), 1)</code>. Ce sont des probabilités.</td></tr>
+    <tr><td>Ex. 3 · colonne Versicolor</td><td><b>La colonne 1</b> : les colonnes suivent <code>clf.classes_ = [0, 1]</code> et Versicolor est étiqueté 1 par <code>target</code>.</td></tr>
+    <tr><td>Courbe de loss</td><td>Pente non nulle après 1000 itérations : on peut encore baisser l'erreur en augmentant <code>max_iter</code>.</td></tr>
+    <tr><td>Ex. 4 · identity bien pire</td><td>Avec <i>identity</i> le réseau reste <b>linéaire</b> : frontière = <b>une droite</b>. Versicolor est coincée <b>entre</b> Setosa et Virginica, donc aucune droite ne l'isole (≈ 0,69 / 0,64 contre ≈ 0,97 avec logistic ou tanh). Plus d'itérations n'y changent rien.</td></tr>
+    <tr><td>Ex. 5 · 2 → 200 neurones</td><td>Au-delà de quelques neurones le score de test ne s'améliore plus. Plus de neurones = plus de calcul et plus de risque de <b>surapprentissage</b>.</td></tr>
+    <tr><td>Ex. 6 · 2 → 5 couches</td><td>Les scores stagnent ou baissent un peu : le problème (2 variables) est trop simple pour tirer parti de la profondeur.</td></tr>
+  </table></div>
+  <p class="note"><b>Piège :</b> le texte du TD annonce « 1 pour Iris-setosa », mais le code <code>concatenate((l2c, l1c, l2c))</code> met des 1 sur les lignes 50 à 99, c'est-à-dire <b>Versicolor</b>. Ton notebook de BUT2 répondait « colonne 0 » : c'est faux, ton notebook de BUT3 a corrigé en <b>colonne 1</b>.</p>
+  <h4>TD MNIST (reconnaissance de chiffres)</h4>
+  <p>Images 28×28 = <b>784</b> entrées, pixels de 0 à 255 à normaliser (<b>/255</b>), 10 classes. <code>MLPClassifier(hidden_layer_sizes=…, max_iter=5)</code>, puis <code>loss_curve_</code>, <code>predict</code>, <code>confusion_matrix</code> + <code>sns.heatmap</code>, <code>accuracy_score</code>.</p>
+</section>
+
+<!-- II.8 -->
+<section class="sec col" id="csp-formalisme">
+  <div class="sec-h"><div><span class="tag t3">II.8 · BUT3</span><span class="tag src">cours_2 CT, p. 1–24</span><h2>CSP : le formalisme</h2></div>
+  <label class="done"><input type="checkbox" id="done-csp-formalisme"> Maîtrisé</label></div>
+  <p><b>Modéliser un problème</b>, c'est l'analyser (identifier les <b>objets</b>, leurs <b>propriétés</b>, leurs <b>relations</b>) puis le représenter dans un formalisme. En CSP : objets → <mark>variables / valeurs</mark> ; propriétés et relations → <mark>variables / contraintes</mark>. Le formalisme est très puissant : domaines quelconques (ℕ, ℝ…), contraintes très variées. Il couvre la coloration de graphes, la logique propositionnelle, la vérification de circuits, les systèmes d'(in)équations…</p>
+  <div class="fx"><span class="lbl">Instance d'un CSP</span><span class="line"><b><var>P</var> = (<var>X</var>, <var>D</var>, <var>C</var>, <var>R</var>)</b></span>
+    <span class="line"><var>X</var> : <b><var>n</var> variables</b> · <var>D</var> : domaines <b>finis</b> de taille au plus <b><var>d</var></b> · <var>C</var> : <b><var>m</var> contraintes</b> · <var>R</var> : relations de compatibilité</span></div>
+  <dl class="defs">
+    <dt>Contrainte</dt><dd>Un <b>sous-ensemble de variables</b> (celles qu'elle relie).</dd>
+    <dt>Arité</dt><dd>Nombre de variables soumises à la contrainte. <b>Unaire</b> : 1 variable · <b>binaire</b> : 2 · <b>n-aire</b> : plus de 2.</dd>
+    <dt>CSP binaire</dt><dd>Toutes les contraintes sont unaires ou binaires. <b>CSP n-aire</b> : au moins une contrainte n-aire. Une <b>transformation polynomiale</b> permet de passer du n-aire au binaire : le cours se concentre sur le binaire, mais <b>le problème reste aussi difficile</b>.</dd>
+    <dt>Graphe de contraintes</dt><dd>(<var>X</var>, <var>C</var>) : <b>sommets = variables</b>, <b>arêtes = contraintes</b>. Il représente la <b>structure</b> du problème.</dd>
+    <dt>Relation <var>r<sub>i</sub></var></dt><dd>Ensemble des <b>tuples autorisés</b> par <var>c<sub>i</sub></var> : un sous-ensemble du produit cartésien des domaines des variables de <var>c<sub>i</sub></var>.</dd>
+    <dt>En extension</dt><dd>On <b>liste</b> tous les tuples autorisés (ou interdits).</dd>
+    <dt>En intention</dt><dd>On donne une <b>formule</b> : équation, inéquation, prédicat…</dd>
+  </dl>
+
+  <h3>Exemple 1 · coloration avec 3 couleurs</h3>
+  <div class="grid2">
+    <figure style="margin:0">
+      <svg viewBox="0 0 380 240" width="100%" role="img" aria-label="Graphe de contraintes A-B, B-C, B-D, C-D, D-E, A-E colorié : A vert, B jaune, C rouge, D vert, E jaune">
+        <g stroke="var(--ink-soft)" stroke-width="2">
+          <line x1="90" y1="40" x2="60" y2="130"/><line x1="60" y1="130" x2="190" y2="205"/><line x1="60" y1="130" x2="320" y2="130"/>
+          <line x1="190" y1="205" x2="320" y2="130"/><line x1="320" y1="130" x2="290" y2="40"/><line x1="90" y1="40" x2="290" y2="40"/>
+        </g>
+        <g stroke="var(--ink)" stroke-width="1.5">
+          <circle cx="90" cy="40" r="20" fill="var(--node-v)"/><circle cx="290" cy="40" r="20" fill="var(--node-j)"/>
+          <circle cx="60" cy="130" r="20" fill="var(--node-j)"/><circle cx="320" cy="130" r="20" fill="var(--node-v)"/>
+          <circle cx="190" cy="205" r="20" fill="var(--node-r)"/>
+        </g>
+        <g fill="var(--node-ink)" font-size="15" font-weight="700" text-anchor="middle">
+          <text x="90" y="45">A</text><text x="290" y="45">E</text><text x="60" y="135">B</text><text x="320" y="135">D</text><text x="190" y="210">C</text>
+        </g>
+      </svg>
+      <figcaption>Graphe de contraintes, avec la solution A←v, B←j, C←r, D←v, E←j.</figcaption>
+    </figure>
+    <div>
+      <p class="small" style="margin-top:8px"><b>X</b> = {A, B, C, D, E}<br>
+      <b>D</b> : <var>d</var><sub>A</sub> = … = <var>d</var><sub>E</sub> = {v, j, r}<br>
+      <b>C</b> = {c<sub>AB</sub>, c<sub>BC</sub>, c<sub>BD</sub>, c<sub>CD</sub>, c<sub>DE</sub>, c<sub>AE</sub>}, avec c<sub>AB</sub> = {A, B}…<br>
+      <b>R</b> : r<sub>AB</sub> = {(a, b) | a ∈ d<sub>A</sub>, b ∈ d<sub>B</sub>, a ≠ b} en intention,<br>ou r<sub>BC</sub> = {(v,j), (v,r), (j,v), (j,r), (r,v), (r,j)} en extension.</p>
+      <div class="tbl"><table>
+        <tr><th>A \ B</th><th>v</th><th>j</th><th>r</th></tr>
+        <tr><td><b>v</b></td><td>0</td><td>1</td><td>1</td></tr>
+        <tr><td><b>j</b></td><td>1</td><td>0</td><td>1</td></tr>
+        <tr><td><b>r</b></td><td>1</td><td>1</td><td>0</td></tr>
+      </table></div>
+    </div>
+  </div>
+  <h3>Exemple 2 · morpion final</h3>
+  <p><b>X</b> = {A1, A2, A3, B1, …, C3} (9 cases), <b>D</b> = {O, X} pour chacune. <b>C</b> = 3 lignes, 3 colonnes, 2 diagonales (arité 3) + <b>c<sub>all</sub> = X</b> (arité 9). <b>R</b> : r<sub>A</sub> = les triplets <b>qui ne sont pas tous identiques</b> : {(O,O,X), (O,X,O), (X,O,O), (O,X,X), (X,O,X), (X,X,O)} ; r<sub>all</sub> = « la grille contient 5 ronds et 4 croix ». C'est un CSP <b>n-aire</b>, et il est consistant.</p>
+  <h3>Exemple 3 · système d'inéquations</h3>
+  <p><code>x1 &lt; x2, x1 &lt; x3, x1 &lt; x4, x1 &lt; x5, x3² &lt; x6, x4 &gt; x6</code>, avec <code>x5 ∈ {1,2}</code> et les autres dans <code>{1,2,3}</code>. C = {c12, c13, c14, c15, c36, c46}. Il est <b>inconsistant</b> : x1 &lt; x5 ≤ 2 impose x1 = 1 ; alors x3 ≥ 2, donc x3² ≥ 4, mais x6 ≤ 3.</p>
+
+  <h3>Affectations et solutions</h3>
+  <dl class="defs">
+    <dt>Instanciation</dt><dd>D'un ensemble <var>Y</var> = {y₁…y<sub>k</sub>} : un k-uplet (v₁…v<sub>k</sub>) de d<sub>y₁</sub> × … × d<sub>yk</sub>. Notation {x₁ ← a, x₂ ← c}.</dd>
+    <dt>Complète / partielle</dt><dd><b>Complète</b> : toutes les variables sont instanciées. <b>Partielle</b> : une partie seulement.</dd>
+    <dt>Satisfait / viole</dt><dd><var>A</var> satisfait <var>c</var> si <var>A</var>[<var>c</var>] ∈ <var>r<sub>c</sub></var> ; sinon <var>A</var> viole <var>c</var>.</dd>
+    <dt>Consistante</dt><dd>Instanciation qui satisfait <b>toutes les contraintes c ⊆ Y</b> (celles dont toutes les variables sont instanciées). <b>Inconsistante</b> : en viole au moins une.</dd>
+    <dt>Solution</dt><dd><mark>Affectation complète consistante</mark>.</dd>
+    <dt>Problème consistant</dt><dd>Possède <b>au moins une</b> solution. <b>Inconsistant</b> : aucune.</dd>
+  </dl>
+  <p>Exemple : {A←v, B←j, C←j} viole c<sub>BC</sub> ; {A←v, B←j, C←r} est consistante ; {A←v, B←j, C←r, D←v, E←j} est une solution.</p>
+  <p><b>Questions qu'on se pose</b> : l'instance a-t-elle une solution ? En trouver une ? Toutes ? Combien ? La meilleure ? Taille de l'espace de recherche : <mark><b>O(d<sup>n</sup>)</b></mark>.</p>
+  <div class="tbl"><table>
+    <tr><th colspan="2">Méthodes complètes (trouvent une solution ou prouvent qu'il n'y en a pas)</th><th>Méthodes incomplètes</th></tr>
+    <tr><td><b>Énumératives</b> : GT, BT, BJ, GBJ, CBJ, NR, FC, MAC</td><td><b>Structurelles</b> : TC, coupe-cycle</td><td>Recherche locale : British Museum, hill-climbing, tabou, recuit, génétiques</td></tr>
+  </table></div>
+</section>
+
+<!-- II.9 -->
+<section class="sec col" id="csp-bt">
+  <div class="sec-h"><div><span class="tag t3">II.9 · BUT3</span><span class="tag src">cours_2 CT, p. 25–43</span><h2>Generate &amp; Test, Backtrack, backjumping, nogoods</h2></div>
+  <label class="done"><input type="checkbox" id="done-csp-bt"> Maîtrisé</label></div>
+  <h3>Generate and Test (GT)</h3>
+  <p>On <b>génère une affectation complète</b>, on <b>teste</b> si c'est une solution, et on recommence tant qu'on n'a pas trouvé de solution ni essayé toutes les affectations. Complexité <b>O(m·d<sup>n</sup>)</b> : <b>inefficace en pratique</b> (on génère {1,1,1,1,1,1}, puis {1,1,1,1,1,2}… alors que x1 &lt; x2 est violée dès le début).</p>
+  <h3>Backtrack (BT)</h3>
+  <p>On <b>étend progressivement une affectation consistante</b>. En cas d'échec, on change la valeur de la variable courante ; s'il n'y en a plus, on <b>revient sur la variable précédente</b> (retour arrière <b>chronologique</b>). Parcours <b>en profondeur d'abord</b> : peu de mémoire, et on connaît la profondeur (n). Complexité <b>O(m·d<sup>n</sup>)</b> dans le pire cas, mais bien meilleur en pratique.</p>
+<pre><code><span class="k">BT</span>(A, V)
+  <span class="k">Si</span> V = ∅ <span class="k">Alors</span> A est une solution
+  <span class="k">Sinon</span>
+    Choisir x ∈ V ;  d ← d<sub>x</sub>
+    <span class="k">TantQue</span> d ≠ ∅
+      Choisir v dans d ;  d ← d \ {v}
+      <span class="k">Si</span> A ∪ {x ← v} est consistante
+      <span class="k">Alors</span> BT(A ∪ {x ← v}, V \ {x})</code></pre>
+<pre><code><span class="c"># la même chose en Python (A : dict variable -&gt; valeur)</span>
+<span class="k">def</span> backtrack(A, V, D, consistant):
+    <span class="k">if</span> <span class="k">not</span> V:
+        <span class="k">return</span> dict(A)
+    x, reste = V[0], V[1:]
+    <span class="k">for</span> v <span class="k">in</span> D[x]:
+        A[x] = v
+        <span class="k">if</span> consistant(A):          <span class="c"># teste les contraintes dont toutes les variables sont affectées</span>
+            sol = backtrack(A, reste, D, consistant)
+            <span class="k">if</span> sol: <span class="k">return</span> sol
+        <span class="k">del</span> A[x]
+    <span class="k">return</span> None</code></pre>
+  <h3>Trois pistes pour améliorer BT</h3>
+  <div class="tbl"><table>
+    <tr><th>Idée</th><th>Méthodes</th></tr>
+    <tr><td><b>Analyser les échecs</b> : revenir sur une variable <i>responsable</i>, pas forcément la précédente (« retour arrière intelligent »)</td><td>BJ, GBJ, CBJ</td></tr>
+    <tr><td><b>Mémoriser les échecs</b> : ne pas refaire deux fois la même erreur</td><td>NR (Nogood Recording)</td></tr>
+    <tr><td><b>Simplifier le problème</b> : supprimer des valeurs inutiles (filtrage)</td><td>FC, MAC (section suivante)</td></tr>
+  </table></div>
+  <h3>Les backjumpings</h3>
+  <p>Principe commun : <b>identifier les causes de l'échec</b>, puis <mark>revenir sur la variable la plus profonde dans l'arbre de recherche qui soit en cause</mark>. Complexité toujours <b>O(m·d<sup>n</sup>)</b>.</p>
+  <div class="tbl"><table>
+    <tr><th>Méthode</th><th>Cause d'un échec sur la variable courante x</th><th>Particularité</th></tr>
+    <tr><td><b>BJ</b> · Backjumping</td><td>Une variable instanciée <var>y</var> telle que la contrainte {x, y} <b>soit violée</b></td><td>Ne traite que les échecs <b>immédiats</b> (toutes les valeurs de x échouent tout de suite) ; sinon, retour chronologique</td></tr>
+    <tr><td><b>GBJ</b> · Graph-based BJ</td><td><b>Toute</b> variable instanciée <var>y</var> telle qu'il <b>existe une contrainte</b> entre x et y</td><td>Analyse d'après le <b>graphe de contraintes</b> seul : pas besoin de savoir quelle contrainte a été violée, mais la cause est plus grossière</td></tr>
+    <tr><td><b>CBJ</b> · Conflict-directed BJ</td><td>Une variable instanciée <var>y</var> telle que {x, y} <b>soit violée</b>, parmi les conflits <b>effectivement rencontrés</b></td><td>Garde un <b>ensemble de conflits</b> par variable et le transmet quand on remonte : sait sauter même après des échecs non immédiats</td></tr>
+  </table></div>
+  <p><b>Synthèse</b>. + : évite certaines redondances, plus efficace que BT. − : un <b>surcoût en temps</b> pas toujours compensé par les économies.</p>
+  <h3>Mémoriser les échecs : Nogood Recording (NR)</h3>
+  <dl class="defs">
+    <dt>Nogood</dt><dd>Un <b>tuple interdit</b> par une contrainte. Mémoriser un échec, c'est l'ajouter comme <b>nouvelle contrainte</b>.</dd>
+    <dt>NR</dt><dd>Identifier les causes de l'échec <b>comme CBJ</b>, mémoriser le <b>nogood</b> correspondant à l'affectation des variables en cause, et utiliser le <b>backjumping de CBJ</b>.</dd>
+    <dt>Limites</dt><dd>+ évite des redondances. − surcoût en temps, et le nombre de nogoods peut être <b>exponentiel</b> : en pratique on limite ce qu'on mémorise, par exemple des nogoods de <b>taille ≤ 2</b>.</dd>
+  </dl>
+  <p>Sur le système d'inéquations : x3 ← 2 échoue toujours (x3² = 4 &gt; x6), on mémorise le nogood <b>{x3 ← 2}</b>, puis <b>{x3 ← 3}</b>. Du coup, avec x1 = 1, x3 n'a plus aucune valeur possible : on mémorise <b>{x1 ← 1}</b>, et on ne réexplorera plus jamais ces branches.</p>
+</section>
+
+<!-- II.10 -->
+<section class="sec col" id="csp-filtrage">
+  <div class="sec-h"><div><span class="tag t3">II.10 · BUT3</span><span class="tag src">cours_3 CT, p. 4–18 · TD2 CSP</span><h2>Filtrage : Forward-Checking, arc-consistance, MAC</h2></div>
+  <label class="done"><input type="checkbox" id="done-csp-filtrage"> Maîtrisé</label></div>
+  <dl class="defs">
+    <dt>Branche inutile</dt><dd>Branche qui ne conduit à aucune solution.</dd>
+    <dt>Valeur inutile</dt><dd>Valeur qui ne participe à aucune solution.</dd>
+    <dt>Filtrage</dt><dd>Simplifier le problème en <mark>supprimant des valeurs inutiles</mark>, pour éviter de développer des branches inutiles. Ces méthodes <b>anticipent les échecs immédiats</b> de Backtrack.</dd>
+  </dl>
+  <h3>Forward-Checking (FC) : un filtrage purement local</h3>
+  <p>Soit <var>x</var> la variable courante. Après l'avoir affectée :</p>
+  <ul>
+    <li>on filtre les domaines des <b>variables voisines de x</b> (non instanciées) en retirant les valeurs <b>incompatibles avec l'affectation de x</b> ;</li>
+    <li>si un domaine devient <b>vide</b>, on essaie une nouvelle valeur pour x ;</li>
+    <li>si toutes les valeurs ont été essayées, on revient sur la variable précédente (en <b>restaurant</b> les domaines).</li>
+  </ul>
+  <p>Exemple du cours : <code>x1 &lt; x2, x1 &lt; x3, x1 &lt; x4, x2 &lt; x5, x3 &gt; x5</code>, <code>x3 ∈ {1,2}</code>, les autres dans <code>{1,2,3}</code>.</p>
+  <div class="tbl"><table>
+    <tr><th>Étape</th><th>Affectation</th><th>Filtrage</th><th>Verdict</th></tr>
+    <tr><td>1</td><td class="mono">x1 ← 1</td><td class="mono">d2 = {2,3}, d3 = {2}, d4 = {2,3}</td><td>on continue</td></tr>
+    <tr><td>2</td><td class="mono">x2 ← 2</td><td class="mono">d5 = {3}</td><td>on continue</td></tr>
+    <tr><td>3</td><td class="mono">x3 ← 2</td><td class="mono">x3 &gt; x5 ⇒ d5 = ∅</td><td class="n">échec, plus de valeur pour x3</td></tr>
+    <tr><td>4</td><td class="mono">x2 ← 3</td><td class="mono">x2 &lt; x5 ⇒ d5 = ∅</td><td class="n">échec, x2 épuisée</td></tr>
+    <tr><td>5</td><td class="mono">x1 ← 2</td><td class="mono">d3 = ∅ (x3 ≤ 2)</td><td class="n">échec</td></tr>
+    <tr><td>6</td><td class="mono">x1 ← 3</td><td class="mono">d2 = ∅</td><td class="n">échec : problème inconsistant</td></tr>
+  </table></div>
+<pre><code><span class="k">Forward-Checking</span>(A, V)
+  <span class="k">Si</span> V = ∅ <span class="k">Alors</span> A est une solution
+  <span class="k">Sinon</span>  Choisir x ∈ V ;  d ← d<sub>x</sub>
+    <span class="k">TantQue</span> d ≠ ∅
+      Choisir v dans d ;  d ← d \ {v}
+      Sauvegarde(V \ {x})
+      <span class="k">Si</span> Check-Forward(x, v, V) <span class="k">Alors</span> Forward-Checking(A ∪ {x ← v}, V \ {x})
+      Restauration(V \ {x})
+
+<span class="k">Check-Forward</span>(x<sub>i</sub>, v, V) : pour chaque x<sub>j</sub> ∈ V \ {x<sub>i</sub>}, retirer de d<sub>j</sub> toute valeur v' telle que
+  {x<sub>i</sub> ← v, x<sub>j</sub> ← v'} soit inconsistante ; si un d<sub>j</sub> devient vide, renvoyer Faux.</code></pre>
+
+  <h3>Arc-consistance (AC)</h3>
+  <div class="fx"><span class="lbl">Définition à savoir mot pour mot</span>
+    <span class="line">Un domaine <var>d<sub>x</sub></var> est <b>arc-consistant</b> si <var>d<sub>x</sub></var> ≠ ∅ et</span>
+    <span class="line">∀<var>v</var> ∈ <var>d<sub>x</sub></var>, ∀<var>c</var> = {<var>x</var>, <var>y</var>} ∈ <var>C</var>, ∃<var>w</var> ∈ <var>d<sub>y</sub></var>, (<var>v</var>, <var>w</var>) ∈ <var>r<sub>c</sub></var></span>
+    <span class="line small">Chaque valeur a au moins un <b>support</b> dans le domaine de chaque voisin.</span></div>
+  <p>Un problème est arc-consistant si <b>tous</b> ses domaines le sont. Le <b>filtrage par AC</b> supprime les valeurs qui rendent un domaine arc-inconsistant, jusqu'à ce que plus rien ne bouge. Complexité en temps <b>O(m·d²)</b>. Si un domaine devient vide, le problème est inconsistant, et on le sait <b>sans aucune recherche</b>.</p>
+  <div class="stepper" id="ac-stepper" aria-live="polite">
+    <div class="small"><b>Pas à pas</b> · même problème que FC : <code>x1&lt;x2, x1&lt;x3, x1&lt;x4, x2&lt;x5, x3&gt;x5</code></div>
+    <div class="doms" id="ac-doms"></div>
+    <div class="cap" id="ac-cap"></div>
+    <div class="ctrl" style="margin-top:12px">
+      <button class="btn" type="button" id="ac-prev">← Étape précédente</button>
+      <button class="btn" type="button" id="ac-next">Étape suivante →</button>
+      <span class="count" id="ac-count"></span>
+    </div>
+  </div>
+
+  <h3>MAC : Maintien de l'Arc-Consistance</h3>
+  <p>Même schéma que FC, mais après chaque affectation de x on rend <b>arc-consistants les domaines de toutes les variables non instanciées</b> (et plus seulement ceux des voisines de x). Domaine vide : nouvelle valeur pour x ; plus de valeur : retour en arrière.</p>
+  <div class="grid2">
+    <div class="box"><h4>FC contre MAC</h4>
+      <ul>
+        <li>FC développe <b>plus de nœuds</b> que MAC.</li>
+        <li>Mais un nœud coûte <b>plus cher</b> avec MAC, qui fait plus de tests de contraintes à chaque nœud.</li>
+        <li>En temps, le meilleur est <b>tantôt FC, tantôt MAC</b>.</li>
+      </ul></div>
+    <div class="box"><h4>Quelles contraintes on teste</h4>
+      <ul>
+        <li><b>BT</b> : entre x et les variables <b>déjà instanciées</b>.</li>
+        <li><b>FC</b> : entre x et les variables <b>non instanciées</b> voisines.</li>
+        <li><b>MAC</b> : en plus, <b>entre variables non instanciées</b>, par propagation.</li>
+      </ul></div>
+  </div>
+  <h3>Passage aux CSP n-aires</h3>
+  <p>BT et MAC n'ont <b>qu'une seule généralisation</b> ; FC en a <b>plusieurs</b>. Autre façon de voir FC : c'est une <b>forme allégée de l'arc-consistance</b>, qui n'exploite que les contraintes liant une variable instanciée à une non instanciée.</p>
+  <div class="tbl"><table>
+    <tr><th>Variante</th><th>Contraintes exploitées</th><th>Propagation</th></tr>
+    <tr><td><b>nFC0</b></td><td>liant (au moins) la variable courante à <b>une seule</b> variable non instanciée</td><td>AC en <b>une seule passe</b></td></tr>
+    <tr><td><b>nFC2</b></td><td>liant (au moins) la variable courante à <b>au moins une</b> variable non instanciée</td><td>AC en <b>une seule passe</b></td></tr>
+    <tr><td><b>nFC5</b></td><td>liant <b>au moins une variable instanciée</b> à au moins une non instanciée</td><td>AC jusqu'au <b>point fixe</b></td></tr>
+  </table></div>
+  <p><b>Hybridation</b> : on peut mixer analyse des échecs, mémorisation et filtrage (FC-CBJ, MAC-CBJ…), mais attention, <b>ces approches ne sont pas complémentaires</b> (le filtrage évite déjà une partie des échecs que le backjumping aurait traités).</p>
+  <h3>Heuristiques d'ordre (TD)</h3>
+  <ul>
+    <li><b>Principe de l'échec d'abord</b> (<i>fail-first</i>) : instancier d'abord les variables qui ont le plus de chances de violer une contrainte, pour <b>couper l'arbre le plus tôt possible</b>.</li>
+    <li><b>Statique</b> (ordre fixé avant l'exécution) : <b>cardinalité maximum</b> (la variable liée au plus grand nombre de variables déjà choisies), taille du domaine, nombre de contraintes, difficulté des contraintes.</li>
+    <li><b>Dynamique</b> : la variable de <b>plus petit domaine restant</b> (<b>dom</b>, ou MRV), c'est-à-dire celle qui a le moins de valeurs compatibles avec les instanciations déjà faites.</li>
+    <li>L'<b>ordre des valeurs</b> n'a <b>aucune influence sur un problème inconsistant</b> : il faut de toute façon essayer (et voir échouer) toutes les valeurs, et l'arbre parcouru est le même. Il ne compte que pour <b>trouver vite une solution</b> quand il y en a une.</li>
+  </ul>
+</section>
+
+<!-- II.11 -->
+<section class="sec col" id="csp-structure">
+  <div class="sec-h"><div><span class="tag t3">II.11 · BUT3</span><span class="tag src">cours_3 CT, p. 19–24</span><h2>Méthodes structurelles</h2></div>
+  <label class="done"><input type="checkbox" id="done-csp-structure"> Maîtrisé</label></div>
+  <p>La <b>structure</b> d'un CSP, c'est son graphe de contraintes. Propriété clé : <mark>un CSP dont le graphe de contraintes est un arbre se résout en temps polynomial</mark>. Idée : se ramener à un CSP arborescent.</p>
+  <div class="grid2">
+    <figure style="margin:0">
+      <svg viewBox="0 0 300 220" width="100%" role="img" aria-label="Graphe à 5 variables : X1-X2, X1-X3, X1-X4, X2-X5, X3-X5">
+        <g stroke="var(--ink-soft)" stroke-width="2">
+          <line x1="150" y1="35" x2="70" y2="105"/><line x1="70" y1="105" x2="230" y2="105"/><line x1="70" y1="105" x2="70" y2="185"/>
+          <line x1="230" y1="105" x2="230" y2="185"/><line x1="70" y1="185" x2="230" y2="185"/>
+        </g>
+        <line x1="70" y1="185" x2="230" y2="105" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5 5"/>
+        <g fill="var(--paper)" stroke="var(--ink)" stroke-width="1.5">
+          <circle cx="150" cy="35" r="19"/><circle cx="70" cy="105" r="19"/><circle cx="230" cy="105" r="19"/><circle cx="70" cy="185" r="19"/><circle cx="230" cy="185" r="19"/>
+        </g>
+        <circle cx="70" cy="105" r="19" fill="var(--red-soft)" stroke="var(--red)" stroke-width="2"/>
+        <g fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">
+          <text x="150" y="40">X4</text><text x="70" y="110">X1</text><text x="230" y="110">X2</text><text x="70" y="190">X3</text><text x="230" y="190">X5</text>
+        </g>
+      </svg>
+      <figcaption>Contraintes de l'exemple FC. Pointillé bleu : l'arête ajoutée pour former les regroupements. En rouge : un coupe-cycle possible, {X1}.</figcaption>
+    </figure>
+    <div>
+      <h4 style="margin-top:6px">Regroupement en arbre (TC)</h4>
+      <ul>
+        <li>On construit un <b>nouveau CSP</b> en <b>regroupant</b> des variables.</li>
+        <li>Une variable du nouveau CSP = un regroupement ; son <b>domaine = l'ensemble des solutions du regroupement</b>.</li>
+        <li>Les regroupements forment un arbre.</li>
+        <li>Complexité <b>O(n·d<sup>r</sup>)</b>, avec <b>r</b> la taille du plus grand regroupement.</li>
+      </ul>
+      <p class="small">Ici : {X1, X2, X3}, {X2, X3, X5}, {X1, X4} → <b>r = 3</b>.</p>
+    </div>
+  </div>
+  <h3>Méthode du coupe-cycle</h3>
+  <dl class="defs">
+    <dt>Coupe-cycle</dt><dd>Ensemble de sommets qui, une fois retirés, <b>rendent le graphe arborescent</b>.</dd>
+    <dt>Principe</dt><dd>1) calculer un ensemble coupe-cycle ; 2) chercher les solutions du coupe-cycle ; 3) tester si l'on peut <b>étendre</b> chacune au sous-problème arborescent restant (polynomial).</dd>
+    <dt>Complexité</dt><dd><b>O(n·d<sup>c+2</sup>)</b>, avec <b>c</b> la taille du coupe-cycle. Ici un seul sommet suffit : <b>c = 1</b>.</dd>
+  </dl>
+  <p>Bilan : <b>meilleure complexité théorique</b> que les énumératives, mais une <b>efficacité pratique à prouver</b>.</p>
+</section>
+
+<!-- II.12 -->
+<section class="sec col" id="csp-incompletes">
+  <div class="sec-h"><div><span class="tag t3">II.12 · BUT3</span><span class="tag src">cours_3 CT, p. 25–47</span><h2>Méthodes incomplètes : la recherche locale</h2></div>
+  <label class="done"><input type="checkbox" id="done-csp-incompletes"> Maîtrisé</label></div>
+  <p>Exploration <b>non systématique</b> (on dit aussi recherche locale ou par tâtonnement). On part d'une instanciation <b>complète</b> et, à chaque étape, on en choisit une nouvelle parmi les <b>voisines</b> de l'affectation courante.</p>
+<pre><code>A ← A<sub>init</sub>
+<span class="k">TantQue</span> A n'est pas une solution
+    choisir A' parmi les voisines de A
+    A ← A'
+<span class="c">La façon de choisir A' caractérise la méthode.</span></code></pre>
+  <dl class="defs">
+    <dt>Affectation voisine</dt><dd>Une affectation dont la valeur d'<b>une seule variable</b> diffère de celle de <var>A</var>.</dd>
+    <dt>Critère de proximité</dt><dd><b>Heuristique</b> qui estime l'éloignement entre l'affectation courante et une solution, par exemple le <b>nombre de contraintes violées</b>.</dd>
+    <dt>Optimum local</dt><dd>Affectation pour laquelle <b>aucune voisine n'améliore</b> le critère.</dd>
+  </dl>
+  <div class="grid2">
+    <div class="box"><h4>Avantages</h4><ul><li>Simples à implémenter.</li><li>On peut trouver <b>rapidement</b> une solution.</li><li>Intéressantes pour les <b>gros problèmes</b>.</li></ul></div>
+    <div class="box"><h4>Inconvénients</h4><ul><li>On peut ne <b>jamais</b> atteindre une solution.</li><li>On peut <b>boucler</b> à l'infini.</li><li>On ne peut <b>pas conclure qu'il n'existe pas</b> de solution.</li></ul></div>
+  </div>
+  <h3>Les cinq méthodes</h3>
+  <dl class="defs">
+    <dt>British Museum</dt><dd>Choix <b>aléatoire</b> de la prochaine affectation parmi les voisines. Très inefficace en pratique.</dd>
+    <dt>Hill-climbing</dt><dd>(escalade) On choisit une voisine qui <b>améliore</b> le critère. Inconvénient : on peut rester bloqué dans un <b>optimum local</b> ; l'efficacité dépend beaucoup du nombre d'optima locaux.</dd>
+    <dt>Recherche taboue</dt><dd>Pour <b>éviter de boucler</b> : une <b>liste taboue</b> contient les affectations déjà étudiées ; on prend la <b>meilleure voisine qui n'est pas dans la liste</b>. Coût mémoire prohibitif, donc liste de <b>taille limitée</b> en pratique.</dd>
+    <dt>Recuit simulé</dt><dd>Inspiré du recuit en métallurgie (on chauffe, on refroidit lentement, on réchauffe de temps en temps pour quitter un état métastable). But : <b>sortir des optima locaux</b>. On prend une voisine qui <b>améliore</b>, ou une qui <b>détériore</b> le critère avec une probabilité e<sup>−Δf/T</sup>.</dd>
+    <dt>Algorithmes génétiques</dt><dd><b>Gène</b> = valeur d'une variable · <b>individu</b> = affectation complète · <b>population</b> = ensemble d'affectations complètes. On part d'une population, on produit de nouveaux individus par <b>reproduction sélective, croisement, mutation</b>, on <b>garde les meilleurs</b>, et on recommence jusqu'à une solution.</dd>
+  </dl>
+  <div class="fx"><span class="lbl">Recuit simulé</span><span class="line">P(accepter une voisine pire) = e<sup>−Δ<var>f</var> / <var>T</var></sup> &nbsp;&nbsp; Δ<var>f</var> = écart de valeur entre A et A′, <var>T</var> = température qui <b>décroît</b> au cours du temps</span>
+    <span class="line small">La probabilité diminue avec le temps, et dépend de la qualité de la voisine (plus elle est mauvaise, moins on l'accepte).</span></div>
+  <h4>Hill-climbing sur l'exemple du cours</h4>
+  <p class="small">Contraintes <code>x1&lt;x2, x1&lt;x3, x1≤x4, x2&lt;x5, x3&lt;x5</code>, critère = nombre de contraintes violées (entre parenthèses).</p>
+  <div class="tbl"><table>
+    <tr><th>x1</th><th>x2</th><th>x3</th><th>x4</th><th>x5</th><th>Violées</th><th></th></tr>
+    <tr><td>3</td><td>1</td><td>1</td><td>1</td><td>1</td><td>5</td><td>départ</td></tr>
+    <tr><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>4</td><td>on change x1</td></tr>
+    <tr><td>1</td><td>1</td><td>1</td><td>1</td><td>2</td><td>2</td><td>on change x5</td></tr>
+    <tr><td>1</td><td>1</td><td>1</td><td>2</td><td>2</td><td>2</td><td rowspan="4">plateau à 2 : aucune voisine ne fait mieux, on tourne en rond et on revient sur {1,1,1,2,2}</td></tr>
+    <tr><td>2</td><td>1</td><td>1</td><td>2</td><td>2</td><td>2</td></tr>
+    <tr><td>2</td><td>3</td><td>1</td><td>2</td><td>2</td><td>2</td></tr>
+    <tr><td>1</td><td>3</td><td>1</td><td>2</td><td>2</td><td>2</td></tr>
+  </table></div>
+  <p>La <b>taboue</b> interdit de revenir sur {1,1,1,2,2} et passe à {1,3,2,2,2}. Le <b>recuit</b> peut accepter une voisine pire comme {3,1,1,2,2} (3 violées) pour s'échapper.</p>
+  <h4>Génétique sur le même problème</h4>
+  <div class="tbl"><table>
+    <tr><th>Individu</th><th>x1 x2 x3 x4 x5</th><th>Contraintes violées</th></tr>
+    <tr><td>A1</td><td class="mono">3 1 1 1 3</td><td>c12, c13, c14</td></tr>
+    <tr><td>A2</td><td class="mono">1 2 2 3 2</td><td>c25, c35 : A2 a <b>plus de chances de se reproduire</b></td></tr>
+    <tr><td>A3 = croisement</td><td class="mono">3 1 <b>2 3 2</b></td><td>c12, c13, c35 (zone x3..x5 permutée)</td></tr>
+    <tr><td>A4 = croisement</td><td class="mono">1 2 <b>1 1 3</b></td><td>c13</td></tr>
+    <tr><td>A4 muté (x3)</td><td class="mono">1 2 <b>2</b> 1 3</td><td class="y">aucune : c'est une solution</td></tr>
+  </table></div>
+  <p>Paramètres à régler : <b>taille de la population, critère de sélection, % de croisements, % de mutations</b>. Les <b>croisements sont plus fréquents que les mutations</b>. Plus généralement, chaque méthode a ses paramètres (heuristique d'éloignement, vitesse de décroissance de T, longueur de la liste taboue…) et son efficacité en dépend.</p>
+  <h3>Choisir une méthode</h3>
+  <div class="tbl"><table>
+    <tr><th>Famille</th><th>Verdict du cours</th></tr>
+    <tr><td>Complètes · énumératives</td><td><b>Efficaces en pratique</b></td></tr>
+    <tr><td>Complètes · structurelles</td><td><b>Meilleure complexité</b>, mais efficacité pratique <b>à prouver</b></td></tr>
+    <tr><td>Incomplètes</td><td>Intéressantes pour résoudre les <b>gros problèmes</b></td></tr>
+  </table></div>
+</section>
+
+<!-- II.13 -->
+<section class="sec col" id="td-sudoku">
+  <div class="sec-h"><div><span class="tag t3">II.13 · BUT3</span><span class="tag src">TD2 CSP · ton notebook</span><h2>TD : le Sudoku comme CSP</h2></div>
+  <label class="done"><input type="checkbox" id="done-td-sudoku"> Maîtrisé</label></div>
+  <h3>Ex. 1 · modélisation (à savoir réciter)</h3>
+  <dl class="defs">
+    <dt>X</dt><dd><b>81 variables</b>, une par case x<sub>i,j</sub> (i, j ∈ 1..9).</dd>
+    <dt>D</dt><dd>Case vide : <b>{1, …, 9}</b> ; case donnée : le singleton de sa valeur (contrainte unaire).</dd>
+    <dt>C</dt><dd><b>27 contraintes « toutes différentes »</b> d'arité 9 : 9 lignes, 9 colonnes, 9 blocs 3×3. (En binaire : x ≠ y pour chaque paire de cases d'une même ligne, colonne ou bloc ; chaque case a <b>20 voisines</b>.)</dd>
+    <dt>R</dt><dd>Pour chaque contrainte : les 9-uplets de valeurs <b>deux à deux distinctes</b> (les permutations de 1..9).</dd>
+  </dl>
+  <h3>Ex. 2 · Backtrack sur la grille (liste de listes, 0 = vide)</h3>
+<pre><code><span class="k">def</span> est_consistant(g, l, c, v):
+    <span class="k">if</span> v <span class="k">in</span> g[l]: <span class="k">return</span> False                           <span class="c"># ligne</span>
+    <span class="k">if</span> any(g[i][c] == v <span class="k">for</span> i <span class="k">in</span> range(9)): <span class="k">return</span> False   <span class="c"># colonne</span>
+    bl, bc = 3*(l//3), 3*(c//3)                                  <span class="c"># bloc</span>
+    <span class="k">return</span> all(g[i][j] != v <span class="k">for</span> i <span class="k">in</span> range(bl, bl+3) <span class="k">for</span> j <span class="k">in</span> range(bc, bc+3))
+
+<span class="k">def</span> Backtrack(g):
+    case = case_vide(g)            <span class="c"># première case à 0, None si grille pleine</span>
+    <span class="k">if</span> case <span class="k">is</span> None: <span class="k">return</span> True
+    l, c = case
+    <span class="k">for</span> v <span class="k">in</span> range(1, 10):
+        <span class="k">if</span> est_consistant(g, l, c, v):
+            g[l][c] = v
+            <span class="k">if</span> Backtrack(g): <span class="k">return</span> True
+            g[l][c] = 0             <span class="c"># on défait : retour arrière</span>
+    <span class="k">return</span> False</code></pre>
+  <h3>Ex. 3 et 5 · Forward-Checking, puis la plus petite case d'abord</h3>
+<pre><code><span class="k">def</span> Forward_Checking(g, dom, libres):
+    <span class="k">if</span> <span class="k">not</span> libres: <span class="k">return</span> True
+    x = min(libres, key=<span class="k">lambda</span> c: len(dom[c]))   <span class="c"># heuristique dom / MRV (ex. 5)</span>
+    reste = [c <span class="k">for</span> c <span class="k">in</span> libres <span class="k">if</span> c != x]
+    <span class="k">for</span> v <span class="k">in</span> sorted(dom[x]):
+        g[x[0]][x[1]] = v
+        retires, ok = [], True
+        <span class="k">for</span> y <span class="k">in</span> voisins(*x):                     <span class="c"># Check-Forward</span>
+            <span class="k">if</span> y <span class="k">in</span> reste <span class="k">and</span> v <span class="k">in</span> dom[y]:
+                dom[y].discard(v); retires.append(y)
+                <span class="k">if</span> <span class="k">not</span> dom[y]: ok = False        <span class="c"># domaine vide : échec anticipé</span>
+        <span class="k">if</span> ok <span class="k">and</span> Forward_Checking(g, dom, reste): <span class="k">return</span> True
+        <span class="k">for</span> y <span class="k">in</span> retires: dom[y].add(v)          <span class="c"># Restauration</span>
+        g[x[0]][x[1]] = 0
+    <span class="k">return</span> False</code></pre>
+  <div class="tbl"><table>
+    <tr><th>Méthode (même grille)</th><th>Nœuds explorés</th></tr>
+    <tr><td>Backtracking simple</td><td>86</td></tr>
+    <tr><td>Forward-Checking</td><td>45</td></tr>
+    <tr><td>Forward-Checking + MRV</td><td>42</td></tr>
+  </table></div>
+  <p>Interprétation : FC détecte les domaines vides <b>avant</b> d'essayer d'instancier la case concernée, donc coupe plus tôt ; MRV prend les cases les plus contraintes en premier (échec d'abord). L'écart est faible car la grille est facile, il serait bien plus grand sur une grille difficile.</p>
+  <p class="note bl"><b>Ex. 4 :</b> l'ordre des valeurs n'influence pas un problème inconsistant, car toutes les valeurs finissent par être essayées et rejetées. C'est l'ordre des <b>variables</b> qui change la taille de l'arbre.</p>
+</section>
+
+<!-- ============ PARTIE III ============ -->
+<div class="part col">
+  <span class="num">Partie III</span>
+  <h2>S'entraîner la veille</h2>
+  <p>Le formulaire à recopier une fois à la main, les pièges qui coûtent des points, et des flashcards pour se tester.</p>
+</div>
+
+<section class="sec col" id="formulaire">
+  <div class="sec-h"><div><span class="tag">III.1 · Récap</span><h2>Formulaire et complexités</h2></div>
+  <label class="done"><input type="checkbox" id="done-formulaire"> Maîtrisé</label></div>
+  <h3>Complexités CSP (n variables, domaines ≤ d, m contraintes)</h3>
+  <div class="tbl"><table>
+    <tr><th>Quoi</th><th>Complexité</th><th>À retenir</th></tr>
+    <tr><td>Espace de recherche</td><td class="mono">O(dⁿ)</td><td>toutes les affectations complètes</td></tr>
+    <tr><td>Generate &amp; Test</td><td class="mono">O(m·dⁿ)</td><td>inefficace en pratique</td></tr>
+    <tr><td>Backtrack, BJ, GBJ, CBJ</td><td class="mono">O(m·dⁿ)</td><td>même pire cas, meilleurs en pratique</td></tr>
+    <tr><td>Filtrage par arc-consistance</td><td class="mono">O(m·d²)</td><td>polynomial</td></tr>
+    <tr><td>Regroupement en arbre (TC)</td><td class="mono">O(n·dʳ)</td><td>r = taille du plus grand regroupement</td></tr>
+    <tr><td>Coupe-cycle</td><td class="mono">O(n·d<sup>c+2</sup>)</td><td>c = taille du coupe-cycle</td></tr>
+    <tr><td>CSP arborescent</td><td>polynomial</td><td>la propriété qui motive les méthodes structurelles</td></tr>
+    <tr><td>ASP (propositionnel)</td><td>NP-complet</td><td>existence d'un modèle stable</td></tr>
+  </table></div>
+  <h3>Formules ML</h3>
+  <div class="tbl"><table>
+    <tr><th>Nom</th><th>Formule</th></tr>
+    <tr><td>Standardisation</td><td>x′ = (x − μ) / σ</td></tr>
+    <tr><td>Min-max</td><td>x′ = (x − min) / (max − min)</td></tr>
+    <tr><td>MSE · MAE</td><td>(1/n) Σ (y − ŷ)² · (1/n) Σ |y − ŷ|</td></tr>
+    <tr><td>R²</td><td>1 − Σ(y − ŷ)² / Σ(y − ȳ)²</td></tr>
+    <tr><td>Cross-entropy · BCE</td><td>−Σ y<sub>j</sub> log ŷ<sub>j</sub> · −[y log ŷ + (1−y) log(1−ŷ)]</td></tr>
+    <tr><td>Précision · Rappel</td><td>VP/(VP+FP) · VP/(VP+FN)</td></tr>
+    <tr><td>Accuracy · F1</td><td>(VP+VN)/total · 2PR/(P+R)</td></tr>
+    <tr><td>Bayes</td><td>P(c|x) = P(x|c)·P(c) / P(x)</td></tr>
+    <tr><td>Pseudo-inverse</td><td>θ = X⁺Y, X⁺ = (XᵀX)⁻¹Xᵀ</td></tr>
+    <tr><td>Couche dense</td><td>y = σ(Wx + b), W ∈ ℝ<sup>n×p</sup> · n·p + n paramètres</td></tr>
+    <tr><td>Sigmoïde · ReLU · softmax</td><td>1/(1+e⁻ˣ) · max(0, x) · e<sup>z<sub>j</sub></sup>/Σe<sup>z<sub>k</sub></sup></td></tr>
+    <tr><td>Descente de gradient</td><td>θ ← θ − η ∇L(θ)</td></tr>
+    <tr><td>Recuit simulé</td><td>P(accepter pire) = e<sup>−Δf/T</sup></td></tr>
+    <tr><td>Régression 1D</td><td>a = (NΣxy − ΣxΣy) / (NΣx² − (Σx)²) · b = (Σx²Σy − ΣxΣxy) / (NΣx² − (Σx)²)</td></tr>
+    <tr><td>Table d'un agent</td><td>Σ<sub>t=1..T</sub> |P|ᵗ entrées</td></tr>
+  </table></div>
+  <h3>Qui a dit quoi</h3>
+  <p class="small">Searle 1980 : IA forte / faible · Turing 1950 : le test · Gödel 1931 : incomplétude · Church-Turing 1936 : indécidabilité · Robinson 1965 : unification · Kowalski 1973 : SLD · Colmerauer &amp; Roussel 1975 : Prolog · Rosenblatt 1957 : perceptron · LeCun 1998 : MNIST / LeNet · Haugeland, Winston, Rich &amp; Knight, Nilsson : les 4 définitions.</p>
+</section>
+
+<section class="sec col" id="pieges">
+  <div class="sec-h"><div><span class="tag">III.2 · Points faciles à perdre</span><h2>Les pièges d'exam</h2></div>
+  <label class="done"><input type="checkbox" id="done-pieges"> Maîtrisé</label></div>
+  <ul class="pitfalls">
+    <li><b>BJ, GBJ et CBJ ne sont pas synonymes.</b> BJ : contrainte violée, échecs immédiats seulement. GBJ : existence d'une contrainte dans le graphe. CBJ : conflits réellement rencontrés, mémorisés et propagés quand on remonte.</li>
+    <li><b>FC ne filtre que les voisines de la variable courante</b> ; MAC rend arc-consistantes <b>toutes</b> les non instanciées. MAC explore moins de nœuds mais chaque nœud coûte plus : aucun des deux ne gagne toujours.</li>
+    <li><b>Une méthode incomplète ne prouve jamais l'inconsistance.</b> Elle peut boucler ou ne jamais trouver.</li>
+    <li><b>Solution = affectation complète ET consistante.</b> Une affectation partielle consistante n'est pas une solution.</li>
+    <li><b>Domaine arc-consistant : il doit aussi être non vide.</b> Oublier « d<sub>x</sub> ≠ ∅ » dans la définition coûte des points.</li>
+    <li><b>L'ordre des valeurs ne change rien sur un problème inconsistant</b> ; l'ordre des variables, si.</li>
+    <li><b>La transformation n-aire vers binaire est polynomiale</b>, mais le problème reste aussi difficile.</li>
+    <li><b>Activation identity = modèle linéaire</b>, quel que soit le nombre de couches. C'est pour ça que Versicolor, coincée entre deux classes, n'est pas séparée.</li>
+    <li><b>L'accuracy trompe quand les classes sont déséquilibrées.</b> Précision si les FP coûtent cher (spam), rappel si les FN coûtent cher (médical), F1 pour équilibrer.</li>
+    <li><b>Validation ≠ test.</b> La validation sert à régler les hyperparamètres ; le test ne sert qu'à l'évaluation finale.</li>
+    <li><b>Paramètre ≠ hyperparamètre.</b> Poids et biais sont appris ; nombre de couches, η, k, max_iter sont fixés avant.</li>
+    <li><b>MSE converge vers la moyenne, MAE vers la médiane.</b> MAE est plus robuste aux valeurs aberrantes.</li>
+    <li><b>Multi-classe = softmax + cross-entropy + one-hot.</b> Binaire = 1 neurone sigmoïde + binary cross-entropy. Régression : pas d'activation en sortie.</li>
+    <li><b>Epoch ≠ itération.</b> Une epoch = tous les batchs passés une fois.</li>
+    <li><b>Prolog : <code>=</code> unifie, <code>==</code> compare, <code>=:=</code> calcule les deux côtés, <code>is</code> calcule à droite.</b> <code>5 = 3+2</code> est faux.</li>
+    <li><b>La négation par échec n'est pas la négation logique</b>, et avec le cut l'ordre des buts change le résultat.</li>
+    <li><b>Conséquence logique par réfutation</b> : on ajoute la <b>négation</b> de ce qu'on veut prouver et on cherche □.</li>
+  </ul>
+</section>
+
+<section class="sec col" id="flashcards">
+  <div class="sec-h"><div><span class="tag">III.3 · Auto-évaluation</span><h2>Flashcards</h2></div>
+  <label class="done"><input type="checkbox" id="done-flashcards"> Maîtrisé</label></div>
+  <p class="small">Réponds à voix haute ou par écrit, <b>puis</b> ouvre la carte.</p>
+  <div class="cardbar">
+    <button class="btn" type="button" id="cards-open">Tout ouvrir</button>
+    <button class="btn" type="button" id="cards-close">Tout refermer</button>
+  </div>
+
+  <h3>CSP</h3>
+  <div class="cards">
+    <details class="card"><summary>Donne la définition formelle d'un CSP.</summary><div class="a">P = (X, D, C, R) : X ensemble de n variables, D domaines finis de taille ≤ d, C ensemble de m contraintes (sous-ensembles de variables), R relations de compatibilité (tuples autorisés).</div></details>
+    <details class="card"><summary>Qu'est-ce qu'une solution ? Un problème consistant ?</summary><div class="a">Solution = affectation complète consistante. Problème consistant = au moins une solution ; inconsistant = aucune.</div></details>
+    <details class="card"><summary>Extension ou intention ?</summary><div class="a">Extension : on liste les tuples autorisés (ou interdits). Intention : on donne une formule (équation, inéquation, prédicat).</div></details>
+    <details class="card"><summary>Principe et complexité de Generate &amp; Test.</summary><div class="a">Générer une affectation complète, tester, recommencer. O(m·dⁿ), inefficace en pratique.</div></details>
+    <details class="card"><summary>Principe du Backtrack ?</summary><div class="a">Étendre progressivement une affectation consistante ; en cas d'échec changer la valeur courante ; si plus de valeur, revenir sur la variable précédente (retour chronologique). O(m·dⁿ).</div></details>
+    <details class="card"><summary>Cause d'un échec pour GBJ ?</summary><div class="a">Toute variable instanciée y telle qu'il existe une contrainte entre x et y dans le graphe. On revient sur la plus profonde.</div></details>
+    <details class="card"><summary>Qu'est-ce qu'un nogood ? Que fait NR ?</summary><div class="a">Un tuple interdit. NR identifie la cause de l'échec comme CBJ, mémorise le nogood correspondant (nouvelle contrainte) et saute comme CBJ. En pratique, nogoods de taille ≤ 2.</div></details>
+    <details class="card"><summary>Principe du Forward-Checking ?</summary><div class="a">Après avoir affecté x, retirer des domaines des voisines non instanciées les valeurs incompatibles ; si un domaine devient vide, nouvelle valeur pour x ; sinon retour arrière.</div></details>
+    <details class="card"><summary>Définition d'un domaine arc-consistant.</summary><div class="a">dₓ ≠ ∅ et ∀v ∈ dₓ, ∀c = {x, y} ∈ C, ∃w ∈ d_y tel que (v, w) ∈ r_c. Filtrage en O(m·d²).</div></details>
+    <details class="card"><summary>FC ou MAC : lequel est le meilleur ?</summary><div class="a">Ça dépend. MAC développe moins de nœuds mais chaque nœud coûte plus (plus de tests de contraintes). En temps, tantôt l'un, tantôt l'autre.</div></details>
+    <details class="card"><summary>Différence nFC0 / nFC2 / nFC5 ?</summary><div class="a">nFC0 : contraintes liant la variable courante à une seule non instanciée, une passe. nFC2 : à au moins une non instanciée, une passe. nFC5 : liant au moins une instanciée à au moins une non instanciée, jusqu'au point fixe.</div></details>
+    <details class="card"><summary>Pourquoi les méthodes structurelles ?</summary><div class="a">Un CSP dont le graphe est un arbre se résout en temps polynomial. TC regroupe des variables (O(n·dʳ)), le coupe-cycle retire des sommets pour obtenir un arbre (O(n·d<sup>c+2</sup>)).</div></details>
+    <details class="card"><summary>Qu'est-ce qu'un optimum local ?</summary><div class="a">Une affectation dont aucune voisine n'améliore le critère de proximité. Le hill-climbing peut s'y bloquer.</div></details>
+    <details class="card"><summary>Comment le recuit simulé sort d'un optimum local ?</summary><div class="a">Il accepte parfois une voisine pire, avec probabilité e^(−Δf/T) ; T décroît au cours du temps.</div></details>
+    <details class="card"><summary>Gène, individu, population ?</summary><div class="a">Gène = valeur d'une variable ; individu = affectation complète ; population = ensemble d'affectations complètes. Opérateurs : sélection, croisement (plus fréquent), mutation.</div></details>
+    <details class="card"><summary>Modélise le Sudoku.</summary><div class="a">81 variables ; domaines {1..9} (singleton pour les cases données) ; 27 contraintes « toutes différentes » (9 lignes, 9 colonnes, 9 blocs) ; relations = 9-uplets de valeurs distinctes.</div></details>
+  </div>
+
+  <h3>Machine learning et MLP</h3>
+  <div class="cards">
+    <details class="card"><summary>Programmation classique ou ML ?</summary><div class="a">Classique : entrées + programme → sorties, résout de manière prouvable. ML : données (entrées, sorties) → programme, résout en pratique.</div></details>
+    <details class="card"><summary>Les 4 ingrédients de l'apprentissage ?</summary><div class="a">Un jeu de données d'apprentissage, un modèle paramétré, une métrique d'erreur, un algorithme d'apprentissage.</div></details>
+    <details class="card"><summary>Les 3 familles, avec un exemple chacune.</summary><div class="a">Supervisé (classification, régression : k-NN, SVM, MLP), non supervisé (ACP, K-means), par renforcement (Q-learning, AlphaGo).</div></details>
+    <details class="card"><summary>Surapprentissage : définition, causes, symptôme ?</summary><div class="a">Le modèle mémorise les données d'entraînement, bruit compris. Modèle trop complexe ou trop d'itérations. Très bon en entraînement, mauvais en test.</div></details>
+    <details class="card"><summary>Rôle de l'ensemble de validation ?</summary><div class="a">Choisir les hyperparamètres, surveiller la généralisation pendant l'entraînement, éventuellement l'arrêter. 10 à 20 % des données.</div></details>
+    <details class="card"><summary>k-NN : effet de k ?</summary><div class="a">k trop petit : surapprentissage ; k trop grand : sous-apprentissage. Coûteux avec beaucoup de données, mauvais en grande dimension.</div></details>
+    <details class="card"><summary>Bagging et feature bagging ?</summary><div class="a">Forêt aléatoire : chaque arbre voit un tirage avec remise des exemples (bagging) et un sous-ensemble aléatoire de features. Prédiction par vote.</div></details>
+    <details class="card"><summary>Que fait l'ACP ?</summary><div class="a">Réduction de dimension non supervisée : nouveaux axes perpendiculaires de variance maximale, on garde les premiers. Transformation linéaire.</div></details>
+    <details class="card"><summary>Qu'est-ce que le kernel trick ?</summary><div class="a">Le SVM n'a pas besoin de calculer φ : il suffit d'un noyau K(x, x′) = φ(x)·φ(x′) pour travailler dans l'espace de grande dimension.</div></details>
+    <details class="card"><summary>Pourquoi un perceptron seul ne fait pas le XOR ?</summary><div class="a">Il sépare l'espace par un hyperplan ; le XOR n'est pas linéairement séparable. Il faut un réseau (MLP).</div></details>
+    <details class="card"><summary>Pourquoi les activations non linéaires sont indispensables ?</summary><div class="a">Une composition de fonctions affines reste affine : sans non-linéarité, un MLP profond n'est qu'un modèle linéaire.</div></details>
+    <details class="card"><summary>Batch, epoch, SGD ?</summary><div class="a">SGD : chaque pas de gradient utilise la perte d'un batch. Une epoch : tous les batchs utilisés une fois, puis on mélange.</div></details>
+    <details class="card"><summary>À quoi sert la rétropropagation ?</summary><div class="a">À calculer le gradient de la perte par rapport à chaque poids, par dérivation en chaîne, de la sortie vers l'entrée.</div></details>
+    <details class="card"><summary>Défauts de MLPClassifier ?</summary><div class="a">activation='relu', solver='adam', hidden_layer_sizes=(100,), max_iter=200. Perte : cross-entropy.</div></details>
+    <details class="card"><summary>Couche dense 4 entrées → 3 neurones : combien de paramètres ?</summary><div class="a">4·3 poids + 3 biais = 15.</div></details>
+    <details class="card"><summary>Sortie et perte pour 10 classes (MNIST) ?</summary><div class="a">10 neurones softmax, cross-entropy, labels en one-hot. Entrées : 784 pixels normalisés /255.</div></details>
+  </div>
+
+  <h3>Rappels BUT2</h3>
+  <div class="cards">
+    <details class="card"><summary>IA forte, IA faible ?</summary><div class="a">Searle 1980. Forte : les machines seront intelligentes et conscientes. Faible : elles agiront comme si elles l'étaient, sans penser.</div></details>
+    <details class="card"><summary>Définition d'un agent rationnel.</summary><div class="a">À tout instant, il choisit l'action qui maximise sa mesure de performance, compte tenu de ses percepts et de ses connaissances.</div></details>
+    <details class="card"><summary>Clause de Horn ?</summary><div class="a">Clause avec au plus un littéral positif ; exactement un = clause définie (règle ou fait Prolog).</div></details>
+    <details class="card"><summary>Comment prouver que S a pour conséquence A ?</summary><div class="a">Montrer que S ∪ {¬A} est insatisfiable : dériver la clause vide par résolution.</div></details>
+    <details class="card"><summary>f(X) = f(f(X)) s'unifie-t-il ?</summary><div class="a">Non : X = f(X) échoue au test d'occurrence.</div></details>
+    <details class="card"><summary>Écris la négation par échec avec le cut.</summary><div class="a">neg(P) :- P, !, fail.  neg(_).</div></details>
+    <details class="card"><summary>Qu'est-ce qu'un answer set ?</summary><div class="a">X est un modèle stable de P ssi Cn(Pˣ) = X, où Pˣ est le réduit : on supprime les règles dont un « not L » a L ∈ X, puis on efface les « not ».</div></details>
+    <details class="card"><summary>Formule de la pente a en régression 1D.</summary><div class="a">a = (N Σxy − Σx Σy) / (N Σx² − (Σx)²).</div></details>
+  </div>
+</section>
+
+<p class="footer col">Rédigé à partir du dépôt <code>cours-intro-ia</code> : cours de V. Risch, A. Juven et C. Terrioux, sujets de TD et tes notebooks. Coche une section quand tu sais la réciter sans regarder, et fais une dernière passe en mode interro la veille.</p>
+
+</div>
+</main>
+</div>
+
+<script>
+(function(){
+  var KEY = 'carnet-ia-done-v1';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('input[id^="done-"]'));
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e) { saved = {}; }
+
+  function tocLink(id){ return document.querySelector('.toc a[href="#' + id + '"]'); }
+  function refresh(){
+    var n = 0;
+    boxes.forEach(function(b){
+      var id = b.id.slice(5), a = tocLink(id);
+      if (b.checked) n++;
+      if (a) a.classList.toggle('done', b.checked);
+    });
+    var txt = n + ' / ' + boxes.length;
+    document.getElementById('prog-txt').textContent = txt;
+    document.getElementById('prog-mini').textContent = txt;
+    document.getElementById('prog-bar').style.width = (boxes.length ? (100 * n / boxes.length) : 0) + '%';
+  }
+  boxes.forEach(function(b){
+    if (saved[b.id]) b.checked = true;
+    b.addEventListener('change', function(){
+      saved[b.id] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch(e) {}
+      refresh();
+    });
+  });
+  refresh();
+
+  /* mode interro */
+  var qbtn = document.getElementById('quiz-btn');
+  var hideables = function(){ return document.querySelectorAll('.defs dd, .pc'); };
+  function setQuiz(on){
+    document.body.classList.toggle('quiz', on);
+    qbtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    Array.prototype.forEach.call(hideables(), function(el){
+      el.classList.remove('shown');
+      if (on) { el.setAttribute('tabindex', '0'); el.setAttribute('role', 'button'); el.setAttribute('aria-label', 'Révéler la réponse'); }
+      else { el.removeAttribute('tabindex'); el.removeAttribute('role'); el.removeAttribute('aria-label'); }
+    });
+  }
+  qbtn.addEventListener('click', function(){ setQuiz(!document.body.classList.contains('quiz')); });
+  function reveal(el){ el.classList.add('shown'); el.removeAttribute('role'); el.removeAttribute('aria-label'); }
+  document.addEventListener('click', function(e){
+    if (!document.body.classList.contains('quiz')) return;
+    var el = e.target.closest('.defs dd, .pc');
+    if (el) reveal(el);
+  });
+  document.addEventListener('keydown', function(e){
+    if (!document.body.classList.contains('quiz')) return;
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.defs dd, .pc')) { e.preventDefault(); reveal(e.target); }
+  });
+
+  /* sommaire : repli sur mobile + surbrillance de la section lue */
+  var tocD = document.getElementById('toc-d');
+  if (window.matchMedia('(max-width: 1000px)').matches) tocD.removeAttribute('open');
+  document.querySelectorAll('.toc a').forEach(function(a){
+    a.addEventListener('click', function(){ if (window.matchMedia('(max-width: 1000px)').matches) tocD.removeAttribute('open'); });
+  });
+  if ('IntersectionObserver' in window) {
+    var current = null;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting) {
+          var a = tocLink(en.target.id);
+          if (a) { if (current) current.removeAttribute('aria-current'); a.setAttribute('aria-current', 'true'); current = a; }
+        }
+      });
+    }, { rootMargin: '-15% 0px -75% 0px' });
+    document.querySelectorAll('section.sec').forEach(function(s){ io.observe(s); });
+  }
+
+  /* flashcards */
+  document.getElementById('cards-open').addEventListener('click', function(){ document.querySelectorAll('details.card').forEach(function(d){ d.open = true; }); });
+  document.getElementById('cards-close').addEventListener('click', function(){ document.querySelectorAll('details.card').forEach(function(d){ d.open = false; }); });
+
+  /* arc-consistance pas à pas */
+  var doms = { x1:[1,2,3], x2:[1,2,3], x3:[1,2], x4:[1,2,3], x5:[1,2,3] };
+  var steps = [
+    { rm:null, cap:"Domaines initiaux. Pour chaque valeur, on cherche un support dans le domaine de chaque voisin." },
+    { rm:['x1',3], cap:"x1 = 3 n'a aucun support pour x1 < x2 (il faudrait x2 > 3) : on retire 3 de d1." },
+    { rm:['x2',1], cap:"x2 = 1 n'a aucun support pour x1 < x2 (il faudrait x1 < 1) : on retire 1 de d2." },
+    { rm:['x3',1], cap:"x3 = 1 : aucun x1 < 1. On retire 1 de d3." },
+    { rm:['x4',1], cap:"x4 = 1 : aucun x1 < 1. On retire 1 de d4." },
+    { rm:['x5',1], cap:"x5 = 1 : il faudrait x2 < 1. On retire 1 de d5." },
+    { rm:['x3',2], cap:"x3 = 2 exige x5 < 2, donc x5 = 1, qui vient d'être retiré : on retire 2 de d3." },
+    { rm:null, cap:"d3 = ∅ : le problème est inconsistant, prouvé sans aucune recherche. FC avait dû essayer 6 affectations pour le découvrir." }
+  ];
+  var i = 0;
+  var box = document.getElementById('ac-doms'), cap = document.getElementById('ac-cap'),
+      prev = document.getElementById('ac-prev'), next = document.getElementById('ac-next'), count = document.getElementById('ac-count');
+  function render(){
+    var gone = {}, now = steps[i].rm ? steps[i].rm.join(':') : null;
+    for (var k = 1; k <= i; k++) if (steps[k].rm) gone[steps[k].rm.join(':')] = true;
+    var html = '';
+    Object.keys(doms).forEach(function(v){
+      var cells = '', left = 0;
+      [1,2,3].forEach(function(val){
+        if (doms[v].indexOf(val) < 0) { cells += '<span class="v na">' + val + '</span>'; return; }
+        var key = v + ':' + val, cls = 'v';
+        if (key === now) cls += ' now';
+        else if (gone[key]) cls += ' gone';
+        else left++;
+        cells += '<span class="' + cls + '">' + val + '</span>';
+      });
+      html += '<div class="row"><span class="vn">' + v + '</span><span class="vals">' + cells + '</span>' +
+              (left === 0 ? '<span class="empty">domaine vide</span>' : '<span></span>') + '</div>';
+    });
+    box.innerHTML = html;
+    cap.textContent = steps[i].cap;
+    count.textContent = 'Étape ' + i + ' / ' + (steps.length - 1);
+    prev.disabled = i === 0;
+    next.disabled = i === steps.length - 1;
+  }
+  prev.addEventListener('click', function(){ if (i > 0) { i--; render(); } });
+  next.addEventListener('click', function(){ if (i < steps.length - 1) { i++; render(); } });
+  render();
+})();
+</script>
+
