@@ -223,6 +223,36 @@ details.card .a{padding:0 14px 14px 46px; color:var(--ink-soft)}
 
 .footer{margin-top:70px; padding-top:20px; border-top:1px solid var(--rule); font-size:.85rem; color:var(--ink-faint)}
 
+/* ---------- pages ---------- */
+body.paged .sec, body.paged .part, body.paged .hero{display:none}
+body.paged .sec.active, body.paged .part.active, body.paged .hero.active{display:block}
+body.paged .sec{border-top:none; margin-top:0; padding-top:10px}
+body.paged .part.active{margin:6px 0 0; padding-top:20px}
+.pager{max-width:76ch}
+.pager.top{display:flex; align-items:center; gap:10px; margin:0 0 4px; padding:8px 0; border-bottom:1px solid var(--rule); font-size:.84rem; color:var(--ink-faint)}
+.pager.top .where{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-variant-numeric:tabular-nums}
+.pager.top .where b{color:var(--ink-soft)}
+.pg-mini{font:700 .85rem/1 "Atkinson Hyperlegible", sans-serif; color:var(--ink); background:var(--paper); border:1.5px solid var(--rule-strong); border-radius:8px; padding:7px 11px; cursor:pointer}
+.pg-mini:hover:not(:disabled){border-color:var(--blue); color:var(--blue)}
+.pg-mini:disabled{opacity:.35; cursor:default}
+.pager.bottom{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; margin-top:52px}
+.pg-link{display:flex; flex-direction:column; gap:5px; padding:14px 16px; border:1.5px solid var(--rule-strong); border-radius:12px; text-decoration:none; color:var(--ink); background:var(--paper)}
+.pg-link:hover{border-color:var(--blue); box-shadow:var(--lift)}
+.pg-link small{font:700 .7rem/1 "Atkinson Hyperlegible", sans-serif; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-faint)}
+.pg-link span{font:700 1.02rem/1.25 "Bricolage Grotesque", system-ui, sans-serif}
+.pg-link.next{text-align:right; border-color:var(--blue)}
+.pg-link.next small{color:var(--blue)}
+.pg-link.ghost{visibility:hidden}
+.index-h{font:700 .72rem/1 "Atkinson Hyperlegible", sans-serif; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-faint); margin:20px 0 8px}
+.index-g{display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:8px}
+.ix{display:flex; flex-direction:column; gap:4px; padding:10px 12px; border:1px solid var(--rule-strong); border-radius:10px; text-decoration:none; color:var(--ink); background:var(--paper)}
+.ix:hover{border-color:var(--blue); box-shadow:var(--lift)}
+.ix small{font:600 .74rem/1 "JetBrains Mono", monospace; color:var(--blue)}
+.ix span{font-weight:700; font-size:.95rem; line-height:1.3}
+.ix.done{border-color:var(--green); background:var(--green-soft)}
+.ix.done small::after{content:"  ✓ maîtrisé"; color:var(--green)}
+@media (max-width: 680px){ .pager.bottom{grid-template-columns:minmax(0,1fr)} .pg-link.next{order:-1} .pg-link.ghost{display:none} }
+
 /* ---------- responsive ---------- */
 @media (max-width: 1000px){
   .shell{grid-template-columns:minmax(0,1fr); gap:0; padding-inline:16px}
@@ -258,7 +288,7 @@ details.card .a{padding:0 14px 14px 46px; color:var(--ink-soft)}
   <div class="progress-label"><span>Sections maîtrisées</span><span id="prog-txt">0 / 0</span></div>
   <div class="bar"><i id="prog-bar"></i></div>
   <button class="btn" id="quiz-btn" type="button" aria-pressed="false"><span class="dot"></span>Mode interro</button>
-  <p>En mode interro, les définitions sont floutées : récite-les, puis clique pour vérifier. La coche « Maîtrisé » reste enregistrée dans ton navigateur.</p>
+  <p>En mode interro, les définitions sont floutées : récite-les, puis clique pour vérifier. La coche « Maîtrisé » reste enregistrée dans ton navigateur. Flèches ← → du clavier : page précédente / suivante.</p>
 </div>
 <h4>Avant de commencer</h4>
 <ol>
@@ -316,6 +346,8 @@ details.card .a{padding:0 14px 14px 46px; color:var(--ink-soft)}
   </div>
 </header>
 
+<nav class="pager top" id="pager-top" aria-label="Navigation entre les pages"></nav>
+
 <!-- ============ PROGRAMME ============ -->
 <section class="sec col" id="programme" style="padding-top:0">
   <div class="sec-h"><div><span class="tag">Mode d'emploi</span><h2>Ce qui tombe, et comment réviser en 7 jours</h2></div>
@@ -343,6 +375,9 @@ details.card .a{padding:0 14px 14px 46px; color:var(--ink-soft)}
     </div>
   </div>
   <p class="small">L'exam de BUT2 (12 mars 2025) demandait d'<b>écrire du Python sur papier</b> : la régression à la main, puis <code>affine</code> / <code>activation</code> / <code>perceptron</code>. Attends-toi au même style : modéliser un CSP en (X, D, C, R), dérouler BT/FC/AC à la main, écrire une fonction Backtrack, expliquer un réglage de MLP.</p>
+
+  <h3>Aller directement à une page</h3>
+  <nav id="home-index" aria-label="Toutes les pages"></nav>
 
   <h3>Plan de révision, jour par jour</h3>
   <ol class="days">
@@ -1521,6 +1556,8 @@ clf.loss_curve_                     <span class="c"># erreur au fil des itérati
   </div>
 </section>
 
+<nav class="pager bottom" id="pager-bottom" aria-label="Page précédente et suivante"></nav>
+
 <p class="footer col">Rédigé à partir du dépôt <code>cours-intro-ia</code> : cours de V. Risch, A. Juven et C. Terrioux, sujets de TD et tes notebooks. Coche une section quand tu sais la réciter sans regarder, et fais une dernière passe en mode interro la veille.</p>
 
 </div>
@@ -1540,7 +1577,7 @@ clf.loss_curve_                     <span class="c"># erreur au fil des itérati
     boxes.forEach(function(b){
       var id = b.id.slice(5), a = tocLink(id);
       if (b.checked) n++;
-      if (a) a.classList.toggle('done', b.checked);
+      document.querySelectorAll('.toc a[href="#' + id + '"], .ix[href="#' + id + '"]').forEach(function(l){ l.classList.toggle('done', b.checked); });
     });
     var txt = n + ' / ' + boxes.length;
     document.getElementById('prog-txt').textContent = txt;
@@ -1581,24 +1618,92 @@ clf.loss_curve_                     <span class="c"># erreur au fil des itérati
     if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.defs dd, .pc')) { e.preventDefault(); reveal(e.target); }
   });
 
-  /* sommaire : repli sur mobile + surbrillance de la section lue */
+  /* pages : une section à la fois */
   var tocD = document.getElementById('toc-d');
-  if (window.matchMedia('(max-width: 1000px)').matches) tocD.removeAttribute('open');
-  document.querySelectorAll('.toc a').forEach(function(a){
-    a.addEventListener('click', function(){ if (window.matchMedia('(max-width: 1000px)').matches) tocD.removeAttribute('open'); });
+  var narrow = function(){ return window.matchMedia('(max-width: 1000px)').matches; };
+  if (narrow()) tocD.removeAttribute('open');
+
+  var secs = Array.prototype.slice.call(document.querySelectorAll('section.sec'));
+  var hero = document.querySelector('.hero');
+  var partOf = {}, curPart = null;
+  Array.prototype.forEach.call(document.querySelector('.page').children, function(el){
+    if (el.classList.contains('part')) curPart = el;
+    else if (el.matches('section.sec')) partOf[el.id] = curPart;
   });
-  if ('IntersectionObserver' in window) {
-    var current = null;
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(en){
-        if (en.isIntersecting) {
-          var a = tocLink(en.target.id);
-          if (a) { if (current) current.removeAttribute('aria-current'); a.setAttribute('aria-current', 'true'); current = a; }
-        }
-      });
-    }, { rootMargin: '-15% 0px -75% 0px' });
-    document.querySelectorAll('section.sec').forEach(function(s){ io.observe(s); });
+  var PAGEKEY = 'carnet-ia-page-v1';
+  var cur = 0;
+  function titleOf(s){ return s.querySelector('h2').textContent; }
+  function partLabel(s){
+    var p = partOf[s.id];
+    return p ? p.querySelector('.num').textContent + ' · ' + p.querySelector('h2').textContent : "Mode d'emploi";
   }
+  function esc(t){ return t.replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+
+  /* sommaire cliquable sur la page d'accueil */
+  var ixHtml = '', lastP;
+  secs.slice(1).forEach(function(s){
+    var p = partOf[s.id];
+    if (p !== lastP) {
+      if (lastP !== undefined) ixHtml += '</div>';
+      ixHtml += '<p class="index-h">' + esc(partLabel(s)) + '</p><div class="index-g">';
+      lastP = p;
+    }
+    ixHtml += '<a class="ix" href="#' + s.id + '"><small>' + esc(s.querySelector('.tag').textContent.split(' · ')[0]) + '</small><span>' + esc(titleOf(s)) + '</span></a>';
+  });
+  document.getElementById('home-index').innerHTML = ixHtml + '</div>';
+  refresh();
+
+  function renderPagers(){
+    var prev = secs[cur - 1], next = secs[cur + 1], s = secs[cur];
+    document.getElementById('pager-top').innerHTML =
+      '<button class="pg-mini" type="button" data-go="-1"' + (prev ? '' : ' disabled') + ' aria-label="Page précédente">←</button>' +
+      '<span class="where"><b>' + (cur + 1) + ' / ' + secs.length + '</b> · ' + esc(partLabel(s)) + '</span>' +
+      '<button class="pg-mini" type="button" data-go="1"' + (next ? '' : ' disabled') + ' aria-label="Page suivante">→</button>';
+    document.getElementById('pager-bottom').innerHTML =
+      (prev ? '<a class="pg-link prev" href="#' + prev.id + '"><small>← Précédent</small><span>' + esc(titleOf(prev)) + '</span></a>' : '<span class="pg-link ghost"></span>') +
+      (next ? '<a class="pg-link next" href="#' + next.id + '"><small>Suivant →</small><span>' + esc(titleOf(next)) + '</span></a>' : '<span class="pg-link ghost"></span>');
+  }
+  function show(id, push){
+    var idx = -1;
+    secs.forEach(function(s, k){ if (s.id === id) idx = k; });
+    if (idx < 0) idx = 0;
+    cur = idx;
+    var s = secs[cur];
+    secs.forEach(function(x){ x.classList.toggle('active', x === s); });
+    document.querySelectorAll('.part').forEach(function(p){ p.classList.toggle('active', s.previousElementSibling === p); });
+    hero.classList.toggle('active', cur === 0);
+    document.querySelectorAll('.toc a').forEach(function(a){
+      if (a.getAttribute('href') === '#' + s.id) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+    });
+    renderPagers();
+    try { if (push) history.pushState(null, '', '#' + s.id); else history.replaceState(null, '', '#' + s.id); } catch(e) {}
+    try { localStorage.setItem(PAGEKEY, s.id); } catch(e) {}
+    try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch(e) { window.scrollTo(0, 0); }
+  }
+  document.body.classList.add('paged');
+  document.addEventListener('click', function(e){
+    var go = e.target.closest('[data-go]');
+    if (go) { if (!go.disabled) { var t = secs[cur + Number(go.getAttribute('data-go'))]; if (t) show(t.id, true); } return; }
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var target = document.getElementById(a.getAttribute('href').slice(1));
+    if (target && target.matches('section.sec')) {
+      e.preventDefault();
+      show(target.id, true);
+      if (narrow()) tocD.removeAttribute('open');
+    }
+  });
+  window.addEventListener('popstate', function(){ show(location.hash.slice(1), false); });
+  document.addEventListener('keydown', function(e){
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
+    if (e.key === 'ArrowRight' && secs[cur + 1]) show(secs[cur + 1].id, true);
+    if (e.key === 'ArrowLeft' && secs[cur - 1]) show(secs[cur - 1].id, true);
+  });
+  var start = location.hash.slice(1), stored = null;
+  try { stored = localStorage.getItem(PAGEKEY); } catch(e) {}
+  if (!document.getElementById(start) && stored) start = stored;
+  show(start, false);
 
   /* flashcards */
   document.getElementById('cards-open').addEventListener('click', function(){ document.querySelectorAll('details.card').forEach(function(d){ d.open = true; }); });
