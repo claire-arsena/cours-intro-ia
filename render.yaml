@@ -1,0 +1,21 @@
+# Blueprint Render — site statique + PWA
+# Deploiement : sur render.com, New > Blueprint, puis choisir ce depot.
+# Render lit ce fichier a la racine ; le site servi est le dossier public/.
+services:
+  - type: web
+    name: reviser-ia
+    runtime: static
+    staticPublishPath: ./public
+    autoDeploy: true
+    headers:
+      # le service worker ne doit jamais etre servi depuis un cache navigateur,
+      # sinon une nouvelle version du site ne se propage pas
+      - path: /sw.js
+        name: Cache-Control
+        value: no-cache, max-age=0
+      - path: /manifest.webmanifest
+        name: Cache-Control
+        value: no-cache, max-age=0
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
