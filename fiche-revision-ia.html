@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Réviser l'IA</title>
-<meta name="description" content="Révision active pour l'examen R5.A.L1 : sessions de rappel espacé, 17 fiches, antisèche.">
+<meta name="description" content="Révision active pour l'examen R5.A.L1 : sessions de rappel espacé, 18 fiches, annale corrigée, antisèche.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -173,6 +173,20 @@ details.q .a > :last-child{margin-bottom:0}
 @media (max-width:560px){ body{font-size:17px} .bar-in{padding:8px 12px; gap:2px} .tab{flex:1 1 auto; text-align:center; padding:12px 6px; font-size:.84rem} .wrap{padding:0 16px 90px} .card-stage{padding:26px 18px; min-height:260px} .boxes{gap:5px} .boxes div{padding:8px 2px} .row{gap:8px} }
 @media (max-width:430px){ .mini{display:none} .tab{font-size:.8rem; padding:12px 4px} .key{padding:16px} .item{padding:13px 14px} .card-stage .qq{font-size:1.2rem} }
 @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+/* annale */
+.enonce{background:var(--card); border:1px solid var(--edge); border-radius:12px; padding:16px 18px; margin:12px 0 18px; font-size:.96rem; color:var(--soft)}
+.enonce p:last-child, .enonce ul:last-child{margin-bottom:0}
+.enonce ul{padding-left:20px; margin:8px 0 12px}
+.enonce b{color:var(--ink)}
+.ex-h{margin:40px 0 0}
+.ex-h small{display:block; font:600 .76rem/1 "Source Sans 3", sans-serif; text-transform:uppercase; letter-spacing:.1em; color:var(--warm); margin-bottom:8px}
+.chrono{display:flex; gap:12px; align-items:flex-start; background:var(--warm-soft); border-radius:12px; padding:14px 16px; margin:18px 0 6px; font-size:.95rem}
+.chrono b{display:block}
+details.q.step .a h4{margin:0 0 8px; font-size:.95rem; color:var(--ink)}
+.graph{margin:4px 0 8px}
+.graph svg{display:block; width:100%; max-width:440px; height:auto}
+.caption{font-size:.84rem; color:var(--faint); margin:0 0 4px}
+.flag{background:var(--accent-soft); border-radius:10px; padding:12px 15px; font-size:.93rem; margin:0 0 16px}
 /* zone sure iOS : encoche, Dynamic Island, barre de gestes */ @supports (padding-top: env(safe-area-inset-top)){ .bar-in{padding-top:calc(10px + env(safe-area-inset-top))} .wrap{padding-left:max(20px, env(safe-area-inset-left)); padding-right:max(20px, env(safe-area-inset-right)); padding-bottom:calc(120px + env(safe-area-inset-bottom))} @media (max-width:560px){ .bar-in{padding-top:calc(8px + env(safe-area-inset-top))} .wrap{padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right)); padding-bottom:calc(90px + env(safe-area-inset-bottom))} } }
 </style>
 </head>
@@ -183,6 +197,7 @@ details.q .a > :last-child{margin-bottom:0}
   <div class="bar-in">
     <button class="tab" type="button" data-view="home" aria-selected="true">Accueil</button>
     <button class="tab" type="button" data-view="revise" aria-selected="false">Réviser</button>
+    <button class="tab" type="button" data-view="annale" aria-selected="false">Annale</button>
     <button class="tab" type="button" data-view="fiches" aria-selected="false">Fiches</button>
     <button class="tab" type="button" data-view="sheet" aria-selected="false">Antisèche</button>
     <span class="spacer"></span>
@@ -207,7 +222,11 @@ details.q .a > :last-child{margin-bottom:0}
   </button>
   <button class="cta quiet" type="button" data-goto="fiches">
     <b>Lire une fiche</b>
-    <span>17 fiches, 5 points essentiels chacune. Le détail reste replié.</span>
+    <span>18 fiches, 5 points essentiels chacune. Le détail reste replié.</span>
+  </button>
+  <button class="cta quiet" type="button" data-goto="annale">
+    <b>Faire l'annale 2025</b>
+    <span>L'examen de l'an dernier, corrigé étape par étape. Il pourrait revenir tel quel.</span>
   </button>
 
   <h3>Pourquoi ça marche</h3>
@@ -224,7 +243,7 @@ details.q .a > :last-child{margin-bottom:0}
     <li><span class="d">J-5</span><div><b>Fiches 9 à 11 : réseaux de neurones</b><span>Refais le calcul de sortie d'un petit réseau à la main.</span></div></li>
     <li><span class="d">J-4</span><div><b>Fiches 12 et 13 : CSP, Backtrack</b><span>Modélise le Sudoku en (X, D, C, R) sans regarder.</span></div></li>
     <li><span class="d">J-3</span><div><b>Fiches 14 à 17 : filtrage et recherche locale</b><span>Déroule FC puis l'arc-consistance sur l'exemple à 5 variables.</span></div></li>
-    <li><span class="d">J-2</span><div><b>Sessions uniquement</b><span>Tant qu'il reste des cartes aux crans 1 et 2, elles reviennent.</span></div></li>
+    <li><span class="d">J-2</span><div><b>L'annale 2025 en conditions réelles</b><span>Une heure, sur papier, sans rien ouvrir. Puis les corrections étape par étape, et une session le soir.</span></div></li>
     <li><span class="d">J-1</span><div><b>Antisèche + les pièges</b><span>Recopie les formules et les complexités une fois à la main.</span></div></li>
   </ol>
   <p class="foot">Fait à partir de ton dépôt : cours de V. Risch, A. Juven et C. Terrioux, sujets de TD et tes notebooks. Ta progression reste dans ce navigateur.</p>
@@ -235,6 +254,149 @@ details.q .a > :last-child{margin-bottom:0}
   <h1>Session</h1>
   <p class="lede" id="sess-lede">Réponds à voix haute, puis vérifie. Sois honnête : c'est ce qui règle l'espacement.</p>
   <div id="sess-body"></div>
+</section>
+
+<!-- ===================== ANNALE ===================== -->
+<section class="view" id="view-annale" hidden>
+  <h1>Annale du 26 septembre 2025</h1>
+  <p class="lede">Le contrôle de R5.A.L1 de l'an dernier. Deux exercices : un CSP à modéliser, un réseau de neurones à modifier et tracer.</p>
+  <div class="chrono"><div><b>Fais-la d'abord sans aide.</b>Une heure, sur papier. Ouvre ensuite les corrections une par une : chercher avant de voir, c'est ce qui fait retenir.</div></div>
+
+  <div class="ex-h"><small>Exercice 1</small><h2>La voiture Peunault (CSP)</h2></div>
+  <div class="enonce">
+    <p>Pièces et couleurs disponibles là où elles sont fabriquées :</p>
+    <ul>
+      <li><b>Portières et capot</b> (Lille) : rose, rouge, noir.</li>
+      <li><b>Carrosserie</b> (Hambourg) : blanc, rose, rouge, noir.</li>
+      <li><b>Pare-chocs</b> (Palerme) : toujours blancs.</li>
+      <li><b>Bâche du toit ouvrant</b> (Madrid) : rouge uniquement.</li>
+      <li><b>Enjoliveurs</b> (Athènes) : rose, rouge.</li>
+    </ul>
+    <p>Exigences du concepteur : carrosserie, portières et capot de <b>la même couleur</b> ; enjoliveurs, pare-chocs et toit ouvrant <b>plus clairs que la carrosserie</b>.</p>
+    <p>Variables x1 à x6 ; couleurs blanc, rose, rouge, noir notées <b>a, b, c, d</b>. <b>Détailler ce CSP binaire dans le formalisme du cours, et donner son graphe de contraintes.</b></p>
+  </div>
+
+  <details class="q step"><summary>Étape 1 · Variables et domaines</summary><div class="a">
+    <p>Une variable par pièce. Son domaine, ce sont les couleurs de l'usine qui la fabrique : les contraintes « d'usine » passent dans les domaines.</p>
+    <div class="tbl"><table>
+      <tr><th>Variable</th><th>Pièce</th><th>Domaine</th></tr>
+      <tr><td>x1</td><td>carrosserie</td><td>{a, b, c, d}</td></tr>
+      <tr><td>x2</td><td>capot</td><td>{b, c, d}</td></tr>
+      <tr><td>x3</td><td>portières</td><td>{b, c, d}</td></tr>
+      <tr><td>x4</td><td>enjoliveurs</td><td>{b, c}</td></tr>
+      <tr><td>x5</td><td>pare-chocs</td><td>{a}</td></tr>
+      <tr><td>x6</td><td>toit ouvrant</td><td>{c}</td></tr>
+    </table></div>
+    <p>L'énoncé ne fixe pas quelle pièce est x1 : choisis une correspondance, <b>écris-la</b>, et tiens-t'y.</p>
+  </div></details>
+
+  <details class="q step"><summary>Étape 2 · Les contraintes (C)</summary><div class="a">
+    <p><b>C = {c12, c13, c23, c14, c15, c16}</b>, six contraintes binaires :</p>
+    <ul>
+      <li><b>c12 = {x1, x2}, c13 = {x1, x3}, c23 = {x2, x3}</b> : même couleur pour carrosserie, capot et portières. (Deux égalités suffiraient par transitivité, mais l'énoncé cite les trois.)</li>
+      <li><b>c14 = {x1, x4}, c15 = {x1, x5}, c16 = {x1, x6}</b> : enjoliveurs, pare-chocs et toit plus clairs que la carrosserie.</li>
+    </ul>
+    <p>« Plus clair » demande un <b>ordre explicite</b>, à écrire sur ta copie : du plus clair au plus foncé, <b>blanc (a), rose (b), rouge (c), noir (d)</b>.</p>
+  </div></details>
+
+  <details class="q step"><summary>Étape 3 · Les relations (R)</summary><div class="a">
+    <p>En <b>intention</b> : r12 : x1 = x2, r13 : x1 = x3, r23 : x2 = x3 ; r14 : x4 plus clair que x1, etc. En <b>extension</b>, en tenant compte des domaines (couples écrits dans l'ordre de la portée) :</p>
+    <div class="tbl"><table>
+      <tr><th>Relation</th><th>Tuples autorisés</th></tr>
+      <tr><td>r12, r13, r23</td><td>{(b,b), (c,c), (d,d)}</td></tr>
+      <tr><td>r14 (x1, x4)</td><td>{(c,b), (d,b), (d,c)}</td></tr>
+      <tr><td>r15 (x1, x5)</td><td>{(b,a), (c,a), (d,a)}</td></tr>
+      <tr><td>r16 (x1, x6)</td><td>{(d,c)}</td></tr>
+    </table></div>
+    <p>Vérifie r14 : si les enjoliveurs sont roses (b), la carrosserie doit être plus foncée, donc rouge ou noire ; s'ils sont rouges (c), elle doit être noire.</p>
+  </div></details>
+
+  <details class="q step"><summary>Étape 4 · Le graphe de contraintes</summary><div class="a">
+    <div class="graph">
+      <svg viewBox="0 0 440 250" role="img" aria-label="Graphe : triangle carrosserie, capot, portières ; carrosserie reliée à enjoliveurs, pare-chocs et toit">
+        <g stroke="var(--soft)" stroke-width="2">
+          <line x1="200" y1="125" x2="70" y2="50"/><line x1="200" y1="125" x2="70" y2="200"/><line x1="70" y1="50" x2="70" y2="200"/>
+        </g>
+        <g stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5">
+          <line x1="200" y1="125" x2="340" y2="45"/><line x1="200" y1="125" x2="370" y2="125"/><line x1="200" y1="125" x2="340" y2="205"/>
+        </g>
+        <g fill="var(--card)" stroke="var(--ink)" stroke-width="1.5">
+          <circle cx="200" cy="125" r="19"/><circle cx="70" cy="50" r="19"/><circle cx="70" cy="200" r="19"/>
+          <circle cx="340" cy="45" r="19"/><circle cx="370" cy="125" r="19"/><circle cx="340" cy="205" r="19"/>
+        </g>
+        <g fill="var(--ink)" font-size="14" font-weight="600" text-anchor="middle" font-family="Source Sans 3, sans-serif">
+          <text x="200" y="130">x1</text><text x="70" y="55">x2</text><text x="70" y="205">x3</text>
+          <text x="340" y="50">x4</text><text x="370" y="130">x5</text><text x="340" y="210">x6</text>
+        </g>
+        <g fill="var(--soft)" font-size="12" text-anchor="middle" font-family="Source Sans 3, sans-serif">
+          <text x="200" y="162">carrosserie</text><text x="70" y="86">capot</text><text x="70" y="237">portières</text>
+          <text x="340" y="81">enjoliveurs</text><text x="370" y="161">pare-chocs</text><text x="340" y="241">toit</text>
+        </g>
+      </svg>
+    </div>
+    <p class="caption">Traits pleins : égalité de couleur. Pointillés : « plus clair que la carrosserie ». La carrosserie est reliée à toutes les autres pièces.</p>
+  </div></details>
+
+  <details class="q step"><summary>Pour aller plus loin · Le problème a-t-il des solutions ?</summary><div class="a">
+    <p>Non demandé, mais c'est une bonne question d'oral. Par <b>arc-consistance</b> : r16 n'autorise que (d, c), donc d1 = {d}. Par c12 et c13, d2 = d3 = {d}. Les enjoliveurs gardent {b, c}, tous deux plus clairs que le noir.</p>
+    <p>Le problème est <b>consistant</b>, avec <b>2 solutions</b> : carrosserie, capot et portières noirs, pare-chocs blancs, toit rouge, enjoliveurs <b>roses ou rouges</b>. C'est le toit rouge qui force tout le reste en noir.</p>
+  </div></details>
+
+  <div class="ex-h"><small>Exercice 2</small><h2>Le réseau en tangente hyperbolique</h2></div>
+  <div class="enonce">
+    <p>Reprendre le réseau de l'exercice 4 du TD 1 et intégrer au perceptron de base la fonction d'activation <b>tanh(x) = (eˣ − e⁻ˣ) / (eˣ + e⁻ˣ)</b>.</p>
+    <p>Avec matplotlib, pour <b>x et y entre −2 et +6</b>, tracer le <b>graphe 3D de la sortie F(x, y)</b> du nouveau réseau, dont les trois perceptrons utilisent tous tanh.</p>
+  </div>
+  <p class="flag"><b>À compléter toi-même :</b> le réseau de « l'exercice 4 du TD 1 » n'est pas dans ton dépôt. La correction ci-dessous tourne avec des poids d'exemple : remplace-les par ceux de ton TD. Le reste du code ne change pas.</p>
+
+  <details class="q step"><summary>Correction · Le code complet</summary><div class="a">
+<pre><code>import numpy as np
+import matplotlib.pyplot as plt
+
+def affine(b, w, x):
+    return np.dot(w, x) + b
+
+def tanh(s):
+    return (np.exp(s) - np.exp(-s)) / (np.exp(s) + np.exp(-s))   # ou np.tanh(s)
+
+def perceptron(b, w, x):
+    return tanh(affine(b, w, x))
+
+# 3 perceptrons : 2 cachés sur (x, y), 1 de sortie sur (h1, h2)
+# POIDS D'EXEMPLE : remplace-les par ceux du TD 1, exercice 4
+b1, w1 = -1.0, np.array([1.0, 1.0])
+b2, w2 =  0.0, np.array([1.0, -1.0])
+b3, w3 =  0.0, np.array([1.0, 1.0])
+
+def F(x, y):
+    e = np.array([x, y])
+    h1 = perceptron(b1, w1, e)
+    h2 = perceptron(b2, w2, e)
+    return perceptron(b3, w3, np.array([h1, h2]))
+
+xs = np.linspace(-2, 6, 200)
+X, Y = np.meshgrid(xs, xs)
+Z = np.vectorize(F)(X, Y)          # F appliquée à chaque point de la grille
+
+fig = plt.figure()
+ax = fig.add_subplot(projection='3d')
+ax.plot_surface(X, Y, Z, cmap='viridis')
+ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('F(x, y)')
+ax.set_title('Sortie du réseau, activations tanh')
+plt.show()</code></pre>
+  </div></details>
+
+  <details class="q step"><summary>Ce qu'il faut savoir dire sur tanh</summary><div class="a">
+    <ul>
+      <li>Valeurs dans <b>]−1, 1[</b>, avec tanh(0) = 0 ; fonction <b>impaire</b> et croissante.</li>
+      <li>tanh(x) = 2σ(2x) − 1 : une sigmoïde recentrée sur 0.</li>
+      <li>Dérivée : <b>1 − tanh²(x)</b>. Contrairement à Heaviside, elle est <b>dérivable</b> partout : c'est ce qui permet d'apprendre les poids par descente de gradient.</li>
+    </ul>
+  </div></details>
+
+  <details class="q step"><summary>Ce que montre le graphe</summary><div class="a">
+    <p>Avec Heaviside, la surface est faite de <b>paliers plats</b> séparés par des marches : la sortie saute d'une valeur à l'autre en franchissant les droites w·x + b = 0. Avec tanh, ces marches deviennent des <b>transitions douces</b> et la sortie reste dans ]−1, 1[. Les frontières sont au même endroit, seule la netteté change.</p>
+  </div></details>
 </section>
 
 <!-- ===================== FICHES ===================== -->
@@ -484,7 +646,21 @@ var FICHES = [
        "Résultat mesuré : <b>86 nœuds</b> en BT, <b>45</b> avec FC, <b>42</b> avec FC + MRV."],
   more:'<pre><code>def est_consistant(g, l, c, v):\n    if v in g[l]: return False\n    if any(g[i][c] == v for i in range(9)): return False\n    bl, bc = 3*(l//3), 3*(c//3)\n    return all(g[i][j] != v for i in range(bl, bl+3) for j in range(bc, bc+3))\n\ndef Backtrack(g):\n    case = case_vide(g)\n    if case is None: return True\n    l, c = case\n    for v in range(1, 10):\n        if est_consistant(g, l, c, v):\n            g[l][c] = v\n            if Backtrack(g): return True\n            g[l][c] = 0\n    return False</code></pre><p><b>MRV</b> : remplacer le choix de la case par <code>x = min(libres, key=lambda c: len(dom[c]))</code>.</p><p><b>Question du TD</b> : l\'ordre des valeurs n\'a pas d\'influence sur un problème inconsistant, car toutes seront essayées et rejetées ; c\'est l\'ordre des variables qui change la taille de l\'arbre.</p>',
   test:[["Modélise le Sudoku en CSP.","81 variables, domaines {1..9} (singleton pour les cases données), 27 contraintes « toutes différentes » sur les lignes, colonnes et blocs, relations = tuples de valeurs distinctes."],
-        ["Pourquoi FC explore-t-il moins de nœuds ?","Il détecte un domaine vide dès la mise à jour, donc coupe avant même d'essayer d'instancier la case concernée."]]}
+        ["Pourquoi FC explore-t-il moins de nœuds ?","Il détecte un domaine vide dès la mise à jour, donc coupe avant même d'essayer d'instancier la case concernée."]]},
+ {id:'annale', g:"L'examen de l'an dernier", t:'Annale du 26 septembre 2025', s:'CSP Peunault, réseau en tanh',
+  key:["Deux exercices : un <b>CSP à modéliser</b> (X, D, C, R + graphe) et un <b>réseau de 3 perceptrons</b> à passer en tanh puis tracer en 3D.",
+       "Une variable par pièce ; son <b>domaine</b> = les couleurs de l'usine qui la fabrique.",
+       "<b>6 contraintes binaires</b> : 3 égalités (carrosserie, capot, portières) et 3 « plus clair que la carrosserie ».",
+       "Écrire un <b>ordre de clarté</b> explicite : blanc (a), rose (b), rouge (c), noir (d), du plus clair au plus foncé.",
+       "Réseau : remplacer Heaviside par <b>tanh</b>, construire F(x, y), puis <code>meshgrid</code> et <code>plot_surface</code> sur [−2, 6]."],
+  more:"<p>La correction complète, étape par étape avec le graphe, est dans l'onglet <b>Annale</b>.</p><p>Correspondance utilisée : x1 carrosserie {a,b,c,d}, x2 capot {b,c,d}, x3 portières {b,c,d}, x4 enjoliveurs {b,c}, x5 pare-chocs {a}, x6 toit {c}.</p>",
+  test:[["Annale 2025 : variables et domaines de la voiture Peunault ?","Carrosserie {a,b,c,d}, capot {b,c,d}, portières {b,c,d}, enjoliveurs {b,c}, pare-chocs {a}, toit ouvrant {c}. Chaque domaine = les couleurs de l'usine."],
+        ["Annale 2025 : quelles contraintes ?","Six binaires : carrosserie = capot, carrosserie = portières, capot = portières ; enjoliveurs, pare-chocs et toit plus clairs que la carrosserie."],
+        ["Écris r(carrosserie, enjoliveurs) en extension.","{(c,b), (d,b), (d,c)}, avec a blanc, b rose, c rouge, d noir, du plus clair au plus foncé."],
+        ["À quoi ressemble le graphe de contraintes Peunault ?","Un triangle carrosserie–capot–portières, et la carrosserie reliée aux enjoliveurs, aux pare-chocs et au toit. La carrosserie touche tout."],
+        ["Combien de solutions pour la voiture Peunault ?","Deux : carrosserie, capot et portières noirs, pare-chocs blancs, toit rouge, enjoliveurs roses ou rouges. Le toit rouge force la carrosserie en noir."],
+        ["Définis tanh et donne ses propriétés.","(eˣ − e⁻ˣ)/(eˣ + e⁻ˣ), valeurs dans ]−1, 1[, tanh(0) = 0, impaire, dérivée 1 − tanh², dérivable contrairement à Heaviside."],
+        ["Comment tracer F(x, y) en 3D sur [−2, 6] ?","X, Y = np.meshgrid(linspace(−2, 6)), Z = np.vectorize(F)(X, Y), ax = fig.add_subplot(projection='3d'), ax.plot_surface(X, Y, Z)."]]}
 ];
 
 /* cartes de révision : [question, réponse, fiche] */
@@ -516,7 +692,7 @@ function refreshMeters(){
 }
 
 /* ---------------- navigation ---------------- */
-var views = ['home','revise','fiches','sheet'];
+var views = ['home','revise','annale','fiches','sheet'];
 function go(v){
   views.forEach(function(x){ document.getElementById('view-' + x).hidden = (x !== v); });
   document.querySelectorAll('.tab').forEach(function(t){ t.setAttribute('aria-selected', t.dataset.view === v ? 'true' : 'false'); });
