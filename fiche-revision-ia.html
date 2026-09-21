@@ -173,6 +173,40 @@ details.q .a > :last-child{margin-bottom:0}
 @media (max-width:560px){ body{font-size:17px} .bar-in{padding:8px 12px; gap:2px} .tab{flex:1 1 auto; text-align:center; padding:12px 6px; font-size:.84rem} .wrap{padding:0 16px 90px} .card-stage{padding:26px 18px; min-height:260px} .boxes{gap:5px} .boxes div{padding:8px 2px} .row{gap:8px} }
 @media (max-width:430px){ .mini{display:none} .tab{font-size:.8rem; padding:12px 4px} .key{padding:16px} .item{padding:13px 14px} .card-stage .qq{font-size:1.2rem} }
 @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+/* aujourd'hui */
+.today-head{margin-bottom:24px}
+.today-date{font-size:.92rem; color:var(--faint); margin:0 0 2px}
+.countdown{font-size:clamp(2.6rem,2rem+3vw,3.4rem); line-height:1; color:var(--accent)}
+.exam-set{display:inline-flex; align-items:center; gap:10px; font-size:.9rem; color:var(--soft); background:var(--card); border:1px solid var(--edge); border-radius:10px; padding:6px 12px; margin-top:4px}
+.exam-set input{font:inherit; color:var(--ink); background:transparent; border:none; padding:4px 0}
+.mission{list-style:none; padding:0; margin:0 0 14px; display:grid; gap:10px}
+.mission li{margin:0}
+.step-card{display:grid; grid-template-columns:34px 1fr auto; gap:14px; align-items:center; width:100%; text-align:left; background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:15px 16px; cursor:pointer; font-family:inherit; color:var(--ink)}
+.step-card:hover:not(:disabled){border-color:var(--accent)}
+.step-card .sn{width:34px; height:34px; border-radius:50%; background:var(--accent-soft); color:var(--accent); display:grid; place-items:center; font:600 .95rem/1 Newsreader, serif}
+.step-card b{display:block; font-size:1.02rem; line-height:1.3}
+.step-card .d{display:block; color:var(--soft); font-size:.88rem; line-height:1.45; margin-top:2px}
+.step-card .go{color:var(--accent); font-weight:600; font-size:.88rem; white-space:nowrap}
+.step-card.next{border-color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent)}
+.step-card.done .sn{background:var(--good-soft); color:var(--good)}
+.step-card.done .go{color:var(--good)}
+.step-card.done b{color:var(--soft)}
+.step-card:disabled{cursor:default; opacity:.65}
+.sleep{font-size:.9rem; color:var(--soft); background:var(--accent-soft); border-radius:10px; padding:11px 14px; margin:0 0 8px}
+.plan li{grid-template-columns:66px 1fr}
+.plan li.today .d, .plan li.today b{color:var(--warm)}
+.whylist{padding-left:18px; margin:0}
+.whylist li{margin:0 0 12px; font-size:.95rem}
+.kicker{font:600 .76rem/1 "Source Sans 3", sans-serif; text-transform:uppercase; letter-spacing:.1em; color:var(--accent); margin:0 0 10px}
+.pretest{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:18px 20px; margin:18px 0 18px}
+.pretest h3{margin:0 0 6px}
+.pretest p{color:var(--soft); font-size:.94rem}
+.pretest ol{margin:0; padding-left:20px}
+.pretest li{margin:8px 0; font-weight:600}
+.chrono-bar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:12px 0 22px}
+.chrono-bar .b{padding:12px 14px; font-size:.92rem}
+.chrono-left{font:600 1.35rem/1 Newsreader, serif; font-variant-numeric:tabular-nums; color:var(--warm)}
+.done-panel p{max-width:46ch; margin-left:auto; margin-right:auto}
 /* annale */
 .enonce{background:var(--card); border:1px solid var(--edge); border-radius:12px; padding:16px 18px; margin:12px 0 18px; font-size:.96rem; color:var(--soft)}
 .enonce p:last-child, .enonce ul:last-child{margin-bottom:0}
@@ -195,10 +229,9 @@ details.q.step .a h4{margin:0 0 8px; font-size:.95rem; color:var(--ink)}
 
 <header class="bar">
   <div class="bar-in">
-    <button class="tab" type="button" data-view="home" aria-selected="true">Accueil</button>
-    <button class="tab" type="button" data-view="revise" aria-selected="false">Réviser</button>
-    <button class="tab" type="button" data-view="annale" aria-selected="false">Annale</button>
+    <button class="tab" type="button" data-view="home" aria-selected="true">Aujourd'hui</button>
     <button class="tab" type="button" data-view="fiches" aria-selected="false">Fiches</button>
+    <button class="tab" type="button" data-view="annale" aria-selected="false">Annale</button>
     <button class="tab" type="button" data-view="sheet" aria-selected="false">Antisèche</button>
     <span class="spacer"></span>
     <span class="mini" id="mini"></span>
@@ -207,52 +240,39 @@ details.q.step .a h4{margin:0 0 8px; font-size:.95rem; color:var(--ink)}
 
 <div class="wrap">
 
-<!-- ===================== ACCUEIL ===================== -->
+<!-- ===================== AUJOURD'HUI ===================== -->
 <section class="view" id="view-home">
-  <div class="hello">
-    <h1>Réviser l'IA sans tout relire</h1>
-    <p class="lede">Examen R5.A.L1 dans une semaine. Trois méthodes, rien d'autre : tu réponds avant de voir, les cartes ratées reviennent vite, et tu travailles par courtes sessions.</p>
+  <div class="today-head">
+    <p class="today-date" id="today-date"></p>
+    <h1 class="countdown" id="countdown"></h1>
+    <p class="lede" id="phase-lede"></p>
+    <label class="exam-set" for="exam-date">Examen le <input type="date" id="exam-date"></label>
   </div>
 
-  <div class="meter"><span id="pct">0 %</span><span class="track"><i id="track"></i></span><span id="cardcount">0 cartes</span></div>
+  <div class="meter" title="Une carte est sue quand tu l'as réussie du premier coup trois jours différents"><span id="pct">0 %</span><span class="track"><i id="track"></i></span><span id="cardcount"></span></div>
 
-  <button class="cta" type="button" id="start-session">
-    <b>Commencer la session</b>
-    <span id="due-label">12 cartes à revoir</span>
-  </button>
-  <button class="cta quiet" type="button" data-goto="fiches">
-    <b>Lire une fiche</b>
-    <span>18 fiches, 5 points essentiels chacune. Le détail reste replié.</span>
-  </button>
-  <button class="cta quiet" type="button" data-goto="annale">
-    <b>Faire l'annale 2025</b>
-    <span>L'examen de l'an dernier, corrigé étape par étape. Il pourrait revenir tel quel.</span>
-  </button>
+  <h3>Ta séance du jour</h3>
+  <ol class="mission" id="mission"></ol>
+  <p class="sleep" id="sleep-note">Deux ou trois séances de 25 minutes avec une vraie pause valent mieux qu'un bloc de trois heures. Et dors : c'est la nuit que se fixe ce que tu as appris dans la journée.</p>
 
-  <h3>Pourquoi ça marche</h3>
-  <div class="method">
-    <div class="m"><span class="n">1</span><div><b>Rappel actif</b><span>Se forcer à retrouver une réponse ancre bien mieux que relire. Chaque carte te pose la question d'abord ; la réponse ne vient qu'après.</span></div></div>
-    <div class="m"><span class="n">2</span><div><b>Répétition espacée (Leitner)</b><span>Une carte sue monte d'un cran et revient plus tard ; une carte ratée retombe au cran 1 et revient à la session suivante. Tu passes ton temps sur ce que tu ne sais pas.</span></div></div>
-    <div class="m"><span class="n">3</span><div><b>Sessions courtes, sujets mélangés</b><span>12 cartes à la fois, tirées de chapitres différents. Alterner les sujets (interleaving) fait mieux tenir que bloquer trois heures sur les CSP.</span></div></div>
-  </div>
+  <h3>Ta semaine</h3>
+  <ol class="plan" id="week"></ol>
 
-  <h3>Une semaine, jour par jour</h3>
-  <ol class="plan">
-    <li><span class="d">J-7</span><div><b>Lis les 5 fiches de rappel BUT2</b><span>Puis une session. Objectif : le vocabulaire (consistant, instanciation, clause).</span></div></li>
-    <li><span class="d">J-6</span><div><b>Fiches 6 à 8 : le cadre du ML</b><span>Une session le matin, une le soir.</span></div></li>
-    <li><span class="d">J-5</span><div><b>Fiches 9 à 11 : réseaux de neurones</b><span>Refais le calcul de sortie d'un petit réseau à la main.</span></div></li>
-    <li><span class="d">J-4</span><div><b>Fiches 12 et 13 : CSP, Backtrack</b><span>Modélise le Sudoku en (X, D, C, R) sans regarder.</span></div></li>
-    <li><span class="d">J-3</span><div><b>Fiches 14 à 17 : filtrage et recherche locale</b><span>Déroule FC puis l'arc-consistance sur l'exemple à 5 variables.</span></div></li>
-    <li><span class="d">J-2</span><div><b>L'annale 2025 en conditions réelles</b><span>Une heure, sur papier, sans rien ouvrir. Puis les corrections étape par étape, et une session le soir.</span></div></li>
-    <li><span class="d">J-1</span><div><b>Antisèche + les pièges</b><span>Recopie les formules et les complexités une fois à la main.</span></div></li>
-  </ol>
-  <p class="foot">Fait à partir de ton dépôt : cours de V. Risch, A. Juven et C. Terrioux, sujets de TD et tes notebooks. Ta progression reste dans ce navigateur.</p>
+  <details class="more why"><summary>Pourquoi cette méthode</summary><div class="body">
+    <ul class="whylist">
+      <li><b>Se tester plutôt que relire.</b> Dunlosky et ses collègues (2013) ont évalué dix techniques d'étude : seules deux obtiennent une « utilité élevée », le test de soi et la pratique espacée. Relire et surligner sont classés « faibles ». Ici tu ne relis jamais sans t'être testée.</li>
+      <li><b>Réapprendre jusqu'à réussir, plusieurs jours de suite.</b> C'est l'apprentissage successif (Rawson &amp; Dunlosky) : une carte ratée revient dans la séance jusqu'à ce que tu la réussisses, puis les jours suivants. Elle ne compte comme sue qu'après trois jours réussis du premier coup.</li>
+      <li><b>Espacer d'environ un jour.</b> Pour un examen dans une semaine, l'écart optimal entre deux révisions tourne autour d'un jour (Cepeda et coll., 2008). Tes cartes reviennent après 1 à 4 jours, et toutes la veille.</li>
+      <li><b>Essayer avant de lire.</b> Tenter de répondre avant d'étudier, même en se trompant, fait mieux retenir la suite (effet de prétest, Richland, Kornell et Kao, 2009).</li>
+      <li><b>Mélanger les chapitres.</b> Les révisions alternent les fiches au lieu de les enchaîner : c'est plus dur sur le moment, et ça tient mieux le jour de l'examen.</li>
+      <li><b>Dormir.</b> Le sommeil consolide ce que tu as appris ; une nuit blanche la veille efface une partie du travail de la semaine.</li>
+    </ul>
+  </div></details>
+  <p class="foot">Fait à partir de ton dépôt : cours de V. Risch, A. Juven et C. Terrioux, sujets de TD, annale 2025 et tes notebooks. Ta progression reste dans ce navigateur.</p>
 </section>
 
-<!-- ===================== SESSION ===================== -->
+<!-- ===================== SEANCE ===================== -->
 <section class="view" id="view-revise" hidden>
-  <h1>Session</h1>
-  <p class="lede" id="sess-lede">Réponds à voix haute, puis vérifie. Sois honnête : c'est ce qui règle l'espacement.</p>
   <div id="sess-body"></div>
 </section>
 
@@ -261,6 +281,7 @@ details.q.step .a h4{margin:0 0 8px; font-size:.95rem; color:var(--ink)}
   <h1>Annale du 26 septembre 2025</h1>
   <p class="lede">Le contrôle de R5.A.L1 de l'an dernier. Deux exercices : un CSP à modéliser, un réseau de neurones à modifier et tracer.</p>
   <div class="chrono"><div><b>Fais-la d'abord sans aide.</b>Une heure, sur papier. Ouvre ensuite les corrections une par une : chercher avant de voir, c'est ce qui fait retenir.</div></div>
+  <div class="chrono-bar"><button class="b" type="button" id="chrono-btn">Lancer le chrono (1 h)</button><span class="chrono-left" id="chrono-left"></span><button class="b ok" type="button" id="annale-done">J'ai terminé l'annale</button></div>
 
   <div class="ex-h"><small>Exercice 1</small><h2>La voiture Peunault (CSP)</h2></div>
   <div class="enonce">
@@ -663,143 +684,388 @@ var FICHES = [
         ["Comment tracer F(x, y) en 3D sur [−2, 6] ?","X, Y = np.meshgrid(linspace(−2, 6)), Z = np.vectorize(F)(X, Y), ax = fig.add_subplot(projection='3d'), ax.plot_surface(X, Y, Z)."]]}
 ];
 
-/* cartes de révision : [question, réponse, fiche] */
+/* ---------------- cartes ---------------- */
 var CARDS = [];
 FICHES.forEach(function(f){ f.test.forEach(function(t, i){ CARDS.push({ id: f.id + '-' + i, q: t[0], a: t[1], f: f.id }); }); });
+var BYID = {};
+FICHES.forEach(function(f){ BYID[f.id] = f; });
+/* ordre de decouverte : ce qui tombe a l'examen d'abord (reseaux puis CSP), les rappels BUT2 en dernier */
+var ORDER = ['cadre','donnees','mlbut2','reseaux','gradient','tdmlp','csp','bt','filtrage','sudoku','annale','structure','locale','modeles','ia','logique','prolog','asp'];
+FICHES.forEach(function(f){ if (ORDER.indexOf(f.id) < 0) ORDER.push(f.id); });
 
-/* ---------------- état ---------------- */
-var KEY = 'revia-v1';
-var state = { boxes:{}, session:0, read:{} };
-try { var raw = localStorage.getItem(KEY); if (raw) state = Object.assign(state, JSON.parse(raw)); } catch(e){}
+/* ---------------- dates (jours locaux) ---------------- */
+function el(id){ return document.getElementById(id); }
+function pad(n){ return (n < 10 ? '0' : '') + n; }
+function ymd(d){ return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function parse(x){ var q = x.split('-'); return new Date(+q[0], +q[1] - 1, +q[2]); }
+function addDays(x, n){ var d = parse(x); d.setDate(d.getDate() + n); return ymd(d); }
+function diff(a, b){ return Math.round((parse(b) - parse(a)) / 86400000); }
+function today(){ return ymd(new Date()); }
+var JOURS = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+var MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+function longDate(x){ var d = parse(x), t = JOURS[d.getDay()] + ' ' + d.getDate() + ' ' + MOIS[d.getMonth()]; return t.charAt(0).toUpperCase() + t.slice(1); }
+function shortDate(x){ var d = parse(x); return JOURS[d.getDay()].slice(0, 3) + '. ' + d.getDate(); }
+
+/* ---------------- etat ---------------- */
+var KEY = 'revia-v2';
+var state = null;
+try { state = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e){}
+if (!state || !state.exam) {
+  state = { exam: addDays(today(), 7), day: null, intro: {}, cards: {}, annale: {}, sheet: {}, read: {}, warm: null };
+  try { /* reprise de l'ancienne progression (systeme par sessions) */
+    var old = JSON.parse(localStorage.getItem('revia-v1') || 'null');
+    if (old && old.boxes) {
+      var hier = addDays(today(), -1);
+      Object.keys(old.boxes).forEach(function(id){
+        var fid = id.replace(/-\d+$/, '');
+        if (old.boxes[id].b >= 2 && BYID[fid]) {
+          state.intro[fid] = hier;
+          state.cards[id] = { b: 1, due: today(), days: 1, last: hier, seen: null };
+        }
+      });
+    }
+  } catch(e){}
+}
+['intro','cards','annale','sheet','read'].forEach(function(k){ if (!state[k]) state[k] = {}; });
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
-function boxOf(id){ return state.boxes[id] || { b:1, due:0 }; }
-function dueCards(){ return CARDS.filter(function(c){ return boxOf(c.id).due <= state.session; }); }
-function known(){ return CARDS.filter(function(c){ return boxOf(c.id).b >= 3; }).length; }
-function ficheKnown(f){
-  var cs = CARDS.filter(function(c){ return c.f === f; });
-  return cs.length > 0 && cs.every(function(c){ return boxOf(c.id).b >= 3; });
+
+function getS(c){ return state.cards[c.id] || (state.cards[c.id] = { b: 0, due: today(), days: 0, last: null, seen: null }); }
+function mastered(c){ var x = state.cards[c.id]; return !!x && x.days >= 3; }
+function daysLeft(){ return diff(today(), state.exam); }
+function examEve(){ return addDays(state.exam, -1); }
+function anyIntro(){ return Object.keys(state.intro).length > 0; }
+function remainingFiches(){ return ORDER.filter(function(id){ return !state.intro[id]; }); }
+
+/* combien de nouvelles fiches par jour : tout doit etre decouvert avant l'avant-veille */
+function quotaFor(n, dd){
+  if (n <= 0 || dd < 1) return 0;
+  if (dd >= 3) return Math.ceil(n / (dd - 2));
+  return n;
+}
+function todayPlan(){
+  var t = today();
+  if (!state.day || state.day.date !== t || state.day.exam !== state.exam) {
+    var rem = remainingFiches();
+    state.day = { date: t, exam: state.exam, newIds: rem.slice(0, quotaFor(rem.length, daysLeft())) };
+    save();
+  }
+  return state.day;
+}
+function nextNewId(){
+  var ids = todayPlan().newIds;
+  for (var i = 0; i < ids.length; i++) if (!state.intro[ids[i]]) return ids[i];
+  return null;
 }
 
-function refreshMeters(){
-  var k = known(), pct = Math.round(100 * k / CARDS.length);
-  var el;
-  if ((el = document.getElementById('pct'))) el.textContent = pct + ' %';
-  if ((el = document.getElementById('track'))) el.style.width = pct + '%';
-  if ((el = document.getElementById('cardcount'))) el.textContent = k + ' / ' + CARDS.length + ' cartes sues';
-  if ((el = document.getElementById('mini'))) el.textContent = pct + ' %';
-  var d = dueCards().length;
-  if ((el = document.getElementById('due-label'))) el.textContent = d ? (Math.min(d, 12) + ' cartes à revoir maintenant') : 'Rien à revoir : tu peux relire une fiche';
+/* cartes a revoir aujourd'hui ; la veille, chaque carte une fois */
+function dueCards(){
+  var t = today(), dd = daysLeft();
+  return CARDS.filter(function(c){
+    if (!state.intro[c.f]) return false;
+    var x = getS(c);
+    if (dd === 1) return x.seen !== t;
+    return x.due <= t;
+  });
+}
+/* alterner les fiches, les cartes les plus fragiles d'abord */
+function interleave(cards){
+  var groups = {}, order = [];
+  cards.forEach(function(c){ if (!groups[c.f]) { groups[c.f] = []; order.push(c.f); } groups[c.f].push(c); });
+  order.forEach(function(f){ groups[f].sort(function(a, b){ return getS(a).b - getS(b).b; }); });
+  var out = [], more = true;
+  while (more) { more = false; order.forEach(function(f){ if (groups[f].length) { out.push(groups[f].shift()); more = true; } }); }
+  return out;
+}
+var INTERVAL = [1, 1, 2, 3, 4];
+function schedule(x, t){
+  var next = addDays(t, INTERVAL[Math.min(x.b, 4)]), eve = examEve();
+  if (eve > t && next > eve) next = eve;
+  x.due = next;
+}
+
+/* ---------------- entete, compteurs ---------------- */
+function refresh(){
+  var m = CARDS.filter(mastered).length, pct = Math.round(100 * m / CARDS.length), dd = daysLeft();
+  el('pct').textContent = pct + ' %';
+  el('track').style.width = pct + '%';
+  el('cardcount').textContent = m + ' / ' + CARDS.length + ' cartes sues';
+  el('mini').textContent = dd > 0 ? 'J-' + dd : (dd === 0 ? 'Jour J' : '');
+}
+
+/* ---------------- aujourd'hui ---------------- */
+function renderToday(){
+  var t = today(), dd = daysLeft(), p = todayPlan();
+  el('today-date').textContent = longDate(t);
+  el('countdown').textContent = dd > 0 ? 'J-' + dd : (dd === 0 ? 'Jour J' : 'Examen passé');
+  el('exam-date').value = state.exam;
+  el('phase-lede').textContent =
+    dd >= 3 ? "Phase d'apprentissage : de nouvelles fiches chaque jour, et les cartes des jours précédents." :
+    dd === 2 ? "Avant-veille : dernières nouveautés, et l'annale en conditions réelles." :
+    dd === 1 ? "Veille : chaque carte revue une fois, l'antisèche, et au lit à une heure normale." :
+    dd === 0 ? "Jour J : un court échauffement, rien de nouveau." :
+    "La date d'examen est passée : mets-la à jour ci-dessous.";
+
+  var steps = [], due = dueCards().length;
+  var review = null;
+  if (dd >= 1) {
+    if (!anyIntro()) review = { act: 'review', t: 'Réviser', d: "Les révisions commencent demain, avec les fiches découvertes aujourd'hui.", off: true };
+    else review = { act: 'review', t: dd === 1 ? 'Tout revoir une fois' : 'Réviser les cartes du jour',
+      d: due ? due + (due > 1 ? ' cartes' : ' carte') + " à revoir, par séries de 20. Une carte ratée revient jusqu'à ce que tu la réussisses." : 'Rien à revoir pour le moment.',
+      done: due === 0, prog: due ? due + ' restantes' : '' };
+  }
+  if (review && due > 0) steps.push(review);
+  if (p.newIds.length) {
+    var n = p.newIds.length, fait = p.newIds.filter(function(id){ return state.intro[id]; }).length;
+    steps.push({ act: 'learn', t: 'Découvrir ' + n + (n > 1 ? ' fiches' : ' fiche'),
+      d: p.newIds.map(function(id){ return BYID[id].t; }).join(' · ') + '. Pour chacune : tu essaies d\'abord, tu lis, puis tu te testes.',
+      done: fait === n, prog: fait + ' / ' + n });
+  }
+  if (review && due === 0) steps.push(review);
+  if (p.newIds.indexOf('annale') >= 0 || dd === 2)
+    steps.push({ act: 'annale', t: 'Annale en conditions réelles (1 h)', d: "Sur papier, chrono lancé, sans rien ouvrir. Puis corrige-toi étape par étape.", done: !!state.annale[t] });
+  if (dd === 1) {
+    steps.push({ act: 'annale', t: "Refaire le CSP de l'annale de tête (20 min)", d: 'Variables, domaines, contraintes, relations, graphe : sans regarder.', done: !!state.annale[t] });
+    steps.push({ act: 'sheet', t: 'Antisèche et pièges (15 min)', d: 'Recopie les formules et les complexités une fois à la main.', done: !!state.sheet[t] });
+  }
+  if (dd === 0) {
+    steps.push({ act: 'warm', t: 'Échauffement : 10 cartes', d: 'Les plus fragiles, pour démarrer la tête chaude.', done: state.warm === t });
+    steps.push({ act: 'sheet', t: "Un dernier coup d'œil à l'antisèche", d: 'Juste les formules et les complexités.', done: !!state.sheet[t] });
+  }
+
+  var nextSet = false, html = '';
+  steps.forEach(function(s, i){
+    var cls = 'step-card';
+    if (s.done) cls += ' done';
+    else if (!s.off && !nextSet) { cls += ' next'; nextSet = true; }
+    html += '<li><button class="' + cls + '" type="button" data-act="' + s.act + '"' + (s.off ? ' disabled' : '') + '>' +
+      '<span class="sn">' + (s.done ? '✓' : (i + 1)) + '</span>' +
+      '<span><b>' + s.t + '</b><span class="d">' + s.d + '</span></span>' +
+      '<span class="go">' + (s.done ? 'Fait' : (s.off ? '' : (s.prog || 'Commencer'))) + '</span></button></li>';
+  });
+  el('mission').innerHTML = html || '<li class="sleep">Rien de prévu : vérifie la date de ton examen.</li>';
+  el('sleep-note').hidden = dd < 1;
+  renderWeek();
+  refresh();
+}
+
+function renderWeek(){
+  var dd = daysLeft(), p = todayPlan(), html = '';
+  if (dd < 0) { el('week').innerHTML = ''; return; }
+  var rem = remainingFiches().filter(function(id){ return p.newIds.indexOf(id) < 0; });
+  for (var i = 0; i <= Math.min(dd, 14); i++) {
+    var date = addDays(today(), i), left = dd - i, titre, detail;
+    if (left === 0) { titre = 'Examen'; detail = "Échauffement de 10 cartes, un coup d'œil à l'antisèche, et c'est parti."; }
+    else if (left === 1) { titre = 'Veille'; detail = "Chaque carte revue une fois, le CSP de l'annale de tête, l'antisèche. Coucher à une heure normale."; }
+    else {
+      var news = i === 0 ? p.newIds : rem.splice(0, quotaFor(rem.length + 0, left));
+      titre = i === 0 ? "Aujourd'hui" : 'J-' + left;
+      detail = (news.length ? news.map(function(id){ return BYID[id].t; }).join(' · ') : 'Pas de nouvelle fiche') +
+               (left === 2 ? ' · annale en conditions réelles' : '') + ' · révisions';
+    }
+    html += '<li' + (i === 0 ? ' class="today"' : '') + '><span class="d">' + (i === 0 ? 'Auj.' : shortDate(date)) + '</span><div><b>' + titre + '</b><span>' + detail + '</span></div></li>';
+  }
+  el('week').innerHTML = html;
 }
 
 /* ---------------- navigation ---------------- */
 var views = ['home','revise','annale','fiches','sheet'];
 function go(v){
-  views.forEach(function(x){ document.getElementById('view-' + x).hidden = (x !== v); });
+  views.forEach(function(x){ el('view-' + x).hidden = (x !== v); });
   document.querySelectorAll('.tab').forEach(function(t){ t.setAttribute('aria-selected', t.dataset.view === v ? 'true' : 'false'); });
+  if (v === 'home') renderToday();
+  if (v === 'sheet') { state.sheet[today()] = true; save(); }
   try { history.replaceState(null, '', '#' + v); } catch(e){}
-  try { window.scrollTo({ top:0, behavior:'instant' }); } catch(e){ window.scrollTo(0,0); }
+  try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch(e){ window.scrollTo(0, 0); }
 }
 document.querySelectorAll('.tab').forEach(function(t){
   t.addEventListener('click', function(){ if (t.dataset.view === 'fiches') showList(); go(t.dataset.view); });
 });
-document.querySelectorAll('[data-goto]').forEach(function(b){
-  b.addEventListener('click', function(){ var v = b.dataset.goto; if (v === 'fiches') showList(); go(v); });
-});
 
-/* ---------------- fiches ---------------- */
+/* ---------------- fiches (consultation libre) ---------------- */
+function ficheStatus(id){
+  var cs = CARDS.filter(function(c){ return c.f === id; });
+  if (cs.length && cs.every(mastered)) return 'sue';
+  return state.intro[id] ? 'apprise' : '';
+}
 function showList(){
-  document.getElementById('fiche-one').hidden = true;
-  document.getElementById('fiche-list').hidden = false;
-  var box = document.getElementById('list-box'), html = '', last = null;
+  el('fiche-one').hidden = true;
+  el('fiche-list').hidden = false;
+  var html = '', last = null;
   FICHES.forEach(function(f, i){
     if (f.g !== last) { html += '<p class="group-h">' + f.g + '</p>'; last = f.g; }
-    var ok = ficheKnown(f.id);
-    html += '<button class="item' + (ok ? ' known' : '') + '" type="button" data-fiche="' + f.id + '">' +
+    var st = ficheStatus(f.id);
+    html += '<button class="item' + (st === 'sue' ? ' known' : '') + '" type="button" data-fiche="' + f.id + '">' +
             '<span><b>' + (i + 1) + '. ' + f.t + '</b><em>' + f.s + '</em></span>' +
-            '<span class="state">' + (ok ? 'su' : '') + '</span></button>';
+            '<span class="state">' + st + '</span></button>';
   });
-  box.innerHTML = html;
+  el('list-box').innerHTML = html;
+}
+function ficheBody(f){
+  return '<div class="key"><h3>L\'essentiel</h3><ul>' + f.key.map(function(k){ return '<li>' + k + '</li>'; }).join('') + '</ul></div>' +
+         '<details class="more"><summary>Le détail</summary><div class="body">' + f.more + '</div></details>';
 }
 function showFiche(id){
-  var f = null;
-  FICHES.forEach(function(x){ if (x.id === id) f = x; });
+  var f = BYID[id];
   if (!f) return;
   state.read[id] = true; save();
-  var html = '<button class="back" type="button" id="back-list">← Toutes les fiches</button>' +
-             '<h1>' + f.t + '</h1><p class="lede">' + f.s + '</p>' +
-             '<div class="key"><h3>L\'essentiel</h3><ul>' + f.key.map(function(k){ return '<li>' + k + '</li>'; }).join('') + '</ul></div>' +
-             '<details class="more"><summary>Le détail</summary><div class="body">' + f.more + '</div></details>' +
-             '<div class="test"><h3>Teste-toi</h3>' +
-             f.test.map(function(t){ return '<details class="q"><summary>' + t[0] + '</summary><div class="a">' + t[1] + '</div></details>'; }).join('') +
-             '</div>';
-  var one = document.getElementById('fiche-one');
-  one.innerHTML = html;
+  var one = el('fiche-one');
+  one.innerHTML = '<button class="back" type="button" id="back-list">← Toutes les fiches</button>' +
+    '<h1>' + f.t + '</h1><p class="lede">' + f.s + '</p>' + ficheBody(f) +
+    '<div class="test"><h3>Teste-toi</h3>' +
+    f.test.map(function(t){ return '<details class="q"><summary>' + t[0] + '</summary><div class="a">' + t[1] + '</div></details>'; }).join('') + '</div>';
   one.hidden = false;
-  document.getElementById('fiche-list').hidden = true;
-  document.getElementById('back-list').addEventListener('click', function(){ showList(); try { window.scrollTo({top:0,behavior:'instant'}); } catch(e){} });
-  try { window.scrollTo({ top:0, behavior:'instant' }); } catch(e){}
+  el('fiche-list').hidden = true;
+  el('back-list').addEventListener('click', function(){ showList(); try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch(e){} });
+  try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch(e){}
 }
-document.addEventListener('click', function(e){
-  var b = e.target.closest('[data-fiche]');
-  if (b) showFiche(b.dataset.fiche);
-});
 
-/* ---------------- session ---------------- */
-var queue = [], pos = 0, stats = { ok:0, ko:0 };
-function startSession(){
-  var due = dueCards();
-  if (!due.length) due = CARDS.slice();
-  for (var i = due.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = due[i]; due[i] = due[j]; due[j] = t; }
-  due.sort(function(a, b){ return boxOf(a.id).b - boxOf(b.id).b; });
-  queue = due.slice(0, 12); pos = 0; stats = { ok:0, ko:0 };
-  go('revise'); renderCard();
+/* ---------------- test jusqu'a reussite ---------------- */
+var Q = null;
+function runQuiz(cards, onDone){
+  Q = { queue: cards.slice(), tried: {}, firstOk: 0, total: cards.length, onDone: onDone };
+  go('revise');
+  drawCard();
 }
-function renderCard(){
-  var body = document.getElementById('sess-body');
-  if (pos >= queue.length) {
-    state.session++; save(); refreshMeters();
-    var counts = [0,0,0,0,0];
-    CARDS.forEach(function(c){ counts[boxOf(c.id).b - 1]++; });
-    body.innerHTML = '<div class="done-panel"><p class="big">' + stats.ok + ' / ' + queue.length + '</p>' +
-      '<p>cartes sues du premier coup.</p></div>' +
-      '<div class="boxes">' + counts.map(function(n, i){ return '<div><b>' + n + '</b><span>cran ' + (i + 1) + '</span></div>'; }).join('') + '</div>' +
-      '<p class="lede" style="text-align:center;font-size:.92rem">Les crans 1 et 2 reviendront à la prochaine session ; les crans 4 et 5 attendront plusieurs sessions.</p>' +
-      '<div class="row" style="margin-top:20px"><button class="b" type="button" id="again">Nouvelle session</button>' +
-      '<button class="b" type="button" data-goto="fiches">Lire une fiche</button></div>';
-    document.getElementById('again').addEventListener('click', startSession);
-    body.querySelectorAll('[data-goto]').forEach(function(b){ b.addEventListener('click', function(){ showList(); go('fiches'); }); });
-    return;
-  }
-  var c = queue[pos], f = null;
-  FICHES.forEach(function(x){ if (x.id === c.f) f = x; });
+function drawCard(){
+  var body = el('sess-body');
+  if (!Q.queue.length) { var q = Q; Q = null; save(); refresh(); q.onDone(q); return; }
+  var c = Q.queue[0], f = BYID[c.f];
   body.innerHTML =
-    '<div class="card-stage"><p class="tagline">' + (pos + 1) + ' / ' + queue.length + ' · ' + f.t + '</p>' +
+    '<button class="back" type="button" data-goto="home">← Aujourd\'hui</button>' +
+    '<div class="card-stage"><p class="tagline">' + (Q.tried[c.id] ? 'À retenter · ' : '') + 'encore ' + Q.queue.length + ' · ' + f.t + '</p>' +
     '<p class="qq">' + c.q + '</p><div class="aa" id="answer" hidden>' + c.a + '</div></div>' +
-    '<div class="row"><button class="b full" type="button" id="reveal">Voir la réponse</button></div>';
-  document.getElementById('reveal').addEventListener('click', function(){
-    document.getElementById('answer').hidden = false;
-    document.querySelector('.row').innerHTML =
-      '<button class="b ko" type="button" data-ok="0">À revoir</button><button class="b ok" type="button" data-ok="1">Je savais</button>';
-    document.querySelectorAll('[data-ok]').forEach(function(btn){
-      btn.addEventListener('click', function(){ grade(btn.dataset.ok === '1'); });
-    });
+    '<div class="row" id="grade-row"><button class="b full" type="button" id="reveal">Voir la réponse</button></div>';
+  el('reveal').addEventListener('click', function(){
+    el('answer').hidden = false;
+    el('grade-row').innerHTML = '<button class="b ko" type="button" id="g-ko">Raté</button><button class="b ok" type="button" id="g-ok">Réussi</button>';
+    el('g-ko').addEventListener('click', function(){ grade(false); });
+    el('g-ok').addEventListener('click', function(){ grade(true); });
   });
 }
 function grade(ok){
-  var c = queue[pos], st = boxOf(c.id);
-  if (ok) { st.b = Math.min(5, st.b + 1); stats.ok++; } else { st.b = 1; stats.ko++; }
-  st.due = state.session + (ok ? st.b : 1);
-  state.boxes[c.id] = st; save(); refreshMeters();
-  pos++; renderCard();
+  var c = Q.queue.shift(), x = getS(c), t = today(), first = !Q.tried[c.id];
+  Q.tried[c.id] = true;
+  if (ok) {
+    if (first) {
+      Q.firstOk++;
+      x.b = Math.min(4, x.b + 1);
+      if (x.last !== t) { x.days++; x.last = t; }
+    } else {
+      x.b = 1;
+    }
+    schedule(x, t);
+    x.seen = t;
+  } else {
+    x.b = 1;
+    Q.queue.splice(Math.min(3, Q.queue.length), 0, c);   /* revient 3 cartes plus loin */
+  }
+  save();
+  drawCard();
 }
-document.getElementById('start-session').addEventListener('click', startSession);
 
-/* ---------------- démarrage ---------------- */
+/* ---------------- decouvrir : essayer, lire, se tester ---------------- */
+function startLearn(){
+  var id = nextNewId();
+  if (!id) { go('home'); return; }
+  pretest(BYID[id]);
+}
+function learnKicker(f){
+  var ids = todayPlan().newIds;
+  return 'Découvrir · fiche ' + (ids.indexOf(f.id) + 1) + ' sur ' + ids.length;
+}
+function pretest(f){
+  go('revise');
+  el('sess-body').innerHTML =
+    '<button class="back" type="button" data-goto="home">← Aujourd\'hui</button>' +
+    '<p class="kicker">' + learnKicker(f) + '</p><h1>' + f.t + '</h1>' +
+    '<div class="pretest"><h3>Avant de lire, essaie de répondre</h3>' +
+    '<p>De tête, même au hasard. Chercher avant de lire aide à retenir ensuite, même quand on se trompe.</p>' +
+    '<ol>' + f.test.map(function(t){ return '<li>' + t[0] + '</li>'; }).join('') + '</ol></div>' +
+    '<div class="row"><button class="b full" type="button" id="to-study">Lire la fiche</button></div>';
+  el('to-study').addEventListener('click', function(){ study(f); });
+}
+function study(f){
+  el('sess-body').innerHTML =
+    '<button class="back" type="button" data-goto="home">← Aujourd\'hui</button>' +
+    '<p class="kicker">' + learnKicker(f) + '</p><h1>' + f.t + '</h1><p class="lede">' + f.s + '</p>' + ficheBody(f) +
+    '<div class="row"><button class="b full" type="button" id="to-quiz">Je me teste, sans regarder</button></div>';
+  el('to-quiz').addEventListener('click', function(){
+    runQuiz(CARDS.filter(function(c){ return c.f === f.id; }), function(q){
+      state.intro[f.id] = today(); save();
+      var nxt = nextNewId();
+      el('sess-body').innerHTML =
+        '<div class="done-panel"><p class="big">' + q.firstOk + ' / ' + q.total + '</p>' +
+        '<p>réussies du premier coup sur « ' + f.t + ' ». Les ratées sont revenues jusqu\'à ce que tu les réussisses ; toutes repasseront demain.</p></div>' +
+        '<div class="row">' + (nxt
+          ? '<button class="b full" type="button" data-act="learn">Fiche suivante : ' + BYID[nxt].t + '</button>'
+          : '<button class="b full" type="button" data-goto="home">Découverte du jour terminée</button>') + '</div>';
+      try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch(e){}
+    });
+  });
+  try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch(e){}
+}
+
+/* ---------------- reviser, s'echauffer ---------------- */
+function startReview(){
+  var due = interleave(dueCards());
+  if (!due.length) { go('home'); return; }
+  runQuiz(due.slice(0, 20), function(q){
+    var left = dueCards().length;
+    el('sess-body').innerHTML =
+      '<div class="done-panel"><p class="big">' + q.firstOk + ' / ' + q.total + '</p>' +
+      '<p>réussies du premier coup. ' + (left ? 'Fais une vraie pause de 5 minutes avant la série suivante.' : 'Révisions du jour terminées.') + '</p></div>' +
+      '<div class="row">' + (left
+        ? '<button class="b full" type="button" data-act="review">Série suivante (' + left + ' restantes)</button>'
+        : '<button class="b full" type="button" data-goto="home">Retour à ta séance</button>') + '</div>';
+  });
+}
+function startWarm(){
+  var pool = CARDS.filter(function(c){ return state.intro[c.f]; });
+  if (!pool.length) pool = CARDS.slice();
+  pool.sort(function(a, b){ return getS(a).days - getS(b).days; });
+  runQuiz(pool.slice(0, 10), function(){ state.warm = today(); save(); go('home'); });
+}
+var ACTS = { learn: startLearn, review: startReview, warm: startWarm,
+             annale: function(){ go('annale'); }, sheet: function(){ go('sheet'); } };
+
+document.addEventListener('click', function(e){
+  var b;
+  if ((b = e.target.closest('[data-fiche]'))) { showFiche(b.dataset.fiche); return; }
+  if ((b = e.target.closest('[data-goto]'))) { var v = b.dataset.goto; if (v === 'fiches') showList(); go(v); return; }
+  if ((b = e.target.closest('[data-act]')) && !b.disabled) { ACTS[b.dataset.act](); return; }
+});
+
+/* ---------------- date d'examen ---------------- */
+el('exam-date').addEventListener('change', function(){
+  if (!this.value) return;
+  state.exam = this.value; state.day = null; save(); renderToday();
+});
+
+/* ---------------- chrono de l'annale ---------------- */
+var chronoEnd = 0, chronoTimer = null;
+function tick(){
+  var ms = chronoEnd - Date.now(), out = el('chrono-left');
+  if (ms <= 0) {
+    clearInterval(chronoTimer); chronoTimer = null;
+    out.textContent = 'Temps écoulé : pose le stylo.';
+    el('chrono-btn').textContent = 'Relancer le chrono (1 h)';
+    return;
+  }
+  out.textContent = pad(Math.floor(ms / 60000)) + ':' + pad(Math.floor(ms % 60000 / 1000));
+}
+el('chrono-btn').addEventListener('click', function(){
+  if (chronoTimer) { clearInterval(chronoTimer); chronoTimer = null; el('chrono-left').textContent = ''; this.textContent = 'Lancer le chrono (1 h)'; return; }
+  chronoEnd = Date.now() + 3600000; chronoTimer = setInterval(tick, 1000); tick();
+  this.textContent = 'Arrêter le chrono';
+});
+el('annale-done').addEventListener('click', function(){ state.annale[today()] = true; save(); go('home'); });
+
+/* ---------------- demarrage ---------------- */
+document.addEventListener('visibilitychange', function(){ if (!document.hidden && !el('view-home').hidden) renderToday(); });
 showList();
-refreshMeters();
 var h = (location.hash || '').slice(1);
-go(views.indexOf(h) >= 0 ? h : 'home');
-if (h === 'revise') startSession();
+go(['fiches','annale','sheet'].indexOf(h) >= 0 ? h : 'home');
+refresh();
 })();
 </script>
 
