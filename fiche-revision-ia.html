@@ -207,6 +207,10 @@ details.q .a > :last-child{margin-bottom:0}
 .chrono-bar .b{padding:12px 14px; font-size:.92rem}
 .chrono-left{font:600 1.35rem/1 Newsreader, serif; font-variant-numeric:tabular-nums; color:var(--warm)}
 .done-panel p{max-width:46ch; margin-left:auto; margin-right:auto}
+.est{font-size:.9rem; color:var(--soft); margin:-2px 0 12px}
+.learn-row{margin:0 0 22px}
+.plan li.opt .d{color:var(--faint)}
+.linkish{background:none; border:none; color:var(--accent); font:600 .92rem "Source Sans 3", sans-serif; padding:10px 0; cursor:pointer; text-decoration:underline; text-underline-offset:3px}
 /* annale */
 .enonce{background:var(--card); border:1px solid var(--edge); border-radius:12px; padding:16px 18px; margin:12px 0 18px; font-size:.96rem; color:var(--soft)}
 .enonce p:last-child, .enonce ul:last-child{margin-bottom:0}
@@ -252,6 +256,7 @@ details.q.step .a h4{margin:0 0 8px; font-size:.95rem; color:var(--ink)}
   <div class="meter" title="Une carte est sue quand tu l'as réussie du premier coup trois jours différents"><span id="pct">0 %</span><span class="track"><i id="track"></i></span><span id="cardcount"></span></div>
 
   <h3>Ta séance du jour</h3>
+  <p class="est" id="time-est"></p>
   <ol class="mission" id="mission"></ol>
   <p class="sleep" id="sleep-note">Deux ou trois séances de 25 minutes avec une vraie pause valent mieux qu'un bloc de trois heures. Et dors : c'est la nuit que se fixe ce que tu as appris dans la journée.</p>
 
@@ -262,7 +267,7 @@ details.q.step .a h4{margin:0 0 8px; font-size:.95rem; color:var(--ink)}
     <ul class="whylist">
       <li><b>Se tester plutôt que relire.</b> Dunlosky et ses collègues (2013) ont évalué dix techniques d'étude : seules deux obtiennent une « utilité élevée », le test de soi et la pratique espacée. Relire et surligner sont classés « faibles ». Ici tu ne relis jamais sans t'être testée.</li>
       <li><b>Réapprendre jusqu'à réussir, plusieurs jours de suite.</b> C'est l'apprentissage successif (Rawson &amp; Dunlosky) : une carte ratée revient dans la séance jusqu'à ce que tu la réussisses, puis les jours suivants. Elle ne compte comme sue qu'après trois jours réussis du premier coup.</li>
-      <li><b>Espacer d'environ un jour.</b> Pour un examen dans une semaine, l'écart optimal entre deux révisions tourne autour d'un jour (Cepeda et coll., 2008). Tes cartes reviennent après 1 à 4 jours, et toutes la veille.</li>
+      <li><b>Espacer d'environ un jour.</b> Pour un examen à quelques jours, l'écart optimal entre deux révisions tourne autour d'un jour (Cepeda et coll., 2008). Tes cartes reviennent après 1 à 4 jours, et toutes la veille.</li>
       <li><b>Essayer avant de lire.</b> Tenter de répondre avant d'étudier, même en se trompant, fait mieux retenir la suite (effet de prétest, Richland, Kornell et Kao, 2009).</li>
       <li><b>Mélanger les chapitres.</b> Les révisions alternent les fiches au lieu de les enchaîner : c'est plus dur sur le moment, et ça tient mieux le jour de l'examen.</li>
       <li><b>Dormir.</b> Le sommeil consolide ce que tu as appris ; une nuit blanche la veille efface une partie du travail de la semaine.</li>
@@ -689,9 +694,11 @@ var CARDS = [];
 FICHES.forEach(function(f){ f.test.forEach(function(t, i){ CARDS.push({ id: f.id + '-' + i, q: t[0], a: t[1], f: f.id }); }); });
 var BYID = {};
 FICHES.forEach(function(f){ BYID[f.id] = f; });
-/* ordre de decouverte : ce qui tombe a l'examen d'abord (reseaux puis CSP), les rappels BUT2 en dernier */
-var ORDER = ['cadre','donnees','mlbut2','reseaux','gradient','tdmlp','csp','bt','filtrage','sudoku','annale','structure','locale','modeles','ia','logique','prolog','asp'];
-FICHES.forEach(function(f){ if (ORDER.indexOf(f.id) < 0) ORDER.push(f.id); });
+/* ordre de decouverte : l'annale et ses prerequis d'abord (perceptron, MLP, CSP),
+   pour qu'elle soit reactivee le plus de jours possible avant l'examen */
+var ORDER = ['mlbut2','reseaux','csp','annale','bt','filtrage','sudoku','gradient','tdmlp','cadre','donnees','modeles','structure','locale'];
+/* rappels BUT2 : hors programme obligatoire, a la demande depuis l'onglet Fiches */
+var OPTIONAL = FICHES.map(function(f){ return f.id; }).filter(function(id){ return ORDER.indexOf(id) < 0; });
 
 /* ---------------- dates (jours locaux) ---------------- */
 function el(id){ return document.getElementById(id); }
@@ -708,10 +715,11 @@ function shortDate(x){ var d = parse(x); return JOURS[d.getDay()].slice(0, 3) + 
 
 /* ---------------- etat ---------------- */
 var KEY = 'revia-v2';
+var EXAM_DEFAULT = '2026-09-25';
 var state = null;
 try { state = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e){}
 if (!state || !state.exam) {
-  state = { exam: addDays(today(), 7), day: null, intro: {}, cards: {}, annale: {}, sheet: {}, read: {}, warm: null };
+  state = { exam: EXAM_DEFAULT, day: null, intro: {}, cards: {}, annale: {}, sheet: {}, read: {}, warm: null };
   try { /* reprise de l'ancienne progression (systeme par sessions) */
     var old = JSON.parse(localStorage.getItem('revia-v1') || 'null');
     if (old && old.boxes) {
@@ -727,6 +735,7 @@ if (!state || !state.exam) {
   } catch(e){}
 }
 ['intro','cards','annale','sheet','read'].forEach(function(k){ if (!state[k]) state[k] = {}; });
+if (!state.examSetByUser && state.exam !== EXAM_DEFAULT) { state.exam = EXAM_DEFAULT; state.day = null; }
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
 
 function getS(c){ return state.cards[c.id] || (state.cards[c.id] = { b: 0, due: today(), days: 0, last: null, seen: null }); }
@@ -736,11 +745,13 @@ function examEve(){ return addDays(state.exam, -1); }
 function anyIntro(){ return Object.keys(state.intro).length > 0; }
 function remainingFiches(){ return ORDER.filter(function(id){ return !state.intro[id]; }); }
 
-/* combien de nouvelles fiches par jour : tout doit etre decouvert avant l'avant-veille */
+/* combien de nouvelles fiches par jour : tout decouvrir avant la veille,
+   et avant l'avant-veille quand l'examen est a 6 jours ou plus */
+function learnDays(dd){ return dd >= 6 ? dd - 2 : dd - 1; }
 function quotaFor(n, dd){
   if (n <= 0 || dd < 1) return 0;
-  if (dd >= 3) return Math.ceil(n / (dd - 2));
-  return n;
+  if (dd === 1) return n;                 /* rattrapage de derniere minute */
+  return Math.ceil(n / learnDays(dd));
 }
 function todayPlan(){
   var t = today();
@@ -800,7 +811,7 @@ function renderToday(){
   el('exam-date').value = state.exam;
   el('phase-lede').textContent =
     dd >= 3 ? "Phase d'apprentissage : de nouvelles fiches chaque jour, et les cartes des jours précédents." :
-    dd === 2 ? "Avant-veille : dernières nouveautés, et l'annale en conditions réelles." :
+    dd === 2 ? "Avant-veille : les dernières fiches, et les révisions des jours précédents." :
     dd === 1 ? "Veille : chaque carte revue une fois, l'antisèche, et au lit à une heure normale." :
     dd === 0 ? "Jour J : un court échauffement, rien de nouveau." :
     "La date d'examen est passée : mets-la à jour ci-dessous.";
@@ -821,16 +832,29 @@ function renderToday(){
       done: fait === n, prog: fait + ' / ' + n });
   }
   if (review && due === 0) steps.push(review);
-  if (p.newIds.indexOf('annale') >= 0 || dd === 2)
+  if (p.newIds.indexOf('annale') >= 0 || (dd === 2 && state.intro.annale && diff(state.intro.annale, t) >= 3))
     steps.push({ act: 'annale', t: 'Annale en conditions réelles (1 h)', d: "Sur papier, chrono lancé, sans rien ouvrir. Puis corrige-toi étape par étape.", done: !!state.annale[t] });
   if (dd === 1) {
-    steps.push({ act: 'annale', t: "Refaire le CSP de l'annale de tête (20 min)", d: 'Variables, domaines, contraintes, relations, graphe : sans regarder.', done: !!state.annale[t] });
+    steps.push({ act: 'annale', t: "Refaire l'annale de tête (40 min)", d: "Le CSP complet sur papier, puis le code du réseau en tanh réécrit sans regarder. Si l'examen est le même, c'est ce qui rapporte le plus.", done: !!state.annale[t] });
     steps.push({ act: 'sheet', t: 'Antisèche et pièges (15 min)', d: 'Recopie les formules et les complexités une fois à la main.', done: !!state.sheet[t] });
   }
   if (dd === 0) {
     steps.push({ act: 'warm', t: 'Échauffement : 10 cartes', d: 'Les plus fragiles, pour démarrer la tête chaude.', done: state.warm === t });
     steps.push({ act: 'sheet', t: "Un dernier coup d'œil à l'antisèche", d: 'Juste les formules et les complexités.', done: !!state.sheet[t] });
   }
+
+  var mins = 0, reste = p.newIds.filter(function(id){ return !state.intro[id]; }).length;
+  steps.forEach(function(s){
+    if (s.done || s.off) return;
+    if (s.act === 'learn') mins += 12 * reste;
+    else if (s.act === 'review') mins += Math.ceil(due * 0.7);
+    else if (s.act === 'annale') mins += dd === 1 ? 40 : 60;
+    else if (s.act === 'sheet') mins += 15;
+    else if (s.act === 'warm') mins += 5;
+  });
+  el('time-est').textContent = mins
+    ? 'Temps estimé : environ ' + (mins >= 60 ? Math.floor(mins / 60) + ' h' + (mins % 60 ? ' ' + pad(mins % 60) : '') : mins + ' min') + ', en séances de 25 minutes.'
+    : "Tout est fait pour aujourd'hui.";
 
   var nextSet = false, html = '';
   steps.forEach(function(s, i){
@@ -855,15 +879,17 @@ function renderWeek(){
   for (var i = 0; i <= Math.min(dd, 14); i++) {
     var date = addDays(today(), i), left = dd - i, titre, detail;
     if (left === 0) { titre = 'Examen'; detail = "Échauffement de 10 cartes, un coup d'œil à l'antisèche, et c'est parti."; }
-    else if (left === 1) { titre = 'Veille'; detail = "Chaque carte revue une fois, le CSP de l'annale de tête, l'antisèche. Coucher à une heure normale."; }
+    else if (left === 1) { titre = 'Veille'; detail = "Chaque carte revue une fois, l'annale refaite de tête, l'antisèche. Coucher à une heure normale."; }
     else {
       var news = i === 0 ? p.newIds : rem.splice(0, quotaFor(rem.length + 0, left));
       titre = i === 0 ? "Aujourd'hui" : 'J-' + left;
       detail = (news.length ? news.map(function(id){ return BYID[id].t; }).join(' · ') : 'Pas de nouvelle fiche') +
-               (left === 2 ? ' · annale en conditions réelles' : '') + ' · révisions';
+               ((news.indexOf('annale') >= 0 || (left === 2 && dd >= 6)) ? ' · annale chronométrée (1 h)' : '') + (i === 0 && !anyIntro() ? '' : ' · révisions');
     }
     html += '<li' + (i === 0 ? ' class="today"' : '') + '><span class="d">' + (i === 0 ? 'Auj.' : shortDate(date)) + '</span><div><b>' + titre + '</b><span>' + detail + '</span></div></li>';
   }
+  if (OPTIONAL.some(function(id){ return !state.intro[id]; }))
+    html += '<li class="opt"><span class="d">+</span><div><b>Facultatif</b><span>Les rappels de BUT2 (généralités, logique, Prolog, ASP), dans l\'onglet Fiches, si tu as du temps.</span></div></li>';
   el('week').innerHTML = html;
 }
 
@@ -896,7 +922,7 @@ function showList(){
     var st = ficheStatus(f.id);
     html += '<button class="item' + (st === 'sue' ? ' known' : '') + '" type="button" data-fiche="' + f.id + '">' +
             '<span><b>' + (i + 1) + '. ' + f.t + '</b><em>' + f.s + '</em></span>' +
-            '<span class="state">' + st + '</span></button>';
+            '<span class="state">' + (st || (OPTIONAL.indexOf(f.id) >= 0 ? 'facultatif' : '')) + '</span></button>';
   });
   el('list-box').innerHTML = html;
 }
@@ -911,6 +937,7 @@ function showFiche(id){
   var one = el('fiche-one');
   one.innerHTML = '<button class="back" type="button" id="back-list">← Toutes les fiches</button>' +
     '<h1>' + f.t + '</h1><p class="lede">' + f.s + '</p>' + ficheBody(f) +
+    (state.intro[id] ? '' : '<div class="row learn-row"><button class="b full" type="button" data-learn="' + id + '">Apprendre cette fiche maintenant</button></div>') +
     '<div class="test"><h3>Teste-toi</h3>' +
     f.test.map(function(t){ return '<details class="q"><summary>' + t[0] + '</summary><div class="a">' + t[1] + '</div></details>'; }).join('') + '</div>';
   one.hidden = false;
@@ -970,11 +997,22 @@ function startLearn(){
   pretest(BYID[id]);
 }
 function learnKicker(f){
-  var ids = todayPlan().newIds;
-  return 'Découvrir · fiche ' + (ids.indexOf(f.id) + 1) + ' sur ' + ids.length;
+  var ids = todayPlan().newIds, k = ids.indexOf(f.id);
+  return k < 0 ? 'Découvrir · en plus du programme' : 'Découvrir · fiche ' + (k + 1) + ' sur ' + ids.length;
 }
 function pretest(f){
   go('revise');
+  if (f.id === 'annale' && !state.annale[today()]) {
+    el('sess-body').innerHTML =
+      '<button class="back" type="button" data-goto="home">← Aujourd\'hui</button>' +
+      '<p class="kicker">' + learnKicker(f) + '</p><h1>' + f.t + '</h1>' +
+      '<div class="pretest"><h3>D\'abord, l\'annale en conditions réelles</h3>' +
+      '<p>Lance le chrono d\'une heure dans l\'onglet Annale, fais les deux exercices sur papier sans rien ouvrir, puis appuie sur « J\'ai terminé l\'annale ». Cette fiche t\'attend ici ensuite.</p></div>' +
+      '<div class="row"><button class="b full" type="button" data-goto="annale">Aller à l\'annale</button></div>' +
+      '<p><button class="linkish" type="button" id="skip-annale">Déjà faite aujourd\'hui : lire la fiche</button></p>';
+    el('skip-annale').addEventListener('click', function(){ state.annale[today()] = true; save(); study(f); });
+    return;
+  }
   el('sess-body').innerHTML =
     '<button class="back" type="button" data-goto="home">← Aujourd\'hui</button>' +
     '<p class="kicker">' + learnKicker(f) + '</p><h1>' + f.t + '</h1>' +
@@ -1030,6 +1068,7 @@ var ACTS = { learn: startLearn, review: startReview, warm: startWarm,
 
 document.addEventListener('click', function(e){
   var b;
+  if ((b = e.target.closest('[data-learn]'))) { pretest(BYID[b.dataset.learn]); return; }
   if ((b = e.target.closest('[data-fiche]'))) { showFiche(b.dataset.fiche); return; }
   if ((b = e.target.closest('[data-goto]'))) { var v = b.dataset.goto; if (v === 'fiches') showList(); go(v); return; }
   if ((b = e.target.closest('[data-act]')) && !b.disabled) { ACTS[b.dataset.act](); return; }
@@ -1038,7 +1077,7 @@ document.addEventListener('click', function(e){
 /* ---------------- date d'examen ---------------- */
 el('exam-date').addEventListener('change', function(){
   if (!this.value) return;
-  state.exam = this.value; state.day = null; save(); renderToday();
+  state.exam = this.value; state.examSetByUser = true; state.day = null; save(); renderToday();
 });
 
 /* ---------------- chrono de l'annale ---------------- */
