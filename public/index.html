@@ -211,6 +211,8 @@ details.q .a > :last-child{margin-bottom:0}
 .learn-row{margin:0 0 22px}
 .plan li.opt .d{color:var(--faint)}
 .linkish{background:none; border:none; color:var(--accent); font:600 .92rem "Source Sans 3", sans-serif; padding:10px 0; cursor:pointer; text-decoration:underline; text-underline-offset:3px}
+.scope{padding-left:20px; margin:0 0 26px}
+.scope li{margin:0 0 10px}
 /* annale */
 .enonce{background:var(--card); border:1px solid var(--edge); border-radius:12px; padding:16px 18px; margin:12px 0 18px; font-size:.96rem; color:var(--soft)}
 .enonce p:last-child, .enonce ul:last-child{margin-bottom:0}
@@ -260,7 +262,16 @@ details.q.step .a h4{margin:0 0 8px; font-size:.95rem; color:var(--ink)}
   <ol class="mission" id="mission"></ol>
   <p class="sleep" id="sleep-note">Deux ou trois séances de 25 minutes avec une vraie pause valent mieux qu'un bloc de trois heures. Et dors : c'est la nuit que se fixe ce que tu as appris dans la journée.</p>
 
-  <h3>Ta semaine</h3>
+  <h3>Ce qui tombe</h3>
+  <ul class="scope">
+    <li><b>Le TD3, le gros morceau.</b> Sudoku modélisé en (X, D, C, R), backtracking, forward checking, heuristiques de choix de variable.</li>
+    <li><b>Le cours de CSP, partie 2.</b> Filtrage, arc-consistance, MAC, méthodes structurelles (arbre, regroupement, coupe-cycle), méthodes incomplètes (hill-climbing, tabou, recuit, génétiques).</li>
+    <li><b>Un peu du TD2.</b> Même terrain : modélisation en CSP et mêmes algorithmes.</li>
+    <li><b>Un tout petit peu du TD1.</b> Le MLP de scikit-learn sur Iris : hyperparamètres, fonctions d'activation, pourquoi <code>identity</code> échoue.</li>
+    <li><b>C'est sur papier.</b> Entraîne-toi à écrire à la main : la modélisation complète, le graphe de contraintes, une trace de BT puis de FC, et le code Python du Sudoku.</li>
+  </ul>
+
+  <h3 id="week-h">Ta semaine</h3>
   <ol class="plan" id="week"></ol>
 
   <details class="more why"><summary>Pourquoi cette méthode</summary><div class="body">
@@ -440,6 +451,14 @@ plt.show()</code></pre>
   <h1>Antisèche</h1>
   <p class="lede">À recopier une fois à la main la veille.</p>
 
+  <h3>Sur copie</h3>
+  <ul class="warn">
+    <li><b>Écris la correspondance des variables</b> (x1 = carrosserie, x2 = capot…) avant de modéliser : le correcteur doit pouvoir te suivre.</li>
+    <li><b>Justifie les ordres implicites</b>, par exemple du plus clair au plus foncé : c'est là qu'on perd des points bêtement.</li>
+    <li><b>Déroule les algorithmes étape par étape</b>, une ligne par affectation et par filtrage, même si c'est long.</li>
+    <li><b>Donne la complexité</b> de chaque méthode que tu cites : c'est du point facile.</li>
+  </ul>
+
   <h3>Complexités CSP</h3>
   <div class="tbl"><table>
     <tr><th>Quoi</th><th>Complexité</th></tr>
@@ -451,6 +470,19 @@ plt.show()</code></pre>
     <tr><td>CSP arborescent</td><td>polynomial</td></tr>
   </table></div>
 
+  <h3>Réseaux de neurones (le peu de TD1)</h3>
+  <div class="fx">
+    MLPClassifier : relu et adam par défaut, max_iter = 200, perte = entropie croisée, score = accuracy<br>
+    hidden_layer_sizes = (100,) · random_state fixe l'initialisation des poids<br>
+    Activations : sigmoïde 1/(1+e⁻ˣ) · tanh = (eˣ−e⁻ˣ)/(eˣ+e⁻ˣ) ∈ ]−1, 1[ · ReLU max(0, x) · softmax e^(zj)/Σ e^(zk)<br>
+    identity en couche cachée ⇒ modèle linéaire ⇒ frontière droite ⇒ Versicolor non séparée (0,69 contre 0,97)<br>
+    Couche dense : y = σ(Wx + b), n·p + n paramètres<br>
+    predict_proba : une colonne par classe, chaque ligne somme à 1<br>
+    Surface 3D : X, Y = np.meshgrid(np.linspace(−2, 6, 200)) ; Z = np.vectorize(F)(X, Y) ;<br>
+    ax = fig.add_subplot(projection='3d') ; ax.plot_surface(X, Y, Z)
+  </div>
+
+  <details class="more"><summary>Le reste du cours (hors programme annoncé)</summary><div class="body">
   <h3>Formules ML</h3>
   <div class="fx">
     MSE = (1/n) Σ (y − ŷ)² &nbsp;·&nbsp; MAE = (1/n) Σ |y − ŷ|<br>
@@ -468,6 +500,8 @@ plt.show()</code></pre>
     a = (N Σxy − Σx Σy) / (N Σx² − (Σx)²)<br>
     b = (Σx² Σy − Σx Σxy) / (N Σx² − (Σx)²)
   </div>
+
+  </div></details>
 
   <h3>Les pièges qui coûtent des points</h3>
   <ul class="warn">
@@ -694,10 +728,10 @@ var CARDS = [];
 FICHES.forEach(function(f){ f.test.forEach(function(t, i){ CARDS.push({ id: f.id + '-' + i, q: t[0], a: t[1], f: f.id }); }); });
 var BYID = {};
 FICHES.forEach(function(f){ BYID[f.id] = f; });
-/* ordre de decouverte : l'annale et ses prerequis d'abord (perceptron, MLP, CSP),
-   pour qu'elle soit reactivee le plus de jours possible avant l'examen */
-var ORDER = ['mlbut2','reseaux','csp','annale','bt','filtrage','sudoku','gradient','tdmlp','cadre','donnees','modeles','structure','locale'];
-/* rappels BUT2 : hors programme obligatoire, a la demande depuis l'onglet Fiches */
+/* programme annonce par l'enseignant : TD3 (CSP) + cours CSP partie 2,
+   un peu du TD2 (CSP aussi), un tout petit peu du TD1 (MLP scikit-learn) */
+var ORDER = ['csp','bt','filtrage','sudoku','structure','locale','reseaux','tdmlp','annale'];
+/* le reste du cours : lisible dans l'onglet Fiches, hors revisions */
 var OPTIONAL = FICHES.map(function(f){ return f.id; }).filter(function(id){ return ORDER.indexOf(id) < 0; });
 
 /* ---------------- dates (jours locaux) ---------------- */
@@ -763,8 +797,9 @@ function todayPlan(){
   return state.day;
 }
 function nextNewId(){
-  var ids = todayPlan().newIds;
-  for (var i = 0; i < ids.length; i++) if (!state.intro[ids[i]]) return ids[i];
+  var ids = todayPlan().newIds, i;
+  for (i = 0; i < ids.length; i++) if (!state.intro[ids[i]]) return ids[i];
+  if (daysLeft() <= 0) for (i = 0; i < ORDER.length; i++) if (!state.intro[ORDER[i]]) return ORDER[i];
   return null;
 }
 
@@ -796,10 +831,10 @@ function schedule(x, t){
 
 /* ---------------- entete, compteurs ---------------- */
 function refresh(){
-  var m = CARDS.filter(mastered).length, pct = Math.round(100 * m / CARDS.length), dd = daysLeft();
+  var sc = CARDS.filter(function(c){ return ORDER.indexOf(c.f) >= 0; }), m = sc.filter(mastered).length, pct = Math.round(100 * m / sc.length), dd = daysLeft();
   el('pct').textContent = pct + ' %';
   el('track').style.width = pct + '%';
-  el('cardcount').textContent = m + ' / ' + CARDS.length + ' cartes sues';
+  el('cardcount').textContent = m + ' / ' + sc.length + ' cartes du programme sues';
   el('mini').textContent = dd > 0 ? 'J-' + dd : (dd === 0 ? 'Jour J' : '');
 }
 
@@ -813,7 +848,7 @@ function renderToday(){
     dd >= 3 ? "Phase d'apprentissage : de nouvelles fiches chaque jour, et les cartes des jours précédents." :
     dd === 2 ? "Avant-veille : les dernières fiches, et les révisions des jours précédents." :
     dd === 1 ? "Veille : chaque carte revue une fois, l'antisèche, et au lit à une heure normale." :
-    dd === 0 ? "Jour J : un court échauffement, rien de nouveau." :
+    dd === 0 ? "Jour J. Tu lis, tu te testes, tu refais l'annale de tête. Rien de nouveau aujourd'hui." :
     "La date d'examen est passée : mets-la à jour ci-dessous.";
 
   var steps = [], due = dueCards().length;
@@ -838,15 +873,26 @@ function renderToday(){
     steps.push({ act: 'annale', t: "Refaire l'annale de tête (40 min)", d: "Le CSP complet sur papier, puis le code du réseau en tanh réécrit sans regarder. Si l'examen est le même, c'est ce qui rapporte le plus.", done: !!state.annale[t] });
     steps.push({ act: 'sheet', t: 'Antisèche et pièges (15 min)', d: 'Recopie les formules et les complexités une fois à la main.', done: !!state.sheet[t] });
   }
-  if (dd === 0) {
-    steps.push({ act: 'warm', t: 'Échauffement : 10 cartes', d: 'Les plus fragiles, pour démarrer la tête chaude.', done: state.warm === t });
-    steps.push({ act: 'sheet', t: "Un dernier coup d'œil à l'antisèche", d: 'Juste les formules et les complexités.', done: !!state.sheet[t] });
+  if (dd <= 0) {
+    var resteF = ORDER.filter(function(id){ return !state.intro[id]; }).length;
+    if (resteF) steps.push({ act: 'learn', t: 'Lire les ' + resteF + (resteF > 1 ? ' fiches restantes' : ' fiche restante'),
+      d: "Les 5 points essentiels, puis tu te testes dessus. Pas de détour aujourd'hui.",
+      prog: (ORDER.length - resteF) + ' / ' + ORDER.length });
+    var cram = cramPool().length;
+    steps.push({ act: 'cram', t: 'Te tester sur tout le programme',
+      d: cram ? cram + " cartes, les plus fragiles d'abord, par séries de 20." : 'Tout revu une fois : relance pour un deuxième tour.',
+      done: cram === 0 });
+    steps.push({ act: 'annale', t: "Refaire l'annale de tête (40 min)",
+      d: "Le CSP complet sur papier, puis le réseau en tanh. Si l'examen est le même, c'est ce qui rapporte le plus.", done: !!state.annale[t] });
+    steps.push({ act: 'sheet', t: 'Antisèche : complexités, définitions, pièges',
+      d: 'Le dernier passage, quinze minutes avant de partir.', done: !!state.sheet[t] });
   }
 
   var mins = 0, reste = p.newIds.filter(function(id){ return !state.intro[id]; }).length;
   steps.forEach(function(s){
     if (s.done || s.off) return;
-    if (s.act === 'learn') mins += 12 * reste;
+    if (s.act === 'learn') mins += 12 * (dd <= 0 ? ORDER.filter(function(id){ return !state.intro[id]; }).length : reste);
+    else if (s.act === 'cram') mins += Math.ceil(cramPool().length * 0.7);
     else if (s.act === 'review') mins += Math.ceil(due * 0.7);
     else if (s.act === 'annale') mins += dd === 1 ? 40 : 60;
     else if (s.act === 'sheet') mins += 15;
@@ -869,6 +915,8 @@ function renderToday(){
   el('mission').innerHTML = html || '<li class="sleep">Rien de prévu : vérifie la date de ton examen.</li>';
   el('sleep-note').hidden = dd < 1;
   renderWeek();
+  el('week-h').hidden = dd < 1;
+  el('week').hidden = dd < 1;
   refresh();
 }
 
@@ -889,7 +937,7 @@ function renderWeek(){
     html += '<li' + (i === 0 ? ' class="today"' : '') + '><span class="d">' + (i === 0 ? 'Auj.' : shortDate(date)) + '</span><div><b>' + titre + '</b><span>' + detail + '</span></div></li>';
   }
   if (OPTIONAL.some(function(id){ return !state.intro[id]; }))
-    html += '<li class="opt"><span class="d">+</span><div><b>Facultatif</b><span>Les rappels de BUT2 (généralités, logique, Prolog, ASP), dans l\'onglet Fiches, si tu as du temps.</span></div></li>';
+    html += '<li class="opt"><span class="d">+</span><div><b>Hors programme</b><span>Le reste du cours (machine learning détaillé, logique, Prolog, ASP) reste lisible dans l\'onglet Fiches.</span></div></li>';
   el('week').innerHTML = html;
 }
 
@@ -922,7 +970,7 @@ function showList(){
     var st = ficheStatus(f.id);
     html += '<button class="item' + (st === 'sue' ? ' known' : '') + '" type="button" data-fiche="' + f.id + '">' +
             '<span><b>' + (i + 1) + '. ' + f.t + '</b><em>' + f.s + '</em></span>' +
-            '<span class="state">' + (st || (OPTIONAL.indexOf(f.id) >= 0 ? 'facultatif' : '')) + '</span></button>';
+            '<span class="state">' + (st || (OPTIONAL.indexOf(f.id) >= 0 ? 'hors programme' : '')) + '</span></button>';
   });
   el('list-box').innerHTML = html;
 }
@@ -994,11 +1042,36 @@ function grade(ok){
 function startLearn(){
   var id = nextNewId();
   if (!id) { go('home'); return; }
+  if (daysLeft() <= 0) { study(BYID[id]); return; }   /* jour J : droit au but */
   pretest(BYID[id]);
+}
+/* jour J : tout le programme, les cartes les plus fragiles d'abord */
+function cramPool(){
+  var t = today();
+  return CARDS.filter(function(c){ return ORDER.indexOf(c.f) >= 0 && getS(c).seen !== t; })
+              .sort(function(a, b){ var x = getS(a), y = getS(b); return (x.days - y.days) || (x.b - y.b); });
+}
+function startCram(){
+  var pool = cramPool();
+  if (!pool.length) {
+    CARDS.forEach(function(c){ if (ORDER.indexOf(c.f) >= 0) getS(c).seen = null; });
+    save();
+    pool = cramPool();
+  }
+  runQuiz(pool.slice(0, 20), function(q){
+    var left = cramPool().length;
+    el('sess-body').innerHTML =
+      '<div class="done-panel"><p class="big">' + q.firstOk + ' / ' + q.total + '</p>' +
+      '<p>réussies du premier coup. ' + (left ? 'Enchaîne : les plus fragiles reviennent en premier.' : 'Tout le programme a été revu une fois.') + '</p></div>' +
+      '<div class="row">' + (left
+        ? '<button class="b full" type="button" data-act="cram">Série suivante (' + left + ' restantes)</button>'
+        : '<button class="b full" type="button" data-goto="home">Retour</button>') + '</div>';
+  });
 }
 function learnKicker(f){
   var ids = todayPlan().newIds, k = ids.indexOf(f.id);
-  return k < 0 ? 'Découvrir · en plus du programme' : 'Découvrir · fiche ' + (k + 1) + ' sur ' + ids.length;
+  if (k >= 0) return 'Découvrir · fiche ' + (k + 1) + ' sur ' + ids.length;
+  return daysLeft() <= 0 ? 'Dernière ligne droite' : 'Découvrir · en plus du programme';
 }
 function pretest(f){
   go('revise');
@@ -1063,7 +1136,7 @@ function startWarm(){
   pool.sort(function(a, b){ return getS(a).days - getS(b).days; });
   runQuiz(pool.slice(0, 10), function(){ state.warm = today(); save(); go('home'); });
 }
-var ACTS = { learn: startLearn, review: startReview, warm: startWarm,
+var ACTS = { learn: startLearn, review: startReview, warm: startWarm, cram: startCram,
              annale: function(){ go('annale'); }, sheet: function(){ go('sheet'); } };
 
 document.addEventListener('click', function(e){
